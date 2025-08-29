@@ -1,0 +1,35 @@
+/* Global styles for the entire site */
+:root {
+  /* UPDATED: Main background color */
+  --background-color: #2B2FC6;
+  --text-color: #ffffff;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: 'Darker Grotesque', sans-serif;
+  font-weight: 600;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: #d8d0ff;
+}
+
+/* In your main CSS file (e.g., app.css) */
+
+body, html {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* Good practice for consistent layout */
+}

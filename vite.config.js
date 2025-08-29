@@ -1,0 +1,12 @@
+import { sveltekit } from '@sveltejs/kit/vite';
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  plugins: [sveltekit()],
+  resolve: {
+    extensions: ['.js', '.svelte'],
+  },
+  optimizeDeps: {
+    include: ['swiper/svelte', 'swiper/css'],
+  },
+});

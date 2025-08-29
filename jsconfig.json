@@ -1,0 +1,7 @@
+{
+  "extends": "./.svelte-kit/tsconfig.json",
+  "compilerOptions": {
+    // This new setting replaces the two deprecated ones causing the error.
+    "verbatimModuleSyntax": true
+  }
+}

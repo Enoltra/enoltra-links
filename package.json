@@ -1,0 +1,21 @@
+{
+	"name": "enoltra-links",
+	"private": true,
+	"version": "0.0.1",
+	"type": "module",
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"prepare": "svelte-kit sync || echo ''"
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-auto": "^1.0.0",
+		"@sveltejs/kit": "^1.0.0",
+		"svelte": "^4.2.8",
+		"vite": "^4.4.9"
+	},
+	"dependencies": {
+		"embla-carousel-svelte": "^8.6.0"
+	}
+}
