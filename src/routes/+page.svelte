@@ -79,11 +79,19 @@
       </div>
     </section>
 
-    <!-- ========= FREE DOWNLOADS SECTION ========= -->
-    <section id="downloads" class="content-section">
-      <h2>Free Downloads</h2>
-      <div class="link-card"><img src="/release2.webp" alt="Bye Bye Bye Bootleg" class="card-image"/> <div class="card-content"><h3>Bye Bye Bye (Enoltra Bootleg)</h3> <p>N'Sync</p> <a href="https://enoltralive.bandcamp.com/track/nsync-bye-bye-bye-enoltra-bootleg" target="_blank" rel="noopener noreferrer" class="button-outline">Free Download</a></div></div>
-    </section>
+<!-- ========= FREE DOWNLOADS SECTION ========= -->
+<section id="downloads" class="content-section">
+  <h2>Free Downloads</h2>
+  <div class="link-card">
+    <img src="/release2.webp" alt="Bye Bye Bye Bootleg" class="card-image"/>
+    <div class="card-content">
+      <h3>Bye Bye Bye (Enoltra Bootleg)</h3>
+      <p>N'Sync</p>
+      <!-- This link now points to your new download gate page -->
+      <a href="/download-bye-bye-bye" class="button-outline">Free Download</a>
+    </div>
+  </div>
+</section>
 
     <!-- ========= NEWSLETTER SECTION ========= -->
     <section id="newsletter" class="content-section">
@@ -110,7 +118,7 @@
   }
 
   .mobile-container {
-    max-width: 420px;
+    max-width: 500px;
     margin: 0 auto;
     background-color: #2B2FC6;
     position: relative;
@@ -119,7 +127,7 @@
     min-height: 100vh;
   }
   .content-wrapper {
-    padding: 0 28px;
+    padding: 0 5%;
     flex-grow: 1;
     position: relative;
     z-index: 2;
@@ -132,20 +140,19 @@
   .deco-planet {
     top: 0;
     left: 0;
-    width: 144px;
-
+    width: 40%;
     z-index: 3;
   }
   .deco-chrome {
     top: 0;
     right: 0;
-    width: 132px;
+    width: 30%;
     z-index: 3;
   }
   .deco-rose {
-    bottom: 1px;
-    right: -30px;
-    width: 168px;
+    bottom: 0px;
+    right: 0;
+    width: 40%;
     z-index: 3;
   }
 
@@ -179,32 +186,32 @@
   .link-card {
     background-color: #A374F5;
     border-radius: 0;
-    padding: 10px;
+    padding: 3%;
     display: flex;
     align-items: center;
     gap: 12px;
     margin-bottom: 12px;
   }
-  .card-image { width: 70px; height: 70px; object-fit: cover; border-radius: 0; flex-shrink: 0; }
+  .card-image { width: 20%; height: 20%; object-fit: cover; border-radius: 0; flex-shrink: 0; }
   
   .card-content {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    height: 70px;
+    height: 100%;
   }
   .card-content h3 {
     font-family: 'Dela Gothic One', sans-serif;
     font-weight: 400;
-    font-size: 0.9rem;
+    font-size: 1.2rem;
     margin: 0;
     color: #fff;
     text-transform: none;
   }
   .card-content p {
-    font-size: 0.8rem;
-    margin: 2px 0 auto 0;
+    font-size: 1rem;
+    margin: 4px 0 6px 0 ;
     color: rgba(255, 255, 255, 0.8);
   }
   .button-outline {
@@ -274,7 +281,7 @@
     font-size: 0.8rem;
     position: relative;
     z-index: 5;
-    margin-top: auto; /* Pushes footer to the bottom */
+    margin-top: 1rem; /* Pushes footer to the bottom */
   }
   .site-footer p { color: #C1FF72; opacity: 0.8; }
 </style>
