@@ -3,8 +3,7 @@
 
   // REMOVED: This block was unused and causing issues.
   // const emblaOptions = { ... };
-
-  let step = 1;
+let step = 1;
   let emailValue = '';
   let errorMessage = '';
   let isDownloading = false;
@@ -26,19 +25,35 @@
     step = 3;
   }
 
+  // UPDATED: This function now calls the new streaming endpoint
   async function triggerDownload() {
     if (isDownloading) return;
     isDownloading = true;
 
     try {
-      const response = await fetch('/api/generate-download');
-      const data = await response.json();
+      // 1. Call the new backend API endpoint
+      const response = await fetch('/api/download-track');
 
-      if (!response.ok || data.error) {
-        throw new Error(data.error || 'Failed to get download link.');
+      if (!response.ok) {
+        throw new Error('Failed to start download.');
       }
 
-      window.location.href = data.url;
+      // 2. Convert the response (the file stream) into a Blob
+      const blob = await response.blob();
+      
+      // 3. Create a temporary, local URL for the Blob
+      const url = window.URL.createObjectURL(blob);
+
+      // 4. Use the reliable <a> tag method to trigger the download
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = "N'SYNC - Bye Bye Bye (Enoltra Bootleg).wav"; // Set the desired filename
+      document.body.appendChild(link);
+      link.click();
+      
+      // 5. Clean up the temporary URL
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
 
     } catch (err) {
       console.error(err);
