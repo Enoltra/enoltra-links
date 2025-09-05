@@ -13,7 +13,7 @@ import {
 } from '$env/static/private';
 
 // The specific filename in your R2 bucket
-const fileName = 'NSYNC - Bye Bye Bye (Enoltra Bootleg).mp3';
+const fileName = "N'SYNC - Bye Bye Bye (Enoltra Bootleg).wav";
 
 // Create the S3 client configured for Cloudflare R2
 const S3 = new S3Client({
