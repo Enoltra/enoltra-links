@@ -4,7 +4,7 @@
   let emblaApi;
 
   const emblaOptions = {
-    options: { loop: true },
+    loop: true,
     plugins: [],
   };
 
@@ -175,9 +175,9 @@
     padding-top: 60px;
     z-index: 2;
   }
-  .logo { display: block; width: 75%; max-width: 280px; margin: 0 auto 12px auto; }
+  .logo { display: block; width: 80%; max-width: 280px; margin: 0 auto 12px auto; }
   .social-links { display: flex; justify-content: center; align-items: center; gap: 18px; margin-bottom: 18px; }
-  .social-links img { height: 16px; transition: transform 0.2s; }
+  .social-links img { height: 21px; transition: transform 0.2s; }
   .social-links a:hover img { transform: scale(1.1); }
   .anchor-nav { display: flex; justify-content: center; gap: 18px; padding-bottom: 12px; }
   .anchor-nav a { color: #C1FF72; text-decoration: none; font-family: 'Dela Gothic One', sans-serif; font-size: 0.75rem; font-weight: 400; }

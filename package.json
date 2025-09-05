@@ -1,21 +1,23 @@
 {
-	"name": "enoltra-links",
-	"private": true,
-	"version": "0.0.1",
-	"type": "module",
-	"scripts": {
-		"dev": "vite dev",
-		"build": "vite build",
-		"preview": "vite preview",
-		"prepare": "svelte-kit sync || echo ''"
-	},
-	"devDependencies": {
-		"@sveltejs/adapter-auto": "^1.0.0",
-		"@sveltejs/kit": "^1.0.0",
-		"svelte": "^4.2.8",
-		"vite": "^4.4.9"
-	},
-	"dependencies": {
-		"embla-carousel-svelte": "^8.6.0"
-	}
+  "name": "enoltra-links",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-auto": "^3.0.0",
+    "@sveltejs/kit": "^2.0.0",
+    "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "svelte": "^4.2.7",
+    "vite": "^5.0.3"
+  },
+  "type": "module",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.588.0",
+    "@aws-sdk/s3-request-presigner": "^3.588.0",
+    "embla-carousel-svelte": "^8.1.3"
+  }
 }

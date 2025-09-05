@@ -1,7 +1,13 @@
 <script>
+  import { slide, fade } from 'svelte/transition';
+
+  // REMOVED: This block was unused and causing issues.
+  // const emblaOptions = { ... };
+
   let step = 1;
   let emailValue = '';
   let errorMessage = '';
+  let isDownloading = false;
 
   const emailRegex = /\S+@\S+\.\S+/;
 
@@ -20,13 +26,26 @@
     step = 3;
   }
 
-  function triggerDownload() {
-    const link = document.createElement('a');
-    link.href = '/downloads/NSYNC - Bye Bye Bye (Enoltra Bootleg).mp3';
-    link.download = 'NSYNC - Bye Bye Bye (Enoltra Bootleg).mp3';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  async function triggerDownload() {
+    if (isDownloading) return;
+    isDownloading = true;
+
+    try {
+      const response = await fetch('/api/generate-download');
+      const data = await response.json();
+
+      if (!response.ok || data.error) {
+        throw new Error(data.error || 'Failed to get download link.');
+      }
+
+      window.location.href = data.url;
+
+    } catch (err) {
+      console.error(err);
+      alert('Sorry, the download could not be started. Please try again.');
+    } finally {
+      isDownloading = false;
+    }
   }
 </script>
 
@@ -37,7 +56,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@400;700&family=Dela+Gothic+One&display=swap" rel="stylesheet">
 </svelte:head>
 
-<!-- UPDATED: This is now the single, full-screen root element -->
 <div class="gate-container">
   <img src="/chrome-shape-1-dl-gate.webp" alt="" class="deco-shape-1" />
   <img src="/chrome-shape-2-dl-gate.webp" alt="" class="deco-shape-2" />
@@ -53,8 +71,14 @@
           <p class="card-text">Please enter your e-mail to be able to receive all future free drops directly to your inbox :)</p>
         </div>
         <form class="gate-form" on:submit={handleEmailSubmit}>
-          <input type="email" placeholder="enter your e-mail" bind:value={emailValue} required />
+          <!-- UPDATED: Corrected the 'required' attribute -->
+          <input type="email" placeholder="enter your e-mail" bind:value={emailValue} required={true} />
           <button type="submit">Done!</button>
+          {#if errorMessage}
+            <div class="error-popup" in:slide={{ duration: 300 }} out:fade={{ duration: 200 }}>
+              {errorMessage}
+            </div>
+          {/if}
         </form>
       {/if}
 
@@ -67,7 +91,7 @@
           <button on:click={() => handleFollowClick('https://youtube.com/@enoltra')}>YouTube</button>
           <button on:click={() => handleFollowClick('https://www.tiktok.com/@enoltra.live')}>TikTok</button>
         </div>
-        <p class="card-footer-text">To Download &rarr;</p>
+        <!-- This text is now correctly removed as per your previous request -->
       {/if}
 
       {#if step === 3}
@@ -78,21 +102,15 @@
           <button on:click={triggerDownload}>Download Track</button>
         </div>
       {/if}
-
-      {#if errorMessage}
-        <p class="error-message">{errorMessage}</p>
-      {/if}
     </div>
   </div>
 </div>
 
 <style>
-  /* This special :global selector styles the main body of this specific page */
   :global(body) {
-    background-color: #2B2FC6; /* Fallback color */
+    background-color: #2B2FC6;
   }
 
-  /* The full-screen background container */
   .gate-container {
     width: 100%;
     min-height: 100vh;
@@ -114,13 +132,13 @@
     max-height: 800px;
     display: flex;
     flex-direction: column;
-    justify-content: space-around; /* Creates vertical spacing */
+    justify-content: center;
     align-items: center;
     z-index: 1;
   }
 
   .deco-shape-1, .deco-shape-2 {
-    position: fixed; /* Attached to the screen corners */
+    position: fixed;
     pointer-events: none;
     z-index: 2;
   }
@@ -147,6 +165,7 @@
     font-weight: 400;
     text-transform: none;
     margin-top: -1rem;
+    margin-bottom: 2rem;
     line-height: 1.2;
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
   }
@@ -159,7 +178,6 @@
     background-color: rgba(163, 116, 245, 0.8);
     padding: 24px;
     width: 100%;
-    margin-top: 2rem;
     text-align: center;
   }
 
@@ -178,7 +196,7 @@
     flex-direction: column;
     gap: 10px;
     margin-top: 4rem;
-    margin-bottom: -4rem;
+    position: relative;
   }
 
   .gate-form input, .gate-form button {
@@ -193,6 +211,7 @@
     border: 1px solid #fff;
     cursor: pointer;
     transition: all 0.2s;
+    box-sizing: border-box;
   }
 
   .gate-form input::placeholder {
@@ -204,19 +223,32 @@
     color: #A374F5;
   }
 
-  .card-footer-text {
-    color: #fff;
-    font-family: 'Dela Gothic One', sans-serif;
-    font-size: 1rem;
-    text-align: center;
-    margin: 6rem 0 0 0;
-
+  .error-popup {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 12px;
+    background-color: #fff;
+    color: #d9534f;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-family: 'Darker Grotesque', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    white-space: nowrap;
+    z-index: 10;
   }
 
-  .error-message {
-    color: #ffbaba;
-    margin-top: 1rem;
-    font-family: 'Darker Grotesque', sans-serif;
-    font-weight: 600;
+  .error-popup::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px;
+    border-style: solid;
+    border-color: transparent transparent white transparent;
   }
 </style>
