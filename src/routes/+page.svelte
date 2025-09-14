@@ -94,16 +94,17 @@
 </section>
 
     <!-- ========= NEWSLETTER SECTION ========= -->
-    <section id="newsletter" class="content-section">
-      <h2>Newsletter</h2>
-      <div class="newsletter-box">
-        <p>If you want to be the first to hear about new releases, freebies, tour dates, personal stories and special announcements, I would be super-happy to have you aboard 💜</p>
-        <form class="newsletter-form" on:submit={handleNewsletterSubmit}>
-          <input type="email" placeholder="enter your e-mail" required={true} />
-          <button type="submit">Be part of the tribe</button>
-        </form>
-      </div>
-    </section>
+<section id="newsletter" class="content-section">
+  <h2>Newsletter</h2>
+  <div class="newsletter-box">
+    <p>If you want to be the first to hear about new releases, freebies, tour dates, personal stories and special announcements, I would be super-happy to have you aboard 💜</p>
+    <form class="newsletter-form" on:submit={handleNewsletterSubmit}>
+      <!-- UPDATED: Removed bind:value and added the simple name attribute -->
+      <input type="email" name="email" placeholder="enter your e-mail" required={true} />
+      <button type="submit">Be part of the tribe</button>
+    </form>
+  </div>
+</section>
   </main>
 
   <footer class="site-footer">

@@ -1,67 +1,49 @@
 <script>
   import { slide, fade } from 'svelte/transition';
 
-  // REMOVED: This block was unused and causing issues.
-  // const emblaOptions = { ... };
-let step = 1;
+  let step = 1;
   let emailValue = '';
   let errorMessage = '';
-  let isDownloading = false;
+  let isLoading = false; // Changed from isDownloading for clarity
 
   const emailRegex = /\S+@\S+\.\S+/;
 
-  function handleEmailSubmit(event) {
+  // This function now calls the backend to subscribe the user
+  async function handleEmailSubmit(event) {
     event.preventDefault();
-    if (emailRegex.test(emailValue)) {
-      errorMessage = '';
-      step = 2;
-    } else {
+    if (!emailRegex.test(emailValue)) {
       errorMessage = 'Please enter a valid email address.';
+      return;
     }
-  }
 
-  function handleFollowClick(url) {
-    window.open(url, '_blank');
-    step = 3;
-  }
-
-  // UPDATED: This function now calls the new streaming endpoint
-  async function triggerDownload() {
-    if (isDownloading) return;
-    isDownloading = true;
+    isLoading = true;
+    errorMessage = '';
 
     try {
-      // 1. Call the new backend API endpoint
-      const response = await fetch('/api/download-track');
+      const response = await fetch('/api/generate-download', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: emailValue })
+      });
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error('Failed to start download.');
+        throw new Error(data.error || 'An unknown error occurred.');
       }
-
-      // 2. Convert the response (the file stream) into a Blob
-      const blob = await response.blob();
       
-      // 3. Create a temporary, local URL for the Blob
-      const url = window.URL.createObjectURL(blob);
-
-      // 4. Use the reliable <a> tag method to trigger the download
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = "N'SYNC - Bye Bye Bye (Enoltra Bootleg).wav"; // Set the desired filename
-      document.body.appendChild(link);
-      link.click();
-      
-      // 5. Clean up the temporary URL
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(link);
+      // If successful, move to the final "Thank You" step
+      step = 3;
 
     } catch (err) {
-      console.error(err);
-      alert('Sorry, the download could not be started. Please try again.');
+      errorMessage = err.message;
     } finally {
-      isDownloading = false;
+      isLoading = false;
     }
   }
+
+  // This function is no longer needed as the email submission is the final step
+  // function handleFollowClick(url) { ... }
+  // function triggerDownload() { ... }
 </script>
 
 <svelte:head>
@@ -83,14 +65,16 @@ let step = 1;
     </header>
 
     <div class="interactive-area">
+      <!-- Step 1 is now the only interactive step -->
       {#if step === 1}
         <div class="gate-box">
           <p class="card-text">Please enter your e-mail to be able to receive all future free drops directly to your inbox :)</p>
         </div>
         <form class="gate-form" on:submit={handleEmailSubmit}>
-          <!-- UPDATED: Corrected the 'required' attribute -->
-          <input type="email" placeholder="enter your e-mail" bind:value={emailValue} required={true} />
-          <button type="submit">Done!</button>
+          <input type="email" placeholder="enter your e-mail" bind:value={emailValue} required={true} disabled={isLoading} />
+          <button type="submit" disabled={isLoading}>
+            {#if isLoading}Submitting...{:else}Done!{/if}
+          </button>
           {#if errorMessage}
             <div class="error-popup" in:slide={{ duration: 300 }} out:fade={{ duration: 200 }}>
               {errorMessage}
@@ -99,24 +83,14 @@ let step = 1;
         </form>
       {/if}
 
-      {#if step === 2}
-        <div class="gate-box">
-          <p class="card-text">To download this track, please select one channel to follow Enoltra on:</p>
-        </div>
-        <div class="gate-form">
-          <button on:click={() => handleFollowClick('https://instagram.com/enoltralive')}>Instagram</button>
-          <button on:click={() => handleFollowClick('https://youtube.com/@enoltra')}>YouTube</button>
-          <button on:click={() => handleFollowClick('https://www.tiktok.com/@enoltra.live')}>TikTok</button>
-        </div>
-        <!-- This text is now correctly removed as per your previous request -->
-      {/if}
-
+      <!-- Step 2 is removed, Step 3 is now the success message -->
       {#if step === 3}
         <div class="gate-box">
-          <p class="card-text">Thank you so much for completing the steps!<br/>Here is your freebie 👇</p>
+          <p class="card-text">Thank you so much for completing the steps! The track should appear in your inbox any moment now 🥹</p>
         </div>
         <div class="gate-form">
-          <button on:click={triggerDownload}>Download Track</button>
+          <!-- This is now a link styled as a button -->
+          <a href="/" class="button-link">Back to Home</a>
         </div>
       {/if}
     </div>
@@ -127,7 +101,6 @@ let step = 1;
   :global(body) {
     background-color: #2B2FC6;
   }
-
   .gate-container {
     width: 100%;
     min-height: 100vh;
@@ -141,7 +114,6 @@ let step = 1;
     padding: 28px;
     box-sizing: border-box;
   }
-
   .content-wrapper {
     width: 100%;
     max-width: 420px;
@@ -153,29 +125,14 @@ let step = 1;
     align-items: center;
     z-index: 1;
   }
-
   .deco-shape-1, .deco-shape-2 {
     position: fixed;
     pointer-events: none;
     z-index: 2;
   }
-  .deco-shape-1 {
-    bottom: 0;
-    left: 0;
-    max-width: 45%; 
-    height: auto;
-  }
-  .deco-shape-2 {
-    top: 0;
-    right: 0;
-    max-width: 35%; 
-    height: auto;
-  }
-
-  .gate-header {
-    text-align: center;
-    color: #fff;
-  }
+  .deco-shape-1 { bottom: 0; left: 0; max-width: 45%; height: auto; }
+  .deco-shape-2 { top: 0; right: 0; max-width: 35%; height: auto; }
+  .gate-header { text-align: center; color: #fff; }
   .main-title {
     font-family: 'Dela Gothic One', sans-serif;
     font-size: 2.6rem;
@@ -186,18 +143,13 @@ let step = 1;
     line-height: 1.2;
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
   }
-  
-  .interactive-area {
-      width: 100%;
-  }
-
+  .interactive-area { width: 100%; }
   .gate-box {
     background-color: rgba(163, 116, 245, 0.8);
     padding: 24px;
     width: 100%;
     text-align: center;
   }
-
   .card-text {
     color: #fff;
     font-family: 'Darker Grotesque', sans-serif;
@@ -206,7 +158,6 @@ let step = 1;
     line-height: 1;
     margin: 0;
   }
-
   .gate-form {
     width: 100%;
     display: flex;
@@ -215,8 +166,7 @@ let step = 1;
     margin-top: 4rem;
     position: relative;
   }
-
-  .gate-form input, .gate-form button {
+  .gate-form input, .gate-form button, .button-link {
     width: 100%;
     padding: 12px 16px;
     border-radius: 999px;
@@ -229,17 +179,17 @@ let step = 1;
     cursor: pointer;
     transition: all 0.2s;
     box-sizing: border-box;
+    text-align: center;
   }
-
-  .gate-form input::placeholder {
-    color: rgba(255, 255, 255, 0.7);
+  .button-link {
+    text-decoration: none;
   }
-
-  .gate-form button:hover {
+  .gate-form input::placeholder { color: rgba(255, 255, 255, 0.7); }
+  .gate-form button:hover, .button-link:hover {
     background-color: #fff;
     color: #A374F5;
   }
-
+  .gate-form button:disabled { opacity: 0.6; cursor: wait; }
   .error-popup {
     position: absolute;
     top: 100%;
@@ -257,7 +207,6 @@ let step = 1;
     white-space: nowrap;
     z-index: 10;
   }
-
   .error-popup::before {
     content: '';
     position: absolute;
