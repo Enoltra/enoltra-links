@@ -52,7 +52,7 @@ export async function POST({ request }) {
     };
 
     const response = await fetch(
-      `https://emailoctopus.com/api/1.6/lists/${PRIVATE_DOWNLOADS_LIST_ID}/contacts`,
+      `https://emailoctopus.com/api/1.6/lists/${PRIVATE_NEWSLETTER_LIST_ID}/contacts`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
