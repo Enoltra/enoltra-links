@@ -1,6 +1,10 @@
 <script>
   // This imports the global styles for all your pages
   import "../app.css";
+
+  import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
+  injectSpeedInsights();
+  
 </script>
 
 <svelte:head>
