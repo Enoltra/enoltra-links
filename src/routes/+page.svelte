@@ -1,5 +1,7 @@
 <script>
   import emblaCarouselSvelte from 'embla-carousel-svelte';
+  // This special 'form' prop receives the result from your server action
+  export let form;
 
   let emblaApi;
 
@@ -13,10 +15,13 @@
     emblaApi = event.detail;
   }
 
-  /** @param {any} event */
-  function handleNewsletterSubmit(event) {
-    event.preventDefault();
-    alert('Thank you for your interest! The newsletter is coming soon.');
+  // This reactive statement will show an alert when the form is successfully submitted
+  $: if (form?.success) {
+    alert(form.message || 'Thank you for subscribing!');
+    // This is a common way to reset the form visually after success
+    if (document.getElementById('newsletter-form')) {
+      document.getElementById('newsletter-form').reset();
+    }
   }
 </script>
 
@@ -93,16 +98,22 @@
   </div>
 </section>
 
-    <!-- ========= NEWSLETTER SECTION ========= -->
+<!-- ========= NEWSLETTER SECTION ========= -->
 <section id="newsletter" class="content-section">
   <h2>Newsletter</h2>
   <div class="newsletter-box">
     <p>If you want to be the first to hear about new releases, freebies, tour dates, personal stories and special announcements, I would be super-happy to have you aboard 💜</p>
-    <form class="newsletter-form" on:submit={handleNewsletterSubmit}>
-      <!-- UPDATED: Removed bind:value and added the simple name attribute -->
-      <input type="email" name="email" placeholder="enter your e-mail" required={true} />
+    
+    <!-- UPDATED: This form now submits to the backend -->
+    <form class="newsletter-form" method="POST" id="newsletter-form">
+      <input name="email" type="email" placeholder="enter your e-mail" required={true} />
       <button type="submit">Be part of the tribe</button>
     </form>
+
+    <!-- This will display any error message from the server -->
+    {#if form?.error}
+      <p class="error-message">{form.error}</p>
+    {/if}
   </div>
 </section>
   </main>
@@ -285,4 +296,13 @@
     margin-top: 1rem; /* Pushes footer to the bottom */
   }
   .site-footer p { color: #C1FF72; opacity: 0.8; }
+
+    .error-message {
+    color: #d9534f; /* A standard error red */
+    font-family: 'Darker Grotesque', sans-serif;
+    font-weight: 700;
+    margin-top: 10px;
+    text-align: center;
+  }
+
 </style>

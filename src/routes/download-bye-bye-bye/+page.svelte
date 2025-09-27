@@ -41,10 +41,7 @@
     }
   }
 
-  // This function is no longer needed as the email submission is the final step
-  // function handleFollowClick(url) { ... }
-  // function triggerDownload() { ... }
-</script>
+  </script>
 
 <svelte:head>
   <title>Download: Bye Bye Bye (Enoltra Bootleg)</title>
