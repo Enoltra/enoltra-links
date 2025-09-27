@@ -8,12 +8,11 @@ import {
   PRIVATE_R2_SECRET_ACCESS_KEY,
   PRIVATE_R2_BUCKET_NAME,
   PRIVATE_EMAILOCTOPUS_API_KEY,
-  PRIVATE_NEWSLETTER_LIST_ID
+  PRIVATE_EMAILOCTOPUS_LIST_ID // This is the single, correct variable
 } from '$env/static/private';
 
-// DEFINE THE TRACK INFO HERE
 const fileName = 'NSYNC - Bye Bye Bye (Enoltra Bootleg).mp3';
-const songTitle = 'Bye Bye Bye (Enoltra Bootleg)'; // This will be sent to EmailOctopus
+const songTitle = 'Bye Bye Bye (Enoltra Bootleg)';
 
 const S3 = new S3Client({
   region: 'auto',
@@ -44,7 +43,6 @@ export async function POST({ request }) {
       email_address: email,
       fields: {
         DownloadLink: signedUrl,
-        // ADDED: This sends the song title to your new custom field
         SongName: songTitle
       },
       tags: ["Download Gate"],
@@ -52,7 +50,7 @@ export async function POST({ request }) {
     };
 
     const response = await fetch(
-      `https://emailoctopus.com/api/1.6/lists/${PRIVATE_NEWSLETTER_LIST_ID}/contacts`,
+      `https://emailoctopus.com/api/1.6/lists/${PRIVATE_EMAILOCTOPUS_LIST_ID}/contacts`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
