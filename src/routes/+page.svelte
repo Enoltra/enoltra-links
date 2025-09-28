@@ -113,11 +113,6 @@
       </div>
     </section>
 
-    <section id="newsletter" class="content-section">
-      <h2>Newsletter</h2>
-      <div class="newsletter-box">
-        <p>If you want to be the first to hear about new releases, freebies, tour dates, personal stories and special announcements, I would be super-happy to have you aboard 💜</p>
-        
 <!-- ========= NEWSLETTER SECTION ========= -->
 <section id="newsletter" class="content-section">
   <h2>Newsletter</h2>

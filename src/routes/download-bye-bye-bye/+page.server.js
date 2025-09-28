@@ -1,17 +1,14 @@
 // src/routes/download-bye-bye-bye/+page.server.js
 
-import { fail } from '@sveltejs/kit'; // Import the SvelteKit error helper
+import { fail } from '@sveltejs/kit';
 import { PRIVATE_EMAILOCTOPUS_API_KEY, PRIVATE_EMAILOCTOPUS_LIST_ID, PRIVATE_EMAIL_VALIDATION_API_KEY } from '$env/static/private';
 
 export const actions = {
-  // This 'default' action runs when the form is submitted
   default: async ({ request }) => {
     const formData = await request.formData();
     const email = formData.get('email');
 
-    if (!email) {
-      return fail(400, { error: 'Email is required.' });
-    }
+    if (!email) { return fail(400, { error: 'Email is required.' }); }
 
     try {
       const validationResponse = await fetch(`https://emailvalidation.abstractapi.com/v1/?api_key=${PRIVATE_EMAIL_VALIDATION_API_KEY}&email=${email}`);
@@ -20,7 +17,7 @@ export const actions = {
         return fail(400, { error: 'Invalid e-mail. Please enter a valid e-mail.' });
       }
     } catch (err) {
-      return fail(500, { error: 'Could not verify email at this time. Please try again later.' });
+      return fail(500, { error: 'Could not verify email at this time.' });
     }
 
     try {
@@ -35,16 +32,13 @@ export const actions = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(apiData),
       });
-
       if (!response.ok) {
         const errorData = await response.json();
         return fail(400, { error: errorData.error?.message || 'Could not subscribe.' });
       }
-
-      // On success, return a success flag
       return { success: true };
     } catch (err) {
-      return fail(500, { error: 'A server error occurred. Please try again later.' });
+      return fail(500, { error: 'A server error occurred.' });
     }
   }
 };
