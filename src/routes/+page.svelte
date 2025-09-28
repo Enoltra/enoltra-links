@@ -91,32 +91,40 @@
       <div class="newsletter-box">
         <p>If you want to be the first to hear about new releases, freebies, tour dates, personal stories and special announcements, I would be super-happy to have you aboard 💜</p>
         
-        <!-- UPDATED: This form is now correctly linked to your script -->
-<form
-  class="newsletter-form"
-  method="POST"
-  use:enhance={() => {
-    isLoading = true;
-    return async ({ result, update }) => {
-      if (result.type === 'success') {
-        alert('Thank you for subscribing! Please check your email to confirm.');
-        document.getElementById('newsletter-form').reset();
-      } else if (result.type === 'failure') {
-        alert(result.data?.error || 'Subscription failed.');
-      }
-      isLoading = false;
-      await update();
-    };
-  }}
-  id="newsletter-form"
->
-  <input name="email" type="email" placeholder="enter your e-mail" required={true} disabled={isLoading} />
-  <button type="submit" disabled={isLoading}>
-    {#if isLoading}Subscribing...{:else}Be part of the tribe{/if}
-  </button>
-</form>
-      </div>
-    </section>
+<!-- ========= NEWSLETTER SECTION ========= -->
+<section id="newsletter" class="content-section">
+  <h2>Newsletter</h2>
+  <div class="newsletter-box">
+    <p>If you want to be the first to hear about new releases, freebies, tour dates, personal stories and special announcements, I would be super-happy to have you aboard 💜</p>
+    
+    <!-- UPDATED: This form now uses the 'enhance' action for safe client-side handling -->
+    <form
+      class="newsletter-form"
+      method="POST"
+      id="newsletter-form"
+      use:enhance={() => {
+        isLoading = true; // Runs when the form is submitted
+        
+        // This 'applyAction' callback runs AFTER the server responds
+        return async ({ result, update }) => {
+          if (result.type === 'success') {
+            alert('Thank you for subscribing! Please check your email to confirm.');
+            document.getElementById('newsletter-form').reset();
+          } else if (result.type === 'failure' && result.data?.error) {
+            alert(result.data.error); // Show the specific error from the server
+          }
+          isLoading = false;
+          await update();
+        };
+      }}
+    >
+      <input name="email" type="email" placeholder="enter your e-mail" required={true} disabled={isLoading} />
+      <button type="submit" disabled={isLoading}>
+        {#if isLoading}Subscribing...{:else}Be part of the tribe{/if}
+      </button>
+    </form>
+  </div>
+</section>
   </main>
 
   <footer class="site-footer">
