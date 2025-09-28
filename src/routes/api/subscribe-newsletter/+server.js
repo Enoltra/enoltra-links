@@ -16,7 +16,6 @@ export async function POST({ request }) {
       `https://emailvalidation.abstractapi.com/v1/?api_key=${PRIVATE_EMAIL_VALIDATION_API_KEY}&email=${email}`
     );
     const validationData = await validationResponse.json();
-
     if (validationData.deliverability !== 'DELIVERABLE') {
       return json({ error: 'Invalid e-mail. Please enter a valid e-mail.' }, { status: 400 });
     }
@@ -30,7 +29,8 @@ export async function POST({ request }) {
       api_key: PRIVATE_EMAILOCTOPUS_API_KEY,
       email_address: email,
       tags: ["Newsletter"],
-      status: "SUBSCRIBED"
+      // UPDATED: This is the critical fix.
+      status: "PENDING"
     };
 
     const response = await fetch(

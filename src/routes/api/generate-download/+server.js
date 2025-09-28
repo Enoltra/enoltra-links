@@ -14,7 +14,7 @@ import {
   PRIVATE_EMAIL_VALIDATION_API_KEY
 } from '$env/static/private';
 
-const fileName = "N'SYNC - Bye Bye Bye (Enoltra Bootleg).wav";
+const fileName = 'NSYNC - Bye Bye Bye (Enoltra Bootleg).mp3';
 const songTitle = 'Bye Bye Bye (Enoltra Bootleg)';
 
 const S3 = new S3Client({
@@ -44,55 +44,33 @@ export async function POST({ request }) {
   }
 
   try {
-    // --- STEP 1: CREATE THE CONTACT WITH MINIMAL DATA ---
-    const createData = {
+    const command = new GetObjectCommand({ Bucket: PRIVATE_R2_BUCKET_NAME, Key: fileName });
+    const signedUrl = await getSignedUrl(S3, command, { expiresIn: 7 * 24 * 60 * 60 });
+
+    const apiData = {
       api_key: PRIVATE_EMAILOCTOPUS_API_KEY,
       email_address: email,
+      fields: { DownloadLink: signedUrl, SongName: songTitle },
       tags: ["Download Gate"],
-      status: "SUBSCRIBED"
+      // UPDATED: This is the critical fix.
+      status: "PENDING"
     };
 
-    const createResponse = await fetch(
+    const response = await fetch(
       `https://emailoctopus.com/api/1.6/lists/${PRIVATE_EMAILOCTOPUS_LIST_ID}/contacts`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(createData),
+        body: JSON.stringify(apiData),
       }
     );
 
-    if (!createResponse.ok) {
-      const errorData = await createResponse.json();
+    if (!response.ok) {
+      const errorData = await response.json();
       const errorMessage = errorData.error?.message || 'Could not subscribe. Please try again.';
       return json({ error: errorMessage }, { status: 400 });
     }
 
-    // --- STEP 2: GENERATE R2 LINK AND UPDATE THE CONTACT ---
-    const command = new GetObjectCommand({ Bucket: PRIVATE_R2_BUCKET_NAME, Key: fileName });
-    const signedUrl = await getSignedUrl(S3, command, { expiresIn: 7 * 24 * 60 * 60 });
-
-    const newContact = await createResponse.json();
-    const contactId = newContact.id; // Get the ID of the contact we just created
-
-    const updateData = {
-      api_key: PRIVATE_EMAILOCTOPUS_API_KEY,
-      fields: {
-        DownloadLink: signedUrl,
-        SongName: songTitle
-      }
-    };
-
-    // This makes a second API call to UPDATE the contact with the new fields
-    await fetch(
-      `https://emailoctopus.com/api/1.6/lists/${PRIVATE_EMAILOCTOPUS_LIST_ID}/contacts/${contactId}`,
-      {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData),
-      }
-    );
-
-    // Even if the update fails, the user is subscribed, so we return success.
     return json({ success: true });
 
   } catch (err) {
