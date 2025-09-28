@@ -2,7 +2,7 @@
   import emblaCarouselSvelte from 'embla-carousel-svelte';
   
   let emblaApi;
-  let isLoading = false;
+  let isLoading = false; // For newsletter form
 
   const emblaOptions = {
     loop: true,
@@ -22,6 +22,9 @@
     isLoading = true;
     const form = event.target;
     const email = new FormData(form).get('email');
+    
+    // Create a variable for a user-facing error message
+    let errorMessage = null;
 
     try {
       const response = await fetch('/api/subscribe-newsletter', {
@@ -33,14 +36,15 @@
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Subscription failed.');
+        // Use the specific error from the backend, or a fallback
+        throw new Error(data.error || 'Subscription failed. Please try again.');
       }
 
       alert('Thank you for subscribing! Please check your email to confirm.');
       form.reset();
 
     } catch (err) {
-      alert(err.message);
+      alert(err.message); // Show the specific error in an alert
     } finally {
       isLoading = false;
     }

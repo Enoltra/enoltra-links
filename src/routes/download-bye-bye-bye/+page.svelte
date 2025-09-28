@@ -1,16 +1,18 @@
 <script>
+  // ADDED: This is the missing line that fixes the error.
   import { slide, fade } from 'svelte/transition';
 
   let step = 1;
   let emailValue = '';
   let errorMessage = '';
-  let isLoading = false; // Changed from isDownloading for clarity
+  let isLoading = false;
 
   const emailRegex = /\S+@\S+\.\S+/;
 
-  // This function now calls the backend to subscribe the user
   async function handleEmailSubmit(event) {
     event.preventDefault();
+    if (isLoading) return;
+
     if (!emailRegex.test(emailValue)) {
       errorMessage = 'Please enter a valid email address.';
       return;
@@ -31,7 +33,6 @@
         throw new Error(data.error || 'An unknown error occurred.');
       }
       
-      // If successful, move to the final "Thank You" step
       step = 3;
 
     } catch (err) {
@@ -40,16 +41,19 @@
       isLoading = false;
     }
   }
-
-  </script>
+  
+  // This is the function for Step 2
+  function handleFollowClick(url) {
+    window.open(url, '_blank');
+    step = 3;
+  }
+</script>
 
 <svelte:head>
   <title>Download: Bye Bye Bye (Enoltra Bootleg)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@400;700&family=Dela+Gothic+One&display=swap" rel="stylesheet">
-  <link rel="icon" href="/favicon.ico" sizes="any" />
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 </svelte:head>
 
 <div class="gate-container">
@@ -62,7 +66,6 @@
     </header>
 
     <div class="interactive-area">
-      <!-- Step 1 is now the only interactive step -->
       {#if step === 1}
         <div class="gate-box">
           <p class="card-text">Please enter your e-mail to be able to receive all future free drops directly to your inbox :)</p>
@@ -70,7 +73,7 @@
         <form class="gate-form" on:submit={handleEmailSubmit}>
           <input type="email" placeholder="enter your e-mail" bind:value={emailValue} required={true} disabled={isLoading} />
           <button type="submit" disabled={isLoading}>
-            {#if isLoading}Submitting...{:else}Done!{/if}
+             {#if isLoading}Submitting...{:else}Done!{/if}
           </button>
           {#if errorMessage}
             <div class="error-popup" in:slide={{ duration: 300 }} out:fade={{ duration: 200 }}>
@@ -80,13 +83,22 @@
         </form>
       {/if}
 
-      <!-- Step 2 is removed, Step 3 is now the success message -->
-      {#if step === 3}
+      {#if step === 2}
         <div class="gate-box">
-          <p class="card-text">Thank you so much for completing the steps! The track should appear in your inbox any moment now 🥹</p>
+          <p class="card-text">To download this track, please select one channel to follow Enoltra on:</p>
         </div>
         <div class="gate-form">
-          <!-- This is now a link styled as a button -->
+          <button on:click={() => handleFollowClick('https://instagram.com/enoltralive')}>Instagram</button>
+          <button on:click={() => handleFollowClick('https://youtube.com/@enoltra')}>YouTube</button>
+          <button on:click={() => handleFollowClick('https://www.tiktok.com/@enoltra.live')}>TikTok</button>
+        </div>
+      {/if}
+
+      {#if step === 3}
+        <div class="gate-box">
+          <p class="card-text">Thank you so much! 🥹<br/>The free download has been sent to your e-mail.</p>
+        </div>
+        <div class="gate-form">
           <a href="/" class="button-link">Back to Home</a>
         </div>
       {/if}
@@ -178,11 +190,9 @@
     box-sizing: border-box;
     text-align: center;
   }
-  .button-link {
-    text-decoration: none;
-  }
+  .button-link { text-decoration: none; }
   .gate-form input::placeholder { color: rgba(255, 255, 255, 0.7); }
-  .gate-form button:hover, .button-link:hover {
+  .gate-form button:hover:not(:disabled), .button-link:hover {
     background-color: #fff;
     color: #A374F5;
   }
