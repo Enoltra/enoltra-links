@@ -10,10 +10,11 @@ import {
   PRIVATE_R2_SECRET_ACCESS_KEY,
   PRIVATE_R2_BUCKET_NAME,
   PRIVATE_EMAILOCTOPUS_API_KEY,
-  PRIVATE_EMAILOCTOPUS_LIST_ID
+  PRIVATE_EMAILOCTOPUS_LIST_ID,
+  PRIVATE_EMAIL_VALIDATION_API_KEY // Import the new key
 } from '$env/static/private';
 
-const fileName = 'NSYNC - Bye Bye Bye (Enoltra Bootleg).mp3';
+const fileName = "N'SYNC - Bye Bye Bye (Enoltra Bootleg).wav";
 const songTitle = 'Bye Bye Bye (Enoltra Bootleg)';
 
 const S3 = new S3Client({
@@ -29,6 +30,24 @@ export async function POST({ request }) {
   const { email } = await request.json();
   if (!email) { return json({ error: 'Email is required.' }, { status: 400 }); }
 
+  // --- STEP 1: VERIFY THE EMAIL WITH ABSTRACT API ---
+  try {
+    const validationResponse = await fetch(
+      `https://emailvalidation.abstractapi.com/v1/?api_key=${PRIVATE_EMAIL_VALIDATION_API_KEY}&email=${email}`
+    );
+    const validationData = await validationResponse.json();
+
+    // This is the key check. If the email is not deliverable, stop.
+    if (validationData.deliverability !== 'DELIVERABLE') {
+      // This is the specific error message you requested
+      return json({ error: 'Invalid e-mail. Please enter a valid e-mail.' }, { status: 400 });
+    }
+  } catch (err) {
+    console.error('Email Validation API Error:', err);
+    // If the validation service fails, we'll let the user subscribe to be safe.
+  }
+
+  // --- STEP 2: GENERATE R2 LINK & SUBSCRIBE TO EMAILOCTOPUS ---
   try {
     const command = new GetObjectCommand({ Bucket: PRIVATE_R2_BUCKET_NAME, Key: fileName });
     const signedUrl = await getSignedUrl(S3, command, { expiresIn: 7 * 24 * 60 * 60 });
@@ -52,19 +71,14 @@ export async function POST({ request }) {
 
     if (!response.ok) {
       const errorData = await response.json();
-      // UPDATED: More specific error checking
-      if (errorData?.error?.code === 'MEMBER_EXISTS_WITH_EMAIL_ADDRESS') {
-        return json({ error: 'This email is already on the list!' }, { status: 400 });
-      }
-      // For any other API error from EmailOctopus
-      return json({ error: 'Could not subscribe at this time. Please try again.' }, { status: 400 });
+      const errorMessage = errorData.error?.message || 'Could not subscribe. Please try again.';
+      return json({ error: errorMessage }, { status: 400 });
     }
 
     return json({ success: true });
 
   } catch (err) {
     console.error("Server Error:", err);
-    // This is for a total server failure (e.g., Vercel is down)
     return json({ error: 'A server error occurred. Please try again later.' }, { status: 500 });
   }
 }

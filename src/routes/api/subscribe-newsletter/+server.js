@@ -1,17 +1,36 @@
 // src/routes/api/subscribe-newsletter/+server.js
 
 import { json } from '@sveltejs/kit';
-import { PRIVATE_EMAILOCTOPUS_API_KEY, PRIVATE_EMAILOCTOPUS_LIST_ID } from '$env/static/private';
+import {
+  PRIVATE_EMAILOCTOPUS_API_KEY,
+  PRIVATE_EMAILOCTOPUS_LIST_ID,
+  PRIVATE_EMAIL_VALIDATION_API_KEY // Import the new key
+} from '$env/static/private';
 
 export async function POST({ request }) {
   const { email } = await request.json();
   if (!email) { return json({ error: 'Email is required.' }, { status: 400 }); }
 
+  // --- STEP 1: VERIFY THE EMAIL WITH ABSTRACT API ---
+  try {
+    const validationResponse = await fetch(
+      `https://emailvalidation.abstractapi.com/v1/?api_key=${PRIVATE_EMAIL_VALIDATION_API_KEY}&email=${email}`
+    );
+    const validationData = await validationResponse.json();
+
+    if (validationData.deliverability !== 'DELIVERABLE') {
+      // This is the specific error message you requested
+      return json({ error: 'Invalid e-mail. Please enter a valid e-mail.' }, { status: 400 });
+    }
+  } catch (err) {
+    console.error('Email Validation API Error:', err);
+  }
+
+  // --- STEP 2: SUBSCRIBE TO EMAILOCTOPUS ---
   try {
     const apiData = {
       api_key: PRIVATE_EMAILOCTOPUS_API_KEY,
       email_address: email,
-      // This payload correctly has ONLY the "Newsletter" tag
       tags: ["Newsletter"],
       status: "SUBSCRIBED"
     };
@@ -26,12 +45,14 @@ export async function POST({ request }) {
     );
 
     if (!response.ok) {
-      return json({ error: 'Could not subscribe. You may already be on the list.' }, { status: 400 });
+      const errorData = await response.json();
+      const errorMessage = errorData.error?.message || 'Could not subscribe. Please try again.';
+      return json({ error: errorMessage }, { status: 400 });
     }
 
     return json({ success: true });
 
   } catch (err) {
-    return json({ error: 'A server error occurred.' }, { status: 500 });
+    return json({ error: 'A server error occurred. Please try again later.' }, { status: 500 });
   }
 }
