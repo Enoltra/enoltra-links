@@ -1,43 +1,50 @@
-// src/routes/+page.server.js
+// src/routes/download-bye-bye-bye/+page.server.js
 
-import { json } from '@sveltejs/kit';
-import { PRIVATE_EMAILOCTOPUS_API_KEY, PRIVATE_EMAILOCTOPUS_LIST_ID } from '$env/static/private';
+import { fail } from '@sveltejs/kit'; // Import the SvelteKit error helper
+import { PRIVATE_EMAILOCTOPUS_API_KEY, PRIVATE_EMAILOCTOPUS_LIST_ID, PRIVATE_EMAIL_VALIDATION_API_KEY } from '$env/static/private';
 
 export const actions = {
+  // This 'default' action runs when the form is submitted
   default: async ({ request }) => {
     const formData = await request.formData();
     const email = formData.get('email');
 
     if (!email) {
-      return { success: false, error: 'Email is required.' };
+      return fail(400, { error: 'Email is required.' });
+    }
+
+    try {
+      const validationResponse = await fetch(`https://emailvalidation.abstractapi.com/v1/?api_key=${PRIVATE_EMAIL_VALIDATION_API_KEY}&email=${email}`);
+      const validationData = await validationResponse.json();
+      if (validationData.deliverability !== 'DELIVERABLE') {
+        return fail(400, { error: 'Invalid e-mail. Please enter a valid e-mail.' });
+      }
+    } catch (err) {
+      return fail(500, { error: 'Could not verify email at this time. Please try again later.' });
     }
 
     try {
       const apiData = {
         api_key: PRIVATE_EMAILOCTOPUS_API_KEY,
         email_address: email,
-        tags: ["Newsletter"],
-        status: "SUBSCRIBED"
+        tags: ["Download Gate"],
+        status: "PENDING"
       };
-
-      const response = await fetch(
-        `https://emailoctopus.com/api/1.6/lists/${PRIVATE_EMAILOCTOPUS_LIST_ID}/contacts`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(apiData),
-        }
-      );
+      const response = await fetch(`https://emailoctopus.com/api/1.6/lists/${PRIVATE_EMAILOCTOPUS_LIST_ID}/contacts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(apiData),
+      });
 
       if (!response.ok) {
-        return { success: false, error: 'Could not subscribe. You may already be on the list.' };
+        const errorData = await response.json();
+        return fail(400, { error: errorData.error?.message || 'Could not subscribe.' });
       }
 
+      // On success, return a success flag
       return { success: true };
-
     } catch (err) {
-      console.error(err);
-      return { success: false, error: 'A server error occurred.' };
+      return fail(500, { error: 'A server error occurred. Please try again later.' });
     }
   }
 };

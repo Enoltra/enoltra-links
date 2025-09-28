@@ -24,24 +24,20 @@
     const email = new FormData(form).get('email');
 
     try {
-      const response = await fetch('/api/subscribe-newsletter', {
+      // "Fire-and-forget" the API call. We don't wait for a response.
+      fetch('/api/subscribe-newsletter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        // Use the specific error from the backend, or a fallback
-        throw new Error(data.error || 'Subscription failed. Please try again.');
-      }
-
+      // Immediately show success to the user.
       alert('Thank you for subscribing! Please check your email to confirm.');
       form.reset();
 
     } catch (err) {
-      alert(err.message); // Show the specific error in an alert
+      // This will only catch an immediate network error, like being offline.
+      alert('A network error occurred. Please check your connection.');
     } finally {
       isLoading = false;
     }
