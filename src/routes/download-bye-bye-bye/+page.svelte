@@ -114,8 +114,8 @@
     pointer-events: none;
     z-index: 2;
   }
-  .deco-shape-1 { bottom: 0; left: 0; max-width: 45%; height: auto; }
-  .deco-shape-2 { top: 0; right: 0; max-width: 35%; height: auto; }
+  .deco-shape-1 { bottom: 0; left: 0; max-width: 20%; height: auto; }
+  .deco-shape-2 { top: 0; right: 0; max-width: 25%; height: auto; }
   .gate-header { text-align: center; color: #fff; }
   .main-title {
     font-family: 'Dela Gothic One', sans-serif;
