@@ -1,18 +1,17 @@
+// src/routes/api/subscribe-newsletter/+server.js
+
 import { json } from '@sveltejs/kit';
 import { PRIVATE_EMAILOCTOPUS_API_KEY, PRIVATE_EMAILOCTOPUS_LIST_ID } from '$env/static/private';
 
 export async function POST({ request }) {
   const { email } = await request.json();
-
-  if (!email) {
-    return json({ error: 'Email is required.' }, { status: 400 });
-  }
+  if (!email) { return json({ error: 'Email is required.' }, { status: 400 }); }
 
   try {
     const apiData = {
       api_key: PRIVATE_EMAILOCTOPUS_API_KEY,
       email_address: email,
-      // ADDED: This tags the contact as a newsletter subscriber
+      // This payload correctly has ONLY the "Newsletter" tag
       tags: ["Newsletter"],
       status: "SUBSCRIBED"
     };

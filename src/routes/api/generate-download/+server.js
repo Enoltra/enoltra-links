@@ -1,4 +1,4 @@
-// src/routes/api/generate-download/+server.js - This is the corrected version.
+// src/routes/api/generate-download/+server.js
 
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
@@ -25,10 +25,8 @@ const S3 = new S3Client({
   },
 });
 
-// UPDATED: The function is now exported directly, not inside an 'actions' object.
 export async function POST({ request }) {
   const { email } = await request.json();
-
   if (!email) { return json({ error: 'Email is required.' }, { status: 400 }); }
 
   try {
@@ -52,12 +50,21 @@ export async function POST({ request }) {
       }
     );
 
-    if (!response.ok) { return json({ error: 'Could not subscribe. You may already be on the list.' }, { status: 400 }); }
+    if (!response.ok) {
+      const errorData = await response.json();
+      // UPDATED: More specific error checking
+      if (errorData?.error?.code === 'MEMBER_EXISTS_WITH_EMAIL_ADDRESS') {
+        return json({ error: 'This email is already on the list!' }, { status: 400 });
+      }
+      // For any other API error from EmailOctopus
+      return json({ error: 'Could not subscribe at this time. Please try again.' }, { status: 400 });
+    }
 
     return json({ success: true });
 
   } catch (err) {
     console.error("Server Error:", err);
-    return json({ error: 'A server error occurred.' }, { status: 500 });
+    // This is for a total server failure (e.g., Vercel is down)
+    return json({ error: 'A server error occurred. Please try again later.' }, { status: 500 });
   }
 }
