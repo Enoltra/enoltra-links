@@ -41,7 +41,6 @@ export async function POST({ request }) {
     }
   } catch (err) {
     console.error('Email Validation API Error:', err);
-    // UPDATED: This now correctly stops execution if the validation service fails.
     return json({ error: 'Could not verify email at this time. Please try again later.' }, { status: 500 });
   }
 

@@ -4,14 +4,13 @@ import { json } from '@sveltejs/kit';
 import {
   PRIVATE_EMAILOCTOPUS_API_KEY,
   PRIVATE_EMAILOCTOPUS_LIST_ID,
-  PRIVATE_EMAIL_VALIDATION_API_KEY // Import the new key
+  PRIVATE_EMAIL_VALIDATION_API_KEY
 } from '$env/static/private';
 
 export async function POST({ request }) {
   const { email } = await request.json();
   if (!email) { return json({ error: 'Email is required.' }, { status: 400 }); }
 
-  // --- STEP 1: VERIFY THE EMAIL WITH ABSTRACT API ---
   try {
     const validationResponse = await fetch(
       `https://emailvalidation.abstractapi.com/v1/?api_key=${PRIVATE_EMAIL_VALIDATION_API_KEY}&email=${email}`
@@ -19,14 +18,13 @@ export async function POST({ request }) {
     const validationData = await validationResponse.json();
 
     if (validationData.deliverability !== 'DELIVERABLE') {
-      // This is the specific error message you requested
       return json({ error: 'Invalid e-mail. Please enter a valid e-mail.' }, { status: 400 });
     }
   } catch (err) {
     console.error('Email Validation API Error:', err);
+    return json({ error: 'Could not verify email at this time. Please try again later.' }, { status: 500 });
   }
 
-  // --- STEP 2: SUBSCRIBE TO EMAILOCTOPUS ---
   try {
     const apiData = {
       api_key: PRIVATE_EMAILOCTOPUS_API_KEY,
