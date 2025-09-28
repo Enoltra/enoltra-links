@@ -11,7 +11,7 @@ import {
   PRIVATE_R2_BUCKET_NAME,
   PRIVATE_EMAILOCTOPUS_API_KEY,
   PRIVATE_EMAILOCTOPUS_LIST_ID,
-  PRIVATE_EMAIL_VALIDATION_API_KEY // Import the new key
+  PRIVATE_EMAIL_VALIDATION_API_KEY
 } from '$env/static/private';
 
 const fileName = "N'SYNC - Bye Bye Bye (Enoltra Bootleg).wav";
@@ -30,24 +30,21 @@ export async function POST({ request }) {
   const { email } = await request.json();
   if (!email) { return json({ error: 'Email is required.' }, { status: 400 }); }
 
-  // --- STEP 1: VERIFY THE EMAIL WITH ABSTRACT API ---
   try {
     const validationResponse = await fetch(
       `https://emailvalidation.abstractapi.com/v1/?api_key=${PRIVATE_EMAIL_VALIDATION_API_KEY}&email=${email}`
     );
     const validationData = await validationResponse.json();
 
-    // This is the key check. If the email is not deliverable, stop.
     if (validationData.deliverability !== 'DELIVERABLE') {
-      // This is the specific error message you requested
       return json({ error: 'Invalid e-mail. Please enter a valid e-mail.' }, { status: 400 });
     }
   } catch (err) {
     console.error('Email Validation API Error:', err);
-    // If the validation service fails, we'll let the user subscribe to be safe.
+    // UPDATED: This now correctly stops execution if the validation service fails.
+    return json({ error: 'Could not verify email at this time. Please try again later.' }, { status: 500 });
   }
 
-  // --- STEP 2: GENERATE R2 LINK & SUBSCRIBE TO EMAILOCTOPUS ---
   try {
     const command = new GetObjectCommand({ Bucket: PRIVATE_R2_BUCKET_NAME, Key: fileName });
     const signedUrl = await getSignedUrl(S3, command, { expiresIn: 7 * 24 * 60 * 60 });
