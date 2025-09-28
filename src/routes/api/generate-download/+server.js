@@ -1,61 +1,20 @@
-// src/routes/api/generate-download/+server.js
+// src/routes/api/generate-download/+server.js (Minimalist Test Version)
 
-import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { json } from '@sveltejs/kit';
-
-import {
-  PRIVATE_R2_ACCOUNT_ID,
-  PRIVATE_R2_ACCESS_KEY_ID,
-  PRIVATE_R2_SECRET_ACCESS_KEY,
-  PRIVATE_R2_BUCKET_NAME,
-  PRIVATE_EMAILOCTOPUS_API_KEY,
-  PRIVATE_EMAILOCTOPUS_LIST_ID,
-  PRIVATE_EMAIL_VALIDATION_API_KEY
-} from '$env/static/private';
-
-const fileName = 'NSYNC - Bye Bye Bye (Enoltra Bootleg).mp3';
-const songTitle = 'Bye Bye Bye (Enoltra Bootleg)';
-
-const S3 = new S3Client({
-  region: 'auto',
-  endpoint: `https://${PRIVATE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-  credentials: {
-    accessKeyId: PRIVATE_R2_ACCESS_KEY_ID,
-    secretAccessKey: PRIVATE_R2_SECRET_ACCESS_KEY,
-  },
-});
+import { PRIVATE_EMAILOCTOPUS_API_KEY, PRIVATE_EMAILOCTOPUS_LIST_ID } from '$env/static/private';
 
 export async function POST({ request }) {
   const { email } = await request.json();
   if (!email) { return json({ error: 'Email is required.' }, { status: 400 }); }
 
-  try {
-    const validationResponse = await fetch(
-      `https://emailvalidation.abstractapi.com/v1/?api_key=${PRIVATE_EMAIL_VALIDATION_API_KEY}&email=${email}`
-    );
-    const validationData = await validationResponse.json();
-    if (validationData.deliverability !== 'DELIVERABLE') {
-      return json({ error: 'Invalid e-mail. Please enter a valid e-mail.' }, { status: 400 });
-    }
-  } catch (err) {
-    console.error('Email Validation API Error:', err);
-    return json({ error: 'Could not verify email at this time. Please try again later.' }, { status: 500 });
-  }
+  // This is the absolute minimum data required by the EmailOctopus API.
+  // We have removed all other fields (tags, custom fields, status) for this test.
+  const apiData = {
+    api_key: PRIVATE_EMAILOCTOPUS_API_KEY,
+    email_address: email,
+  };
 
   try {
-    const command = new GetObjectCommand({ Bucket: PRIVATE_R2_BUCKET_NAME, Key: fileName });
-    const signedUrl = await getSignedUrl(S3, command, { expiresIn: 7 * 24 * 60 * 60 });
-
-    const apiData = {
-      api_key: PRIVATE_EMAILOCTOPUS_API_KEY,
-      email_address: email,
-      fields: { DownloadLink: signedUrl, SongName: songTitle },
-      tags: ["Download Gate"],
-      // UPDATED: This is the critical fix.
-      status: "PENDING"
-    };
-
     const response = await fetch(
       `https://emailoctopus.com/api/1.6/lists/${PRIVATE_EMAILOCTOPUS_LIST_ID}/contacts`,
       {
@@ -65,16 +24,20 @@ export async function POST({ request }) {
       }
     );
 
+    // If this call fails, we will now get the REAL error message from the API.
     if (!response.ok) {
       const errorData = await response.json();
-      const errorMessage = errorData.error?.message || 'Could not subscribe. Please try again.';
+      // This will show the true error in your Vercel logs and on the frontend.
+      console.error('EmailOctopus Minimalist API Error:', errorData); 
+      const errorMessage = errorData.error?.message || 'A new error occurred. Please check the logs.';
       return json({ error: errorMessage }, { status: 400 });
     }
 
+    // If it succeeds, we know the core connection is working.
     return json({ success: true });
 
   } catch (err) {
     console.error("Server Error:", err);
-    return json({ error: 'A server error occurred. Please try again later.' }, { status: 500 });
+    return json({ error: 'A server-level error occurred. Please check the Vercel logs.' }, { status: 500 });
   }
 }
