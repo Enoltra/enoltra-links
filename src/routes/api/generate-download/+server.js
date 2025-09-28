@@ -1,4 +1,4 @@
-// src/routes/api/generate-download/+server.js (Minimalist Test Version)
+// src/routes/api/generate-download/+server.js (Robust Error Handling Version)
 
 import { json } from '@sveltejs/kit';
 import { PRIVATE_EMAILOCTOPUS_API_KEY, PRIVATE_EMAILOCTOPUS_LIST_ID } from '$env/static/private';
@@ -7,8 +7,6 @@ export async function POST({ request }) {
   const { email } = await request.json();
   if (!email) { return json({ error: 'Email is required.' }, { status: 400 }); }
 
-  // This is the absolute minimum data required by the EmailOctopus API.
-  // We have removed all other fields (tags, custom fields, status) for this test.
   const apiData = {
     api_key: PRIVATE_EMAILOCTOPUS_API_KEY,
     email_address: email,
@@ -19,17 +17,26 @@ export async function POST({ request }) {
       `https://emailoctopus.com/api/1.6/lists/${PRIVATE_EMAILOCTOPUS_LIST_ID}/contacts`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          // ADDED: A standard User-Agent header as a creative "just-in-case" fix
+          'User-Agent': 'EnoltraWebsite/1.0',
+        },
         body: JSON.stringify(apiData),
       }
     );
 
-    // If this call fails, we will now get the REAL error message from the API.
+    // This is the new, robust error handling
     if (!response.ok) {
-      const errorData = await response.json();
-      // This will show the true error in your Vercel logs and on the frontend.
-      console.error('EmailOctopus Minimalist API Error:', errorData); 
-      const errorMessage = errorData.error?.message || 'A new error occurred. Please check the logs.';
+      // We will now read the error as plain text, which will never fail.
+      const rawErrorText = await response.text();
+      
+      // This will now DEFINITIVELY show up in your Vercel logs.
+      console.error('EmailOctopus Raw Error Response:', rawErrorText);
+      
+      // We will send this raw, useful error back to the user's screen.
+      // It might say "API_KEY_INVALID" or something else specific.
+      const errorMessage = rawErrorText || 'Could not subscribe. Please check the logs.';
       return json({ error: errorMessage }, { status: 400 });
     }
 
@@ -37,7 +44,8 @@ export async function POST({ request }) {
     return json({ success: true });
 
   } catch (err) {
-    console.error("Server Error:", err);
-    return json({ error: 'A server-level error occurred. Please check the Vercel logs.' }, { status: 500 });
+    // This catches network-level errors (e.g., Vercel can't reach the internet)
+    console.error("Server Network Error:", err);
+    return json({ error: 'A network error occurred. Please try again later.' }, { status: 500 });
   }
 }
