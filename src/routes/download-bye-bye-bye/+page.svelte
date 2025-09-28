@@ -85,7 +85,6 @@
   :global(body) {
     background-color: #2B2FC6;
   }
-
   .gate-container {
     width: 100%;
     min-height: 100vh;
@@ -99,7 +98,6 @@
     padding: 28px;
     box-sizing: border-box;
   }
-
   .content-wrapper {
     width: 100%;
     max-width: 420px;
@@ -107,55 +105,35 @@
     max-height: 800px;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
     z-index: 1;
   }
-
   .deco-shape-1, .deco-shape-2 {
     position: fixed;
     pointer-events: none;
     z-index: 2;
   }
-  .deco-shape-1 {
-    bottom: 0;
-    left: 0;
-    max-width: 45%; 
-    height: auto;
-  }
-  .deco-shape-2 {
-    top: 0;
-    right: 0;
-    max-width: 35%; 
-    height: auto;
-  }
-
-  .gate-header {
-    text-align: center;
-    color: #fff;
-  }
+  .deco-shape-1 { bottom: 0; left: 0; max-width: 45%; height: auto; }
+  .deco-shape-2 { top: 0; right: 0; max-width: 35%; height: auto; }
+  .gate-header { text-align: center; color: #fff; }
   .main-title {
     font-family: 'Dela Gothic One', sans-serif;
     font-size: 2.6rem;
     font-weight: 400;
     text-transform: none;
     margin-top: -1rem;
+    margin-bottom: 2rem;
     line-height: 1.2;
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
   }
-  
-  .interactive-area {
-      width: 100%;
-  }
-
+  .interactive-area { width: 100%; }
   .gate-box {
     background-color: rgba(163, 116, 245, 0.8);
     padding: 24px;
     width: 100%;
-    margin-top: 2rem;
     text-align: center;
   }
-
   .card-text {
     color: #fff;
     font-family: 'Darker Grotesque', sans-serif;
@@ -164,17 +142,14 @@
     line-height: 1;
     margin: 0;
   }
-
   .gate-form {
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: 10px;
     margin-top: 4rem;
-    margin-bottom: -4rem;
     position: relative;
   }
-
   .gate-form input, .gate-form button, .button-link {
     width: 100%;
     padding: 12px 16px;
@@ -189,36 +164,14 @@
     transition: all 0.2s;
     box-sizing: border-box;
     text-align: center;
-    text-decoration: none;
   }
-
-  .gate-form input::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-  }
-
-  .gate-form button:hover, .button-link:hover {
+  .button-link { text-decoration: none; }
+  .gate-form input::placeholder { color: rgba(255, 255, 255, 0.7); }
+  .gate-form button:hover:not(:disabled), .button-link:hover {
     background-color: #fff;
     color: #A374F5;
   }
-
-  .step2-wrapper {
-    position: relative;
-    padding-bottom: 3rem;
-  }
-
-  .download-prompt {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    background: none;
-    border: none;
-    color: #fff;
-    font-family: 'Dela Gothic One', sans-serif;
-    font-size: 1rem;
-    cursor: pointer;
-    padding: 0;
-  }
-  
+  .gate-form button:disabled { opacity: 0.6; cursor: wait; }
   .error-popup {
     position: absolute;
     top: 100%;
@@ -236,7 +189,6 @@
     white-space: nowrap;
     z-index: 10;
   }
-
   .error-popup::before {
     content: '';
     position: absolute;
