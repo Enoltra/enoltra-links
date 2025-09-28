@@ -1,10 +1,8 @@
 <script>
   import emblaCarouselSvelte from 'embla-carousel-svelte';
-  // UPDATED: Import the SvelteKit form action enhancer
-  import { enhance } from '$app/forms';
-
+  
   let emblaApi;
-  let isLoading = false; // To disable the form during submission
+  let isLoading = false;
 
   const emblaOptions = {
     loop: true,
@@ -14,6 +12,39 @@
   /** @param {any} event */
   function onEmblaInit(event) {
     emblaApi = event.detail;
+  }
+
+  /** @param {any} event */
+  async function handleNewsletterSubmit(event) {
+    event.preventDefault();
+    if (isLoading) return;
+
+    isLoading = true;
+    const form = event.target;
+    const email = new FormData(form).get('email');
+
+    try {
+      const response = await fetch('/api/subscribe-newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Use the specific error from the backend, or a fallback
+        throw new Error(data.error || 'Subscription failed. Please try again.');
+      }
+
+      alert('Thank you for subscribing! Please check your email to confirm.');
+      form.reset();
+
+    } catch (err) {
+      alert(err.message); // Show the specific error in an alert
+    } finally {
+      isLoading = false;
+    }
   }
 </script>
 
@@ -97,27 +128,8 @@
   <div class="newsletter-box">
     <p>If you want to be the first to hear about new releases, freebies, tour dates, personal stories and special announcements, I would be super-happy to have you aboard 💜</p>
     
-    <!-- UPDATED: This form now uses the 'enhance' action for safe client-side handling -->
-    <form
-      class="newsletter-form"
-      method="POST"
-      id="newsletter-form"
-      use:enhance={() => {
-        isLoading = true; // Runs when the form is submitted
-        
-        // This 'applyAction' callback runs AFTER the server responds
-        return async ({ result, update }) => {
-          if (result.type === 'success') {
-            alert('Thank you for subscribing! Please check your email to confirm.');
-            document.getElementById('newsletter-form').reset();
-          } else if (result.type === 'failure' && result.data?.error) {
-            alert(result.data.error); // Show the specific error from the server
-          }
-          isLoading = false;
-          await update();
-        };
-      }}
-    >
+    <!-- UPDATED: This form is now correctly linked to your JavaScript -->
+    <form class="newsletter-form" on:submit={handleNewsletterSubmit}>
       <input name="email" type="email" placeholder="enter your e-mail" required={true} disabled={isLoading} />
       <button type="submit" disabled={isLoading}>
         {#if isLoading}Subscribing...{:else}Be part of the tribe{/if}
