@@ -1,9 +1,8 @@
 <script>
   import emblaCarouselSvelte from 'embla-carousel-svelte';
-  // This special 'form' prop receives the result from your server action
-  export let form;
-
+  
   let emblaApi;
+  let isLoading = false;
 
   const emblaOptions = {
     loop: true,
@@ -15,12 +14,35 @@
     emblaApi = event.detail;
   }
 
-  // This reactive statement will show an alert when the form is successfully submitted
-  $: if (form?.success) {
-    alert(form.message || 'Thank you for subscribing!');
-    // This is a common way to reset the form visually after success
-    if (document.getElementById('newsletter-form')) {
-      document.getElementById('newsletter-form').reset();
+  /** @param {any} event */
+  async function handleNewsletterSubmit(event) {
+    event.preventDefault();
+    if (isLoading) return;
+
+    isLoading = true;
+    const form = event.target;
+    const email = new FormData(form).get('email');
+
+    try {
+      const response = await fetch('/api/subscribe-newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Subscription failed.');
+      }
+
+      alert('Thank you for subscribing! Please check your email to confirm.');
+      form.reset();
+
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      isLoading = false;
     }
   }
 </script>
@@ -59,13 +81,11 @@
   </header>
 
   <main class="content-wrapper">
-    <!-- ========= RELEASES SECTION ========= -->
     <section class="link-section">
       <div class="link-card"><img src="/release-new-chapter.webp" alt="New Chapter" class="card-image"/> <div class="card-content"><h3>New Chapter (Coming soon!)</h3> <p>Enoltra</p> <a href="#newsletter" class="button-outline">Get Notified</a></div></div>
       <div class="link-card"><img src="/release3.webp" alt="M.I.A. Remix" class="card-image"/> <div class="card-content"><h3>M.I.A. (Enoltra Remix)</h3> <p>Enoltra</p> <a href="https://enoltralive.bandcamp.com/track/box-of-beats-mia-enoltra-remix" target="_blank" rel="noopener noreferrer" class="button-outline">Get on Bandcamp</a></div></div>
     </section>
 
-    <!-- ========= YOUTUBE SETS SECTION ========= -->
     <section id="youtube" class="content-section">
       <h2>YouTube Sets</h2>
       <div class="embla" use:emblaCarouselSvelte={emblaOptions} on:emblaInit={onEmblaInit}>
@@ -84,38 +104,32 @@
       </div>
     </section>
 
-<!-- ========= FREE DOWNLOADS SECTION ========= -->
-<section id="downloads" class="content-section">
-  <h2>Free Downloads</h2>
-  <div class="link-card">
-    <img src="/release2.webp" alt="Bye Bye Bye Bootleg" class="card-image"/>
-    <div class="card-content">
-      <h3>Bye Bye Bye (Enoltra Bootleg)</h3>
-      <p>N'Sync</p>
-      <!-- This link now points to your new download gate page -->
-      <a href="/download-bye-bye-bye" class="button-outline">Free Download</a>
-    </div>
-  </div>
-</section>
+    <section id="downloads" class="content-section">
+      <h2>Free Downloads</h2>
+      <div class="link-card">
+        <img src="/release2.webp" alt="Bye Bye Bye Bootleg" class="card-image"/>
+        <div class="card-content">
+          <h3>Bye Bye Bye (Enoltra Bootleg)</h3>
+          <p>N'Sync</p>
+          <a href="/download-bye-bye-bye" class="button-outline">Free Download</a>
+        </div>
+      </div>
+    </section>
 
-<!-- ========= NEWSLETTER SECTION ========= -->
-<section id="newsletter" class="content-section">
-  <h2>Newsletter</h2>
-  <div class="newsletter-box">
-    <p>If you want to be the first to hear about new releases, freebies, tour dates, personal stories and special announcements, I would be super-happy to have you aboard 💜</p>
-    
-    <!-- UPDATED: This form now submits to the backend -->
-    <form class="newsletter-form" method="POST" id="newsletter-form">
-      <input name="email" type="email" placeholder="enter your e-mail" required={true} />
-      <button type="submit">Be part of the tribe</button>
-    </form>
-
-    <!-- This will display any error message from the server -->
-    {#if form?.error}
-      <p class="error-message">{form.error}</p>
-    {/if}
-  </div>
-</section>
+    <section id="newsletter" class="content-section">
+      <h2>Newsletter</h2>
+      <div class="newsletter-box">
+        <p>If you want to be the first to hear about new releases, freebies, tour dates, personal stories and special announcements, I would be super-happy to have you aboard 💜</p>
+        
+        <!-- UPDATED: This form is now correctly linked to your script -->
+        <form class="newsletter-form" on:submit={handleNewsletterSubmit}>
+          <input name="email" type="email" placeholder="enter your e-mail" required={true} disabled={isLoading} />
+          <button type="submit" disabled={isLoading}>
+            {#if isLoading}Subscribing...{:else}Be part of the tribe{/if}
+          </button>
+        </form>
+      </div>
+    </section>
   </main>
 
   <footer class="site-footer">
@@ -124,185 +138,44 @@
 </div>
 
 <style>
-  /* UPDATED: Universal box-sizing for predictable layouts */
-  :global(*, *::before, *::after) {
-    box-sizing: border-box;
-  }
-
-  .mobile-container {
-    max-width: 500px;
-    margin: 0 auto;
-    background-color: #2B2FC6;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-  .content-wrapper {
-    padding: 0 5%;
-    flex-grow: 1;
-    position: relative;
-    z-index: 2;
-  }
-  
-  .deco-planet, .deco-chrome, .deco-rose {
-    position: absolute;
-    pointer-events: none;
-  }
-  .deco-planet {
-    top: 0;
-    left: 0;
-    width: 40%;
-    z-index: 3;
-  }
-  .deco-chrome {
-    top: 0;
-    right: 0;
-    width: 30%;
-    z-index: 3;
-  }
-  .deco-rose {
-    bottom: 0px;
-    right: 0;
-    width: 40%;
-    z-index: 3;
-  }
-
-  .hero {
-    position: relative;
-    width: 100%;
-    z-index: 1;
-  }
-  .hero-image {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-  .hero-content {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: linear-gradient(180deg, rgba(43, 47, 198, 0) 0%, #2B2FC6 100%);
-    padding-top: 60px;
-    z-index: 2;
-  }
-  .logo { display: block; width: 80%; max-width: 280px; margin: 0 auto 12px auto; }
+  :global(*, *::before, *::after) { box-sizing: border-box; }
+  .mobile-container { max-width: 500px; margin: 0 auto; background-color: #2B2FC6; position: relative; display: flex; flex-direction: column; min-height: 100vh; }
+  .content-wrapper { padding: 0 5%; flex-grow: 1; position: relative; z-index: 2; }
+  .deco-planet, .deco-chrome, .deco-rose { position: absolute; pointer-events: none; }
+  .deco-planet { top: 0; left: 0; width: 40%; z-index: 3; }
+  .deco-chrome { top: 0; right: 0; width: 30%; z-index: 3; }
+  .deco-rose { bottom: 0px; right: 0; width: 40%; z-index: 3; }
+  .hero { position: relative; width: 100%; z-index: 1; }
+  .hero-image { display: block; width: 100%; height: auto; }
+  .hero-content { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(180deg, rgba(43, 47, 198, 0) 0%, #2B2FC6 100%); padding-top: 60px; z-index: 2; }
+  .logo { display: block; width: 75%; max-width: 280px; margin: 0 auto 12px auto; }
   .social-links { display: flex; justify-content: center; align-items: center; gap: 18px; margin-bottom: 18px; }
-  .social-links img { height: 21px; transition: transform 0.2s; }
+  .social-links img { height: 16px; transition: transform 0.2s; }
   .social-links a:hover img { transform: scale(1.1); }
   .anchor-nav { display: flex; justify-content: center; gap: 18px; padding-bottom: 12px; }
   .anchor-nav a { color: #C1FF72; text-decoration: none; font-family: 'Dela Gothic One', sans-serif; font-size: 0.75rem; font-weight: 400; }
   .link-section { margin-top: 28px; }
-  
-  .link-card {
-    background-color: #A374F5;
-    border-radius: 0;
-    padding: 3%;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
-  }
+  .link-card { background-color: #A374F5; border-radius: 0; padding: 3%; display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
   .card-image { width: 20%; height: 20%; object-fit: cover; border-radius: 0; flex-shrink: 0; }
-  
-  .card-content {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    height: 100%;
-  }
-  .card-content h3 {
-    font-family: 'Dela Gothic One', sans-serif;
-    font-weight: 400;
-    font-size: 1.2rem;
-    margin: 0;
-    color: #fff;
-    text-transform: none;
-  }
-  .card-content p {
-    font-size: 1rem;
-    margin: 4px 0 6px 0 ;
-    color: rgba(255, 255, 255, 0.8);
-  }
-  .button-outline {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2px 16px;
-    border-radius: 999px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.8rem;
-    background-color: transparent;
-    color: #fff;
-    border: 1px solid #fff;
-    transition: all 0.2s;
-  }
+  .card-content { width: 100%; display: flex; flex-direction: column; align-items: flex-start; height: 100%; }
+  .card-content h3 { font-family: 'Dela Gothic One', sans-serif; font-weight: 400; font-size: 1.2rem; margin: 0; color: #fff; text-transform: none; }
+  .card-content p { font-size: 1rem; margin: 4px 0 6px 0 ; color: rgba(255, 255, 255, 0.8); }
+  .button-outline { display: inline-flex; align-items: center; justify-content: center; padding: 2px 16px; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 0.8rem; background-color: transparent; color: #fff; border: 1px solid #fff; transition: all 0.2s; }
   .button-outline:hover { background-color: #fff; color: #A374F5; }
   .content-section { padding: 1.5rem 0; }
-  .content-section h2 {
-    font-size: 2rem;
-    text-align: left;
-    margin-bottom: 1rem;
-    opacity: 0.4;
-    text-transform: none;
-  }
+  .content-section h2 { font-size: 2rem; text-align: left; margin-bottom: 1rem; opacity: 0.4; text-transform: none; }
   .embla { overflow: hidden; margin: 0 -10px; }
   .embla__container { display: flex; }
   .embla__slide { position: relative; flex: 0 0 82%; padding: 0 10px; }
   .video-wrapper { position: relative; padding-top: 56.25%; height: 0; border-radius: 0; overflow: hidden; }
   .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-  
-  .newsletter-box {
-    background-color: #fff;
-    border-radius: 0;
-    padding: 20px;
-    text-align: left;
-  }
+  .newsletter-box { background-color: #fff; border-radius: 0; padding: 20px; text-align: left; }
   .newsletter-box p { margin: 0 0 16px 0; line-height: 1.5; font-size: 0.9rem; color: #333; }
   .newsletter-form { display: flex; flex-direction: column; gap: 10px; }
-  .newsletter-form input {
-    width: 100%;
-    padding: 10px 14px;
-    border-radius: 999px;
-    border: 1px solid #A374F5;
-    font-size: 0.9rem;
-    background: transparent;
-    color: #333;
-  }
+  .newsletter-form input { width: 100%; padding: 10px 14px; border-radius: 999px; border: 1px solid #A374F5; font-size: 0.9rem; background: transparent; color: #333; }
   .newsletter-form input::placeholder { color: #A374F5; opacity: 0.7; }
-  .newsletter-form button {
-    padding: 10px 14px;
-    border: 1px solid #000;
-    border-radius: 999px;
-    background: transparent;
-    color: #000;
-    font-weight: 700;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
+  .newsletter-form button { padding: 10px 14px; border: 1px solid #000; border-radius: 999px; background: transparent; color: #000; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; }
   .newsletter-form button:hover { background-color: #000; color: #fff; }
-  
-  /* UPDATED: Footer layout */
-  .site-footer {
-    padding: 1 rem 0;
-    text-align: center;
-    font-size: 0.8rem;
-    position: relative;
-    z-index: 5;
-    margin-top: 1rem; /* Pushes footer to the bottom */
-  }
+  .site-footer { padding: 1rem 0; text-align: center; font-size: 0.8rem; position: relative; z-index: 5; margin-top: 1rem; }
   .site-footer p { color: #C1FF72; opacity: 0.8; }
-
-    .error-message {
-    color: #d9534f; /* A standard error red */
-    font-family: 'Darker Grotesque', sans-serif;
-    font-weight: 700;
-    margin-top: 10px;
-    text-align: center;
-  }
-
 </style>
