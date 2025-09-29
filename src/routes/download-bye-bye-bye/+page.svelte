@@ -1,19 +1,18 @@
 <script>
   import { slide, fade } from 'svelte/transition';
   import { enhance } from '$app/forms';
-  export let form; // This prop receives the result from the server action
+  export let form;
 
-  // This reactive statement will automatically update the step when the form is successful
   $: step = form?.success ? 2 : 1;
   let hasFollowed = false;
 
-  // This function is now only for the follow buttons
+  // UPDATED: This function now correctly sets the flag to show the button
   function handleFollowClick(url) {
     window.open(url, '_blank');
-    hasFollowed = true; // This will show the final confirmation
+    hasFollowed = true;
   }
   
-  // This function now just goes to the final step
+  // UPDATED: This function is called by the new "To Download" button
   function goToDownloadStep() {
       step = 3;
   }
@@ -61,9 +60,10 @@
           <button on:click={() => handleFollowClick('https://youtube.com/@enoltra')}>YouTube</button>
           <button on:click={() => handleFollowClick('https://www.tiktok.com/@enoltralive')}>TikTok</button>
         </div>
+        <!-- UPDATED: This now correctly shows and positions the button -->
         {#if hasFollowed}
           <button class="download-prompt" on:click={goToDownloadStep}>
-            To Download &rarr;
+            Finish &rarr;
           </button>
         {/if}
        </div>
@@ -71,7 +71,7 @@
 
       {#if step === 3}
         <div class="gate-box">
-          <p class="card-text">Success! ✅<br/>Please check your inbox to confirm and get your download.</p>
+          <p class="card-text">Success! ✅<br/>Please check your inbox to confirm and get your download. If you don't see the e-mail, check your Spam folder :)</p>
         </div>
         <div class="gate-form">
           <a href="/" class="button-link">Back to Home</a>
@@ -105,7 +105,7 @@
     max-height: 800px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
     z-index: 1;
   }
@@ -114,24 +114,39 @@
     pointer-events: none;
     z-index: 2;
   }
-  .deco-shape-1 { bottom: 0; left: 0; max-width: 20%; height: auto; }
-  .deco-shape-2 { top: 0; right: 0; max-width: 25%; height: auto; }
-  .gate-header { text-align: center; color: #fff; }
+  .deco-shape-1 {
+    bottom: 0;
+    left: 0;
+    max-width: 45%; 
+    height: auto;
+  }
+  .deco-shape-2 {
+    top: 0;
+    right: 0;
+    max-width: 35%; 
+    height: auto;
+  }
+  .gate-header {
+    text-align: center;
+    color: #fff;
+  }
   .main-title {
     font-family: 'Dela Gothic One', sans-serif;
     font-size: 2.6rem;
     font-weight: 400;
     text-transform: none;
     margin-top: -1rem;
-    margin-bottom: 2rem;
     line-height: 1.2;
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
   }
-  .interactive-area { width: 100%; }
+  .interactive-area {
+      width: 100%;
+  }
   .gate-box {
     background-color: rgba(163, 116, 245, 0.8);
     padding: 24px;
     width: 100%;
+    margin-top: 2rem;
     text-align: center;
   }
   .card-text {
@@ -148,6 +163,7 @@
     flex-direction: column;
     gap: 10px;
     margin-top: 4rem;
+    margin-bottom: -4rem;
     position: relative;
   }
   .gate-form input, .gate-form button, .button-link {
@@ -164,14 +180,36 @@
     transition: all 0.2s;
     box-sizing: border-box;
     text-align: center;
+    text-decoration: none;
   }
-  .button-link { text-decoration: none; }
   .gate-form input::placeholder { color: rgba(255, 255, 255, 0.7); }
   .gate-form button:hover:not(:disabled), .button-link:hover {
     background-color: #fff;
     color: #A374F5;
   }
   .gate-form button:disabled { opacity: 0.6; cursor: wait; }
+  
+  /* UPDATED: Styles for the conditional button */
+  .step2-wrapper {
+    position: relative;
+    /* Add padding to the bottom to make space for the absolute button */
+    padding-bottom: 3rem;
+  }
+  .download-prompt {
+    /* This takes the button out of the normal flow */
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    /* Reset button styles to look like your text */
+    background: none;
+    border: none;
+    padding: 0;
+    color: #fff;
+    font-family: 'Dela Gothic One', sans-serif;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+
   .error-popup {
     position: absolute;
     top: 100%;
