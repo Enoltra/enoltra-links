@@ -4,15 +4,14 @@
   export let form;
 
   $: step = form?.success ? 2 : 1;
+  // let step = 2; // Hard-code preview step 2
   let hasFollowed = false;
 
-  // UPDATED: This function now correctly sets the flag to show the button
   function handleFollowClick(url) {
     window.open(url, '_blank');
     hasFollowed = true;
   }
   
-  // UPDATED: This function is called by the new "To Download" button
   function goToDownloadStep() {
       step = 3;
   }
@@ -51,7 +50,7 @@
       {/if}
 
       {#if step === 2}
-       <div class="step2-wrapper">
+       <!-- UPDATED: Removed the step2-wrapper -->
         <div class="gate-box">
           <p class="card-text">To download this track, please select one channel to follow Enoltra on:</p>
         </div>
@@ -60,18 +59,18 @@
           <button on:click={() => handleFollowClick('https://youtube.com/@enoltra')}>YouTube</button>
           <button on:click={() => handleFollowClick('https://www.tiktok.com/@enoltralive')}>TikTok</button>
         </div>
-        <!-- UPDATED: This now correctly shows and positions the button -->
         {#if hasFollowed}
-          <button class="download-prompt" on:click={goToDownloadStep}>
-            Finish &rarr;
-          </button>
+          <div class="footer-prompt-wrapper">
+            <button class="download-prompt" on:click={goToDownloadStep}>
+              To Download &rarr;
+            </button>
+          </div>
         {/if}
-       </div>
       {/if}
 
       {#if step === 3}
         <div class="gate-box">
-          <p class="card-text">Success! ✅<br/>Please check your inbox to confirm and get your download. If you don't see the e-mail, check your Spam folder :)</p>
+          <p class="card-text">Success! ✅<br/>Please check your inbox to confirm and get your download. If you do not see the e-mail, check your Spam folder :)</p>
         </div>
         <div class="gate-form">
           <a href="/" class="button-link">Back to Home</a>
@@ -146,7 +145,7 @@
     background-color: rgba(163, 116, 245, 0.8);
     padding: 24px;
     width: 100%;
-    margin-top: 2rem;
+    margin-top: 1rem;
     text-align: center;
   }
   .card-text {
@@ -190,22 +189,17 @@
   .gate-form button:disabled { opacity: 0.6; cursor: wait; }
   
   /* UPDATED: Styles for the conditional button */
-  .step2-wrapper {
-    position: relative;
-    /* Add padding to the bottom to make space for the absolute button */
-    padding-bottom: 3rem;
+  .footer-prompt-wrapper {
+    width: 100%;
+    text-align: center;
+    margin-top: 6rem;
   }
   .download-prompt {
-    /* This takes the button out of the normal flow */
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    /* Reset button styles to look like your text */
     background: none;
     border: none;
     padding: 0;
     color: #fff;
-    font-family: 'Dela Gothic One', sans-serif;
+    font-family: 'Dela Gothic One', sans-serif; /* Correct font */
     font-size: 1rem;
     cursor: pointer;
   }

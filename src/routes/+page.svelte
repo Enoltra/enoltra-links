@@ -4,17 +4,39 @@
   let emblaApi;
   let isLoading = false;
 
+  // FIXED: Removed loop, it won't work with full-width slides and few slides
   const emblaOptions = {
-    loop: true,
-    plugins: [],
+    loop: false,
+    draggable: true,
+    dragFree: false
   };
 
-  /** @param {any} event */
   function onEmblaInit(event) {
     emblaApi = event.detail;
   }
 
-  /** @param {any} event */
+  function scrollPrev() {
+    if (emblaApi) {
+      // FIXED: Manual infinite loop - when at start, jump to end
+      if (!emblaApi.canScrollPrev()) {
+        emblaApi.scrollTo(emblaApi.scrollSnapList().length - 1);
+      } else {
+        emblaApi.scrollPrev();
+      }
+    }
+  }
+
+  function scrollNext() {
+    if (emblaApi) {
+      // FIXED: Manual infinite loop - when at end, jump to start
+      if (!emblaApi.canScrollNext()) {
+        emblaApi.scrollTo(0);
+      } else {
+        emblaApi.scrollNext();
+      }
+    }
+  }
+
   async function handleNewsletterSubmit(event) {
     event.preventDefault();
     if (isLoading) return;
@@ -24,19 +46,14 @@
     const email = new FormData(form).get('email');
 
     try {
-      // "Fire-and-forget" the API call. We don't wait for a response.
       fetch('/api/subscribe-newsletter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
       });
-
-      // Immediately show success to the user.
       alert('Thank you for subscribing! Please check your email to confirm.');
       form.reset();
-
     } catch (err) {
-      // This will only catch an immediate network error, like being offline.
       alert('A network error occurred. Please check your connection.');
     } finally {
       isLoading = false;
@@ -83,21 +100,49 @@
       <div class="link-card"><img src="/release3.webp" alt="M.I.A. Remix" class="card-image"/> <div class="card-content"><h3>M.I.A. (Enoltra Remix)</h3> <p>Enoltra</p> <a href="https://enoltralive.bandcamp.com/track/box-of-beats-mia-enoltra-remix" target="_blank" rel="noopener noreferrer" class="button-outline">Get on Bandcamp</a></div></div>
     </section>
 
+    <!-- ========= YOUTUBE SETS SECTION ========= -->
     <section id="youtube" class="content-section">
       <h2>YouTube Sets</h2>
-      <div class="embla" use:emblaCarouselSvelte={emblaOptions} on:emblaInit={onEmblaInit}>
-        <div class="embla__container">
-          <div class="embla__slide">
-            <div class="video-wrapper">
-              <iframe src="https://www.youtube.com/embed/NM4TvK4unjE?si=tvONa5w_HSH1baPV" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen={true}></iframe>
+      
+      <div class="carousel-wrapper">
+        <button 
+          class="carousel-nav-btn carousel-nav-btn--prev" 
+          on:click={scrollPrev}
+          aria-label="Previous video"
+          type="button"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+
+        <div class="embla" use:emblaCarouselSvelte={emblaOptions} on:emblaInit={onEmblaInit}>
+          <div class="embla__container">
+            <!-- FIXED: Just 2 videos, no duplicates needed -->
+            <div class="embla__slide">
+              <div class="video-wrapper">
+                <iframe src="https://www.youtube.com/embed/NM4TvK4unjE?si=tvONa5w_HSH1baPV" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen={true}></iframe>
+              </div>
             </div>
-          </div>
-          <div class="embla__slide">
-            <div class="video-wrapper">
-              <iframe src="https://www.youtube.com/embed/LJC_k9ZuE9o?si=MPxjVMNtisC3-PFW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen={true}></iframe>
+            
+            <div class="embla__slide">
+              <div class="video-wrapper">
+                <iframe src="https://www.youtube.com/embed/LJC_k9ZuE9o?si=MPxjVMNtisC3-PFW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen={true}></iframe>
+              </div>
             </div>
           </div>
         </div>
+
+        <button 
+          class="carousel-nav-btn carousel-nav-btn--next" 
+          on:click={scrollNext}
+          aria-label="Next video"
+          type="button"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
       </div>
     </section>
 
@@ -113,21 +158,18 @@
       </div>
     </section>
 
-<!-- ========= NEWSLETTER SECTION ========= -->
-<section id="newsletter" class="content-section">
-  <h2>Newsletter</h2>
-  <div class="newsletter-box">
-    <p>If you want to be the first to hear about new releases, freebies, tour dates, personal stories and special announcements, I would be super-happy to have you aboard 💜</p>
-    
-    <!-- UPDATED: This form is now correctly linked to your JavaScript -->
-    <form class="newsletter-form" on:submit={handleNewsletterSubmit}>
-      <input name="email" type="email" placeholder="enter your e-mail" required={true} disabled={isLoading} />
-      <button type="submit" disabled={isLoading}>
-        {#if isLoading}Subscribing...{:else}Be part of the tribe{/if}
-      </button>
-    </form>
-  </div>
-</section>
+    <section id="newsletter" class="content-section">
+      <h2>Newsletter</h2>
+      <div class="newsletter-box">
+        <p>If you want to be the first to hear about new releases, freebies, tour dates, personal stories and special announcements, I would be super-happy to have you aboard 💜</p>
+        <form class="newsletter-form" on:submit={handleNewsletterSubmit}>
+          <input name="email" type="email" placeholder="enter your e-mail" required={true} disabled={isLoading} />
+          <button type="submit" disabled={isLoading}>
+            {#if isLoading}Subscribing...{:else}Be part of the tribe{/if}
+          </button>
+        </form>
+      </div>
+    </section>
   </main>
 
   <footer class="site-footer">
@@ -148,7 +190,7 @@
   .hero-content { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(180deg, rgba(43, 47, 198, 0) 0%, #2B2FC6 100%); padding-top: 60px; z-index: 2; }
   .logo { display: block; width: 75%; max-width: 280px; margin: 0 auto 12px auto; }
   .social-links { display: flex; justify-content: center; align-items: center; gap: 18px; margin-bottom: 18px; }
-  .social-links img { height: 16px; transition: transform 0.2s; }
+  .social-links img { height: 19px; transition: transform 0.2s; }
   .social-links a:hover img { transform: scale(1.1); }
   .anchor-nav { display: flex; justify-content: center; gap: 18px; padding-bottom: 12px; }
   .anchor-nav a { color: #C1FF72; text-decoration: none; font-family: 'Dela Gothic One', sans-serif; font-size: 0.75rem; font-weight: 400; }
@@ -162,11 +204,85 @@
   .button-outline:hover { background-color: #fff; color: #A374F5; }
   .content-section { padding: 1.5rem 0; }
   .content-section h2 { font-size: 2rem; text-align: left; margin-bottom: 1rem; opacity: 0.4; text-transform: none; }
-  .embla { overflow: hidden; margin: 0 -10px; }
-  .embla__container { display: flex; }
-  .embla__slide { position: relative; flex: 0 0 82%; padding: 0 10px; }
-  .video-wrapper { position: relative; padding-top: 56.25%; height: 0; border-radius: 0; overflow: hidden; }
-  .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+  
+  .carousel-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .carousel-nav-btn {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    z-index: 20;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .carousel-nav-btn:hover {
+    background-color: #C1FF72;
+    transform: scale(1.1);
+  }
+
+  .carousel-nav-btn:active {
+    transform: scale(0.95);
+  }
+
+  .carousel-nav-btn svg {
+    width: 20px;
+    height: 20px;
+    color: #2B2FC6;
+  }
+  
+  /* FIXED: Enable drag on embla, no overlays blocking it */
+  .embla { 
+    overflow: hidden; 
+    flex: 1;
+  }
+  
+  .embla__container { 
+    display: flex;
+    cursor: grab;
+    user-select: none;
+  }
+
+  .embla__container:active {
+    cursor: grabbing;
+  }
+  
+  .embla__slide { 
+    position: relative; 
+    flex: 0 0 100%; 
+    min-width: 0;
+  }
+  
+  .video-wrapper { 
+    position: relative; 
+    padding-top: 56.25%; 
+    height: 0; 
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  /* FIXED: iframe enabled by default so users can interact with videos */
+  .video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
   .newsletter-box { background-color: #fff; border-radius: 0; padding: 20px; text-align: left; }
   .newsletter-box p { margin: 0 0 16px 0; line-height: 1.5; font-size: 0.9rem; color: #333; }
   .newsletter-form { display: flex; flex-direction: column; gap: 10px; }
