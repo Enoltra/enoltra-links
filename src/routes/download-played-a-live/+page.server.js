@@ -1,4 +1,3 @@
-
 import { fail } from '@sveltejs/kit';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
@@ -40,6 +39,9 @@ export const actions = {
     }
 
     try {
+      let contactId;
+
+      // STEP 1: Try to create the contact
       const createData = { api_key: PRIVATE_EMAILOCTOPUS_API_KEY, email_address: email };
       const createResponse = await fetch(`https://emailoctopus.com/api/1.6/lists/${PRIVATE_EMAILOCTOPUS_LIST_ID}/contacts`, {
         method: 'POST',
@@ -47,13 +49,28 @@ export const actions = {
         body: JSON.stringify(createData),
       });
 
-      if (!createResponse.ok) {
+      if (createResponse.ok) {
+        // New contact — use their new ID
+        const newContact = await createResponse.json();
+        contactId = newContact.id;
+      } else {
         const errorData = await createResponse.json();
-        return fail(400, { error: errorData.error?.message || 'Could not subscribe.' });
+        if (errorData.error?.code === 'MEMBER_EXISTS_WITH_EMAIL_ADDRESS') {
+          // Already subscribed — look up their existing ID
+          const lookupResponse = await fetch(
+            `https://emailoctopus.com/api/1.6/lists/${PRIVATE_EMAILOCTOPUS_LIST_ID}/contacts/${encodeURIComponent(email)}?api_key=${PRIVATE_EMAILOCTOPUS_API_KEY}`
+          );
+          if (!lookupResponse.ok) {
+            return fail(500, { error: 'Could not retrieve your subscription.' });
+          }
+          const existingContact = await lookupResponse.json();
+          contactId = existingContact.id;
+        } else {
+          return fail(400, { error: errorData.error?.message || 'Could not subscribe.' });
+        }
       }
-      const newContact = await createResponse.json();
-      const contactId = newContact.id;
 
+      // STEP 2: Generate signed R2 URL and update contact
       const command = new GetObjectCommand({
         Bucket: PRIVATE_R2_BUCKET_NAME,
         Key: 'Safri Duo - Played-A-Live (Enoltra Bootleg).mp3'
