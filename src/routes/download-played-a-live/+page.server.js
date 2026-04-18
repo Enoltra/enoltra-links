@@ -57,7 +57,6 @@ export const actions = {
       } else {
         const errorData = await createResponse.json();
         if (errorData.error?.code === 'MEMBER_EXISTS_WITH_EMAIL_ADDRESS') {
-          // Search for real contact ID by email
           const searchResponse = await fetch(
             `https://emailoctopus.com/api/1.6/lists/${PRIVATE_EMAILOCTOPUS_LIST_ID}/contacts?api_key=${PRIVATE_EMAILOCTOPUS_API_KEY}&limit=100`
           );
@@ -86,7 +85,7 @@ export const actions = {
         body: JSON.stringify({
           api_key: PRIVATE_EMAILOCTOPUS_API_KEY,
           fields: {
-            DownloadLink: signedUrl,
+            DownloadLinkNSYNC: signedUrl,
             SongName: 'Played-A-Live (Enoltra Bootleg)'
           },
           tags: ['Download-Played-A-Live'],
