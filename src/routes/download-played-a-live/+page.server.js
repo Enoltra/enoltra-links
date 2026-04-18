@@ -76,7 +76,7 @@ export const actions = {
       const updateData = {
         api_key: PRIVATE_EMAILOCTOPUS_API_KEY,
         fields: { DownloadLink: signedUrl, SongName: 'Played-A-Live (Enoltra Bootleg)' },
-        tags: ["Download Gate"],
+        tags: ["Download-Played-A-Live"],
         status: 'PENDING'
       };
 
