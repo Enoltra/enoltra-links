@@ -1,6 +1,7 @@
 import { fail } from '@sveltejs/kit';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import crypto from 'crypto';
 
 import {
   PRIVATE_R2_ACCOUNT_ID,
@@ -41,6 +42,9 @@ export const actions = {
     try {
       let contactId;
 
+      // EmailOctopus uses MD5 hash of lowercased email as contact ID
+      const emailHash = crypto.createHash('md5').update(email.toLowerCase().trim()).digest('hex');
+
       // STEP 1: Try to create the contact
       const createData = { api_key: PRIVATE_EMAILOCTOPUS_API_KEY, email_address: email };
       const createResponse = await fetch(`https://emailoctopus.com/api/1.6/lists/${PRIVATE_EMAILOCTOPUS_LIST_ID}/contacts`, {
@@ -50,21 +54,13 @@ export const actions = {
       });
 
       if (createResponse.ok) {
-        // New contact — use their new ID
         const newContact = await createResponse.json();
         contactId = newContact.id;
       } else {
         const errorData = await createResponse.json();
         if (errorData.error?.code === 'MEMBER_EXISTS_WITH_EMAIL_ADDRESS') {
-          // Already subscribed — look up their existing ID
-          const lookupResponse = await fetch(
-            `https://emailoctopus.com/api/1.6/lists/${PRIVATE_EMAILOCTOPUS_LIST_ID}/contacts/${encodeURIComponent(email)}?api_key=${PRIVATE_EMAILOCTOPUS_API_KEY}`
-          );
-          if (!lookupResponse.ok) {
-            return fail(500, { error: 'Could not retrieve your subscription.' });
-          }
-          const existingContact = await lookupResponse.json();
-          contactId = existingContact.id;
+          // Use MD5 hash as the contact ID for existing contacts
+          contactId = emailHash;
         } else {
           return fail(400, { error: errorData.error?.message || 'Could not subscribe.' });
         }
