@@ -1,7 +1,6 @@
 import { fail } from '@sveltejs/kit';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import crypto from 'crypto';
 
 import {
   PRIVATE_R2_ACCOUNT_ID,
@@ -42,15 +41,14 @@ export const actions = {
     try {
       let contactId;
 
-      // EmailOctopus uses MD5 hash of lowercased email as contact ID
-      const emailHash = crypto.createHash('md5').update(email.toLowerCase().trim()).digest('hex');
-
       // STEP 1: Try to create the contact
-      const createData = { api_key: PRIVATE_EMAILOCTOPUS_API_KEY, email_address: email };
       const createResponse = await fetch(`https://emailoctopus.com/api/1.6/lists/${PRIVATE_EMAILOCTOPUS_LIST_ID}/contacts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(createData),
+        body: JSON.stringify({
+          api_key: PRIVATE_EMAILOCTOPUS_API_KEY,
+          email_address: email
+        }),
       });
 
       if (createResponse.ok) {
@@ -59,31 +57,41 @@ export const actions = {
       } else {
         const errorData = await createResponse.json();
         if (errorData.error?.code === 'MEMBER_EXISTS_WITH_EMAIL_ADDRESS') {
-          // Use MD5 hash as the contact ID for existing contacts
-          contactId = emailHash;
+          // Search for real contact ID by email
+          const searchResponse = await fetch(
+            `https://emailoctopus.com/api/1.6/lists/${PRIVATE_EMAILOCTOPUS_LIST_ID}/contacts?api_key=${PRIVATE_EMAILOCTOPUS_API_KEY}&limit=100`
+          );
+          const searchData = await searchResponse.json();
+          const existing = searchData.data?.find(c => c.email_address.toLowerCase() === email.toLowerCase());
+          if (!existing) {
+            return fail(500, { error: 'Could not retrieve your subscription.' });
+          }
+          contactId = existing.id;
         } else {
           return fail(400, { error: errorData.error?.message || 'Could not subscribe.' });
         }
       }
 
-      // STEP 2: Generate signed R2 URL and update contact
+      // STEP 2: Generate signed R2 URL
       const command = new GetObjectCommand({
         Bucket: PRIVATE_R2_BUCKET_NAME,
         Key: 'Safri Duo - Played-A-Live (Enoltra Bootleg).mp3'
       });
       const signedUrl = await getSignedUrl(S3, command, { expiresIn: 7 * 24 * 60 * 60 });
 
-      const updateData = {
-        api_key: PRIVATE_EMAILOCTOPUS_API_KEY,
-        fields: { DownloadLink: signedUrl, SongName: 'Played-A-Live (Enoltra Bootleg)' },
-        tags: ["Download-Played-A-Live"],
-        status: 'PENDING'
-      };
-
+      // STEP 3: Update contact with download link and tag
       await fetch(`https://emailoctopus.com/api/1.6/lists/${PRIVATE_EMAILOCTOPUS_LIST_ID}/contacts/${contactId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData),
+        body: JSON.stringify({
+          api_key: PRIVATE_EMAILOCTOPUS_API_KEY,
+          fields: {
+            DownloadLink: signedUrl,
+            SongName: 'Played-A-Live (Enoltra Bootleg)'
+          },
+          tags: ['Download-Played-A-Live'],
+          status: 'SUBSCRIBED'
+        }),
       });
 
       return { success: true };
