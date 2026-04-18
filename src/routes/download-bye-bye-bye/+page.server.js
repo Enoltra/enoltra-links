@@ -1,5 +1,3 @@
-// src/routes/download-bye-bye-bye/+page.server.js
-
 import { fail } from '@sveltejs/kit';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
@@ -41,36 +39,58 @@ export const actions = {
     }
 
     try {
-      // --- STEP 1: CREATE THE CONTACT WITH MINIMAL DATA ---
-      const createData = { api_key: PRIVATE_EMAILOCTOPUS_API_KEY, email_address: email };
+      let contactId;
+
+      // STEP 1: Try to create the contact
       const createResponse = await fetch(`https://emailoctopus.com/api/1.6/lists/${PRIVATE_EMAILOCTOPUS_LIST_ID}/contacts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(createData),
+        body: JSON.stringify({
+          api_key: PRIVATE_EMAILOCTOPUS_API_KEY,
+          email_address: email
+        }),
       });
 
-      if (!createResponse.ok) {
+      if (createResponse.ok) {
+        const newContact = await createResponse.json();
+        contactId = newContact.id;
+      } else {
         const errorData = await createResponse.json();
-        return fail(400, { error: errorData.error?.message || 'Could not subscribe.' });
+        if (errorData.error?.code === 'MEMBER_EXISTS_WITH_EMAIL_ADDRESS') {
+          const searchResponse = await fetch(
+            `https://emailoctopus.com/api/1.6/lists/${PRIVATE_EMAILOCTOPUS_LIST_ID}/contacts?api_key=${PRIVATE_EMAILOCTOPUS_API_KEY}&limit=100`
+          );
+          const searchData = await searchResponse.json();
+          const existing = searchData.data?.find(c => c.email_address.toLowerCase() === email.toLowerCase());
+          if (!existing) {
+            return fail(500, { error: 'Could not retrieve your subscription.' });
+          }
+          contactId = existing.id;
+        } else {
+          return fail(400, { error: errorData.error?.message || 'Could not subscribe.' });
+        }
       }
-      const newContact = await createResponse.json();
-      const contactId = newContact.id;
 
-      // --- STEP 2: GENERATE R2 LINK AND UPDATE THE CONTACT ---
-      const command = new GetObjectCommand({ Bucket: PRIVATE_R2_BUCKET_NAME, Key: 'NSYNC - Bye Bye Bye (Enoltra Bootleg).mp3' });
+      // STEP 2: Generate signed R2 URL
+      const command = new GetObjectCommand({
+        Bucket: PRIVATE_R2_BUCKET_NAME,
+        Key: 'NSYNC - Bye Bye Bye (Enoltra Bootleg).mp3'
+      });
       const signedUrl = await getSignedUrl(S3, command, { expiresIn: 7 * 24 * 60 * 60 });
-      
-      const updateData = {
-        api_key: PRIVATE_EMAILOCTOPUS_API_KEY,
-        fields: { DownloadLink: signedUrl, SongName: 'Bye Bye Bye (Enoltra Bootleg)' },
-        tags: ["Download Gate"],
-        status: 'PENDING'
-      };
-      
+
+      // STEP 3: Update contact with download link and tag
       await fetch(`https://emailoctopus.com/api/1.6/lists/${PRIVATE_EMAILOCTOPUS_LIST_ID}/contacts/${contactId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData),
+        body: JSON.stringify({
+          api_key: PRIVATE_EMAILOCTOPUS_API_KEY,
+          fields: {
+            DownloadLinkNSYNC: signedUrl,
+            SongName: 'Bye Bye Bye (Enoltra Bootleg)'
+          },
+          tags: ['Download-Bye-Bye-Bye'],
+          status: 'SUBSCRIBED'
+        }),
       });
 
       return { success: true };
