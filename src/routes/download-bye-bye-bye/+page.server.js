@@ -39,15 +39,26 @@ export const actions = {
     }
 
     try {
-      let contactId;
+      // STEP 1: Generate signed R2 URL first
+      const command = new GetObjectCommand({
+        Bucket: PRIVATE_R2_BUCKET_NAME,
+        Key: 'NSYNC - Bye Bye Bye (Enoltra Bootleg).mp3'
+      });
+      const signedUrl = await getSignedUrl(S3, command, { expiresIn: 7 * 24 * 60 * 60 });
 
-      // STEP 1: Try to create the contact
+      // STEP 2: Try to create contact with fields already included
+      let contactId;
       const createResponse = await fetch(`https://emailoctopus.com/api/1.6/lists/${PRIVATE_EMAILOCTOPUS_LIST_ID}/contacts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           api_key: PRIVATE_EMAILOCTOPUS_API_KEY,
-          email_address: email
+          email_address: email,
+          fields: {
+            DownloadLinkNSYNC: signedUrl,
+            SongName: 'Bye Bye Bye (Enoltra Bootleg)'
+          },
+          status: 'SUBSCRIBED'
         }),
       });
 
@@ -62,36 +73,25 @@ export const actions = {
           );
           const searchData = await searchResponse.json();
           const existing = searchData.data?.find(c => c.email_address.toLowerCase() === email.toLowerCase());
-          if (!existing) {
-            return fail(500, { error: 'Could not retrieve your subscription.' });
-          }
+          if (!existing) return fail(500, { error: 'Could not retrieve your subscription.' });
           contactId = existing.id;
+
+          await fetch(`https://emailoctopus.com/api/1.6/lists/${PRIVATE_EMAILOCTOPUS_LIST_ID}/contacts/${contactId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              api_key: PRIVATE_EMAILOCTOPUS_API_KEY,
+              fields: {
+                DownloadLinkNSYNC: signedUrl,
+                SongName: 'Bye Bye Bye (Enoltra Bootleg)'
+              },
+              status: 'SUBSCRIBED'
+            }),
+          });
         } else {
           return fail(400, { error: errorData.error?.message || 'Could not subscribe.' });
         }
       }
-
-      // STEP 2: Generate signed R2 URL
-      const command = new GetObjectCommand({
-        Bucket: PRIVATE_R2_BUCKET_NAME,
-        Key: 'NSYNC - Bye Bye Bye (Enoltra Bootleg).mp3'
-      });
-      const signedUrl = await getSignedUrl(S3, command, { expiresIn: 7 * 24 * 60 * 60 });
-
-      // STEP 3: Update contact with download link and tag
-      await fetch(`https://emailoctopus.com/api/1.6/lists/${PRIVATE_EMAILOCTOPUS_LIST_ID}/contacts/${contactId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          api_key: PRIVATE_EMAILOCTOPUS_API_KEY,
-          fields: {
-            DownloadLinkNSYNC: signedUrl,
-            SongName: 'Bye Bye Bye (Enoltra Bootleg)'
-          },
-          tags: ['Download-Bye-Bye-Bye'],
-          status: 'SUBSCRIBED'
-        }),
-      });
 
       return { success: true };
     } catch (err) {
