@@ -93,7 +93,7 @@
       </nav>
     </div>
   </header>
-
+    <!-- ========= NEW SONGS SECTION ========= -->
   <main class="content-wrapper">
     <section class="link-section">
       <div class="link-card"><img src="/release-new-chapter.webp" alt="New Chapter" class="card-image"/> <div class="card-content"><h3>New Chapter (Coming soon!)</h3> <p>Enoltra</p> <a href="#newsletter" class="button-outline">Get Notified</a></div></div>
@@ -146,6 +146,7 @@
       </div>
     </section>
 
+    <!-- ========= FREE DOWNLOADS SECTION ========= -->
     <section id="downloads" class="content-section">
       <h2>Free Downloads</h2>
       <div class="link-card">
@@ -156,8 +157,17 @@
           <a href="/download-bye-bye-bye" class="button-outline">Free Download</a>
         </div>
       </div>
+<!-- Safri Duo -->
+  <div class="link-card">
+    <img src="/Drum-a-Lot Cover art.webp" alt="Played-A-Live Bootleg" class="card-image"/>
+    <div class="card-content">
+      <h3>Played-A-Live (Enoltra Bootleg)</h3>
+      <p>Safri Duo</p>
+      <a href="/download-played-a-live" class="button-outline">Free Download</a>
+    </div>
+  </div>
     </section>
-
+    <!-- ========= NEWSLETTER SECTION ========= -->
     <section id="newsletter" class="content-section">
       <h2>Newsletter</h2>
       <div class="newsletter-box">
