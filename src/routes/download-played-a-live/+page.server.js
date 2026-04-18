@@ -39,14 +39,12 @@ export const actions = {
     }
 
     try {
-      // STEP 1: Generate signed R2 URL first
       const command = new GetObjectCommand({
         Bucket: PRIVATE_R2_BUCKET_NAME,
         Key: 'Safri Duo - Played-A-Live (Enoltra Bootleg).mp3'
       });
       const signedUrl = await getSignedUrl(S3, command, { expiresIn: 7 * 24 * 60 * 60 });
 
-      // STEP 2: Try to create contact with fields already included
       let contactId;
       const createResponse = await fetch(`https://emailoctopus.com/api/1.6/lists/${PRIVATE_EMAILOCTOPUS_LIST_ID}/contacts`, {
         method: 'POST',
@@ -55,8 +53,8 @@ export const actions = {
           api_key: PRIVATE_EMAILOCTOPUS_API_KEY,
           email_address: email,
           fields: {
-            DownloadLinkNSYNC: signedUrl,
-            SongName: 'Played-A-Live (Enoltra Bootleg)'
+            'Download Link': signedUrl,
+            'Song Name': 'Played-A-Live (Enoltra Bootleg)'
           },
           status: 'SUBSCRIBED'
         }),
@@ -82,8 +80,8 @@ export const actions = {
             body: JSON.stringify({
               api_key: PRIVATE_EMAILOCTOPUS_API_KEY,
               fields: {
-                DownloadLinkNSYNC: signedUrl,
-                SongName: 'Played-A-Live (Enoltra Bootleg)'
+                'Download Link': signedUrl,
+                'Song Name': 'Played-A-Live (Enoltra Bootleg)'
               },
               status: 'SUBSCRIBED'
             }),
