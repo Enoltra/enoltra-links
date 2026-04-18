@@ -81,10 +81,10 @@ export const actions = {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               api_key: PRIVATE_EMAILOCTOPUS_API_KEY,
-              fields: {
-                DownloadLinkNSYNC: signedUrl,
-                SongName: 'Bye Bye Bye (Enoltra Bootleg)'
-              },
+            fields: {
+  'Download Link': signedUrl,
+  'Song Name': 'Bye Bye Bye (Enoltra Bootleg)'
+},
               status: 'SUBSCRIBED'
             }),
           });
