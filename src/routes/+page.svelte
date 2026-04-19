@@ -4,7 +4,6 @@
   let emblaApi;
   let isLoading = false;
 
-  // FIXED: Removed loop, it won't work with full-width slides and few slides
   const emblaOptions = {
     loop: false,
     draggable: true,
@@ -17,7 +16,6 @@
 
   function scrollPrev() {
     if (emblaApi) {
-      // FIXED: Manual infinite loop - when at start, jump to end
       if (!emblaApi.canScrollPrev()) {
         emblaApi.scrollTo(emblaApi.scrollSnapList().length - 1);
       } else {
@@ -28,7 +26,6 @@
 
   function scrollNext() {
     if (emblaApi) {
-      // FIXED: Manual infinite loop - when at end, jump to start
       if (!emblaApi.canScrollNext()) {
         emblaApi.scrollTo(0);
       } else {
@@ -40,11 +37,9 @@
   async function handleNewsletterSubmit(event) {
     event.preventDefault();
     if (isLoading) return;
-
     isLoading = true;
     const form = event.target;
     const email = new FormData(form).get('email');
-
     try {
       fetch('/api/subscribe-newsletter', {
         method: 'POST',
@@ -83,71 +78,25 @@
         <a href="https://www.youtube.com/@Enoltra" target="_blank" rel="noopener noreferrer"><img src="/icon-youtube.svg" alt="YouTube"></a>
         <a href="https://www.tiktok.com/@enoltra.live" target="_blank" rel="noopener noreferrer"><img src="/icon-tiktok.svg" alt="TikTok"></a>
         <a href="https://www.instagram.com/enoltralive/" target="_blank" rel="noopener noreferrer"><img src="/icon-instagram.svg" alt="Instagram"></a>
+        <a href="https://soundcloud.com/enoltra" target="_blank" rel="noopener noreferrer"><img src="/sc-icon.svg" alt="SoundCloud"></a>
         <a href="https://enoltralive.bandcamp.com/music" target="_blank" rel="noopener noreferrer"><img src="/icon-bandcamp.svg" alt="Bandcamp"></a>
       </div>
 
       <nav class="anchor-nav">
-        <a href="#youtube">YouTube</a>
         <a href="#downloads">Free Downloads</a>
+        <a href="#releases">Releases</a>
+        <a href="#youtube">YouTube</a>
+        <a href="#collectives">Collectives</a>
         <a href="#newsletter">Newsletter</a>
+        <a href="https://www.figma.com/proto/GPUYzijAWnOQiZq1ybTX9U/Enoltra-EPK?node-id=2843-3&t=fuvzTvd5wLEhd2nj-1" target="_blank" rel="noopener noreferrer">EPK</a>
       </nav>
     </div>
   </header>
-    <!-- ========= NEW SONGS SECTION ========= -->
+
   <main class="content-wrapper">
-    <section class="link-section">
-      <div class="link-card"><img src="/release-new-chapter.webp" alt="New Chapter" class="card-image"/> <div class="card-content"><h3>New Chapter (Coming soon!)</h3> <p>Enoltra</p> <a href="#newsletter" class="button-outline">Get Notified</a></div></div>
-      <div class="link-card"><img src="/release3.webp" alt="M.I.A. Remix" class="card-image"/> <div class="card-content"><h3>M.I.A. (Enoltra Remix)</h3> <p>Enoltra</p> <a href="https://enoltralive.bandcamp.com/track/box-of-beats-mia-enoltra-remix" target="_blank" rel="noopener noreferrer" class="button-outline">Get on Bandcamp</a></div></div>
-    </section>
 
-    <!-- ========= YOUTUBE SETS SECTION ========= -->
-    <section id="youtube" class="content-section">
-      <h2>YouTube Sets</h2>
-      
-      <div class="carousel-wrapper">
-        <button 
-          class="carousel-nav-btn carousel-nav-btn--prev" 
-          on:click={scrollPrev}
-          aria-label="Previous video"
-          type="button"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="15 18 9 12 15 6"></polyline>
-          </svg>
-        </button>
-
-        <div class="embla" use:emblaCarouselSvelte={emblaOptions} on:emblaInit={onEmblaInit}>
-          <div class="embla__container">
-            <!-- FIXED: Just 2 videos, no duplicates needed -->
-            <div class="embla__slide">
-              <div class="video-wrapper">
-                <iframe src="https://www.youtube.com/embed/NM4TvK4unjE?si=tvONa5w_HSH1baPV" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen={true}></iframe>
-              </div>
-            </div>
-            
-            <div class="embla__slide">
-              <div class="video-wrapper">
-                <iframe src="https://www.youtube.com/embed/LJC_k9ZuE9o?si=MPxjVMNtisC3-PFW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen={true}></iframe>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <button 
-          class="carousel-nav-btn carousel-nav-btn--next" 
-          on:click={scrollNext}
-          aria-label="Next video"
-          type="button"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="9 18 15 12 9 6"></polyline>
-          </svg>
-        </button>
-      </div>
-    </section>
-
-    <!-- ========= FREE DOWNLOADS SECTION ========= -->
-    <section id="downloads" class="content-section">
+    <!-- ========= FREE DOWNLOADS ========= -->
+    <section id="downloads" class="content-section" style="padding-top: 0.5rem;">
       <h2>Free Downloads</h2>
       <div class="link-card">
         <img src="/release2.webp" alt="Bye Bye Bye Bootleg" class="card-image"/>
@@ -157,17 +106,101 @@
           <a href="/download-bye-bye-bye" class="button-outline">Free Download</a>
         </div>
       </div>
-<!-- Safri Duo -->
-  <div class="link-card">
-    <img src="/Drum-a-Lot Cover art.webp" alt="Played-A-Live Bootleg" class="card-image"/>
-    <div class="card-content">
-      <h3>Played-A-Live (Enoltra Bootleg)</h3>
-      <p>Safri Duo</p>
-      <a href="/download-played-a-live" class="button-outline">Free Download</a>
-    </div>
-  </div>
+      <div class="link-card">
+        <img src="/Drum-a-Lot Cover art.webp" alt="Played-A-Live Bootleg" class="card-image"/>
+        <div class="card-content">
+          <h3>Played-A-Live (Enoltra Bootleg)</h3>
+          <p>Safri Duo</p>
+          <a href="/download-played-a-live" class="button-outline">Free Download</a>
+        </div>
+      </div>
     </section>
-    <!-- ========= NEWSLETTER SECTION ========= -->
+
+    <!-- ========= RELEASES ========= -->
+    <section id="releases" class="content-section">
+      <h2>Releases</h2>
+      <div class="link-card">
+        <img src="/release-new-chapter.webp" alt="New Chapter" class="card-image"/>
+        <div class="card-content">
+          <h3>New Chapter (Coming soon!)</h3>
+          <p>Enoltra</p>
+          <a href="#newsletter" class="button-outline">Get Notified</a>
+        </div>
+      </div>
+      <div class="link-card">
+        <img src="/release3.webp" alt="M.I.A. Remix" class="card-image"/>
+        <div class="card-content">
+          <h3>M.I.A. (Enoltra Remix)</h3>
+          <p>Enoltra</p>
+          <a href="https://enoltralive.bandcamp.com/track/box-of-beats-mia-enoltra-remix" target="_blank" rel="noopener noreferrer" class="button-outline">Get on Bandcamp</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========= YOUTUBE SETS ========= -->
+    <section id="youtube" class="content-section">
+      <h2>YouTube Sets</h2>
+      <div class="carousel-wrapper">
+        <button class="carousel-nav-btn" on:click={scrollPrev} aria-label="Previous video" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+        <div class="embla" use:emblaCarouselSvelte={emblaOptions} on:emblaInit={onEmblaInit}>
+          <div class="embla__container">
+            <div class="embla__slide">
+              <div class="video-wrapper">
+                <iframe src="https://www.youtube.com/embed/NM4TvK4unjE?si=tvONa5w_HSH1baPV" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen={true}></iframe>
+              </div>
+            </div>
+            <div class="embla__slide">
+              <div class="video-wrapper">
+                <iframe src="https://www.youtube.com/embed/LJC_k9ZuE9o?si=MPxjVMNtisC3-PFW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen={true}></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-nav-btn" on:click={scrollNext} aria-label="Next video" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- ========= COLLECTIVES ========= -->
+    <section id="collectives" class="content-section">
+      <h2>Collectives</h2>
+      <div class="link-card">
+        <img src="/fader_f_icon.webp" alt="Fader Friends" class="card-image"/>
+        <div class="card-content">
+          <h3>Fader Friends</h3>
+          <p>Collective</p>
+          <a href="https://www.instagram.com/fader_friends/" target="_blank" rel="noopener noreferrer" class="button-outline">Follow</a>
+        </div>
+      </div>
+      <div class="link-card">
+        <img src="/birdhouse_icon.webp" alt="BirdHouse" class="card-image"/>
+        <div class="card-content">
+          <h3>BirdHouse</h3>
+          <p>Collective</p>
+          <a href="https://www.instagram.com/kollektiv_birdhouse/" target="_blank" rel="noopener noreferrer" class="button-outline">Follow</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========= EPK ========= -->
+    <section class="content-section">
+      <div class="epk-card">
+        <div class="epk-text">
+          <h3>Electronic Press Kit</h3>
+          <p>Booking, bio, tech rider & more</p>
+        </div>
+        <a href="https://www.figma.com/proto/GPUYzijAWnOQiZq1ybTX9U/Enoltra-EPK?node-id=2843-3&t=fuvzTvd5wLEhd2nj-1" target="_blank" rel="noopener noreferrer" class="button-outline">View EPK</a>
+      </div>
+    </section>
+
+    <!-- ========= NEWSLETTER ========= -->
     <section id="newsletter" class="content-section">
       <h2>Newsletter</h2>
       <div class="newsletter-box">
@@ -180,6 +213,7 @@
         </form>
       </div>
     </section>
+
   </main>
 
   <footer class="site-footer">
@@ -189,117 +223,95 @@
 
 <style>
   :global(*, *::before, *::after) { box-sizing: border-box; }
+
   .mobile-container { max-width: 500px; margin: 0 auto; background-color: #2B2FC6; position: relative; display: flex; flex-direction: column; min-height: 100vh; }
   .content-wrapper { padding: 0 5%; flex-grow: 1; position: relative; z-index: 2; }
+
   .deco-planet, .deco-chrome, .deco-rose { position: absolute; pointer-events: none; }
   .deco-planet { top: 0; left: 0; width: 40%; z-index: 3; }
   .deco-chrome { top: 0; right: 0; width: 30%; z-index: 3; }
   .deco-rose { bottom: 0px; right: 0; width: 40%; z-index: 3; }
+
   .hero { position: relative; width: 100%; z-index: 1; }
   .hero-image { display: block; width: 100%; height: auto; }
   .hero-content { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(180deg, rgba(43, 47, 198, 0) 0%, #2B2FC6 100%); padding-top: 60px; z-index: 2; }
   .logo { display: block; width: 75%; max-width: 280px; margin: 0 auto 12px auto; }
+
   .social-links { display: flex; justify-content: center; align-items: center; gap: 18px; margin-bottom: 18px; }
   .social-links img { height: 19px; transition: transform 0.2s; }
   .social-links a:hover img { transform: scale(1.1); }
-  .anchor-nav { display: flex; justify-content: center; gap: 18px; padding-bottom: 12px; }
-  .anchor-nav a { color: #C1FF72; text-decoration: none; font-family: 'Dela Gothic One', sans-serif; font-size: 0.75rem; font-weight: 400; }
-  .link-section { margin-top: 28px; }
-  .link-card { background-color: #A374F5; border-radius: 0; padding: 3%; display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-  .card-image { width: 20%; height: 20%; object-fit: cover; border-radius: 0; flex-shrink: 0; }
-  .card-content { width: 100%; display: flex; flex-direction: column; align-items: flex-start; height: 100%; }
-  .card-content h3 { font-family: 'Dela Gothic One', sans-serif; font-weight: 400; font-size: 1.2rem; margin: 0; color: #fff; text-transform: none; }
-  .card-content p { font-size: 1rem; margin: 4px 0 6px 0 ; color: rgba(255, 255, 255, 0.8); }
-  .button-outline { display: inline-flex; align-items: center; justify-content: center; padding: 2px 16px; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 0.8rem; background-color: transparent; color: #fff; border: 1px solid #fff; transition: all 0.2s; }
-  .button-outline:hover { background-color: #fff; color: #A374F5; }
-  .content-section { padding: 1.5rem 0; }
-  .content-section h2 { font-size: 2rem; text-align: left; margin-bottom: 1rem; opacity: 0.4; text-transform: none; }
-  
-  .carousel-wrapper {
-    position: relative;
+
+  .anchor-nav {
     display: flex;
-    align-items: center;
-    gap: 8px;
+    gap: 18px;
+    padding-bottom: 12px;
+    padding-left: 5%;
+    padding-right: 5%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    white-space: nowrap;
+    flex-wrap: nowrap;
+  }
+  .anchor-nav::-webkit-scrollbar { display: none; }
+  .anchor-nav a {
+    color: #C1FF72;
+    text-decoration: none;
+    font-family: 'Dela Gothic One', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 400;
+    flex-shrink: 0;
   }
 
+  .link-card { background-color: #A374F5; padding: 3%; display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .card-image { width: 20%; aspect-ratio: 1; object-fit: cover; flex-shrink: 0; }
+  .card-content { width: 100%; display: flex; flex-direction: column; align-items: flex-start; }
+  .card-content h3 { font-family: 'Dela Gothic One', sans-serif; font-weight: 400; font-size: 1.2rem; margin: 0; color: #fff; }
+  .card-content p { font-size: 1rem; margin: 4px 0 6px 0; color: rgba(255, 255, 255, 0.8); }
+
+  .button-outline { display: inline-flex; align-items: center; justify-content: center; padding: 2px 16px; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 0.8rem; background-color: transparent; color: #fff; border: 1px solid #fff; transition: all 0.2s; }
+  .button-outline:hover { background-color: #fff; color: #A374F5; }
+
+  .content-section { padding: 1.5rem 0; }
+  .content-section h2 { font-size: 2rem; text-align: left; margin-bottom: 1rem; opacity: 0.4; color: #fff; text-transform: none; }
+
+  .epk-card { background-color: #A374F5; padding: 4%; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .epk-text h3 { font-family: 'Dela Gothic One', sans-serif; font-weight: 400; font-size: 1.1rem; margin: 0; color: #fff; }
+  .epk-text p { font-size: 0.85rem; margin: 4px 0 0 0; color: rgba(255, 255, 255, 0.8); }
+
+  .carousel-wrapper { position: relative; display: flex; align-items: center; gap: 8px; }
   .carousel-nav-btn {
     flex-shrink: 0;
-    width: 36px;
+    width: 24px;
     height: 36px;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.9);
+    background: none;
     border: none;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: opacity 0.2s;
     z-index: 20;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
+  .carousel-nav-btn:hover { opacity: 0.6; }
+  .carousel-nav-btn:active { opacity: 0.4; }
+  .carousel-nav-btn svg { width: 18px; height: 18px; color: #fff; }
 
-  .carousel-nav-btn:hover {
-    background-color: #C1FF72;
-    transform: scale(1.1);
-  }
+  .embla { overflow: hidden; flex: 1; }
+  .embla__container { display: flex; cursor: grab; user-select: none; }
+  .embla__container:active { cursor: grabbing; }
+  .embla__slide { position: relative; flex: 0 0 100%; min-width: 0; }
+  .video-wrapper { position: relative; padding-top: 56.25%; height: 0; border-radius: 8px; overflow: hidden; }
+  .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
 
-  .carousel-nav-btn:active {
-    transform: scale(0.95);
-  }
-
-  .carousel-nav-btn svg {
-    width: 20px;
-    height: 20px;
-    color: #2B2FC6;
-  }
-  
-  /* FIXED: Enable drag on embla, no overlays blocking it */
-  .embla { 
-    overflow: hidden; 
-    flex: 1;
-  }
-  
-  .embla__container { 
-    display: flex;
-    cursor: grab;
-    user-select: none;
-  }
-
-  .embla__container:active {
-    cursor: grabbing;
-  }
-  
-  .embla__slide { 
-    position: relative; 
-    flex: 0 0 100%; 
-    min-width: 0;
-  }
-  
-  .video-wrapper { 
-    position: relative; 
-    padding-top: 56.25%; 
-    height: 0; 
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  
-  /* FIXED: iframe enabled by default so users can interact with videos */
-  .video-wrapper iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: none;
-  }
-
-  .newsletter-box { background-color: #fff; border-radius: 0; padding: 20px; text-align: left; }
+  .newsletter-box { background-color: #fff; padding: 20px; text-align: left; }
   .newsletter-box p { margin: 0 0 16px 0; line-height: 1.5; font-size: 0.9rem; color: #333; }
   .newsletter-form { display: flex; flex-direction: column; gap: 10px; }
   .newsletter-form input { width: 100%; padding: 10px 14px; border-radius: 999px; border: 1px solid #A374F5; font-size: 0.9rem; background: transparent; color: #333; }
   .newsletter-form input::placeholder { color: #A374F5; opacity: 0.7; }
   .newsletter-form button { padding: 10px 14px; border: 1px solid #000; border-radius: 999px; background: transparent; color: #000; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; }
   .newsletter-form button:hover { background-color: #000; color: #fff; }
+
   .site-footer { padding: 1rem 0; text-align: center; font-size: 0.8rem; position: relative; z-index: 5; margin-top: 1rem; }
   .site-footer p { color: #C1FF72; opacity: 0.8; }
 </style>
