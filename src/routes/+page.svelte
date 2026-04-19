@@ -82,14 +82,17 @@
         <a href="https://enoltralive.bandcamp.com/music" target="_blank" rel="noopener noreferrer"><img src="/icon-bandcamp.svg" alt="Bandcamp"></a>
       </div>
 
-      <nav class="anchor-nav">
-        <a href="#downloads">Free Downloads</a>
-        <a href="#releases">Releases</a>
-        <a href="#youtube">YouTube</a>
-        <a href="#collectives">Collectives</a>
-        <a href="#newsletter">Newsletter</a>
-        <a href="https://www.figma.com/proto/GPUYzijAWnOQiZq1ybTX9U/Enoltra-EPK?node-id=2843-3&t=fuvzTvd5wLEhd2nj-1" target="_blank" rel="noopener noreferrer">EPK</a>
-      </nav>
+      <div class="anchor-nav-wrapper">
+        <nav class="anchor-nav">
+          <a href="#downloads">Free Downloads</a>
+          <a href="#releases">Releases</a>
+          <a href="#youtube">YouTube</a>
+          <a href="#collectives">Collectives</a>
+          <a href="#newsletter">Newsletter</a>
+          <a href="https://www.figma.com/proto/GPUYzijAWnOQiZq1ybTX9U/Enoltra-EPK?node-id=2843-3&t=fuvzTvd5wLEhd2nj-1" target="_blank" rel="noopener noreferrer">EPK</a>
+        </nav>
+        <div class="anchor-nav-fade"></div>
+      </div>
     </div>
   </header>
 
@@ -175,7 +178,7 @@
         <img src="/fader_f_icon.webp" alt="Fader Friends" class="card-image"/>
         <div class="card-content">
           <h3>Fader Friends</h3>
-          <p>Collective</p>
+          <p>Fostering a wide range of electronic genres</p>
           <a href="https://www.instagram.com/fader_friends/" target="_blank" rel="noopener noreferrer" class="button-outline">Follow</a>
         </div>
       </div>
@@ -183,7 +186,7 @@
         <img src="/birdhouse_icon.webp" alt="BirdHouse" class="card-image"/>
         <div class="card-content">
           <h3>BirdHouse</h3>
-          <p>Collective</p>
+          <p>Quickly-growing Viennese house, progressive & trance collective</p>
           <a href="https://www.instagram.com/kollektiv_birdhouse/" target="_blank" rel="noopener noreferrer" class="button-outline">Follow</a>
         </div>
       </div>
@@ -194,7 +197,7 @@
       <div class="epk-card">
         <div class="epk-text">
           <h3>Electronic Press Kit</h3>
-          <p>Booking, bio, tech rider & more</p>
+          <p>Artist bio, sets, music catalogue & everything a booker needs</p>
         </div>
         <a href="https://www.figma.com/proto/GPUYzijAWnOQiZq1ybTX9U/Enoltra-EPK?node-id=2843-3&t=fuvzTvd5wLEhd2nj-1" target="_blank" rel="noopener noreferrer" class="button-outline">View EPK</a>
       </div>
@@ -238,15 +241,21 @@
   .logo { display: block; width: 75%; max-width: 280px; margin: 0 auto 12px auto; }
 
   .social-links { display: flex; justify-content: center; align-items: center; gap: 18px; margin-bottom: 18px; }
-  .social-links img { height: 19px; transition: transform 0.2s; }
+  .social-links a { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; flex-shrink: 0; }
+  .social-links img { width: 20px; height: 20px; object-fit: contain; transition: transform 0.2s; }
   .social-links a:hover img { transform: scale(1.1); }
 
+  /* Anchor nav — scrollable strip with fade on right */
+  .anchor-nav-wrapper {
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 12px;
+  }
   .anchor-nav {
     display: flex;
-    gap: 18px;
-    padding-bottom: 12px;
+    gap: 20px;
     padding-left: 5%;
-    padding-right: 5%;
+    padding-right: 60px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
@@ -258,45 +267,57 @@
     color: #C1FF72;
     text-decoration: none;
     font-family: 'Dela Gothic One', sans-serif;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 400;
     flex-shrink: 0;
   }
+  /* Gradient fade hinting more content to the right */
+  .anchor-nav-fade {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 60px;
+    height: 100%;
+    background: linear-gradient(to right, rgba(43, 47, 198, 0) 0%, #2B2FC6 100%);
+    pointer-events: none;
+  }
 
+  /* Cards */
   .link-card { background-color: #A374F5; padding: 3%; display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-  .card-image { width: 20%; aspect-ratio: 1; object-fit: cover; flex-shrink: 0; }
-  .card-content { width: 100%; display: flex; flex-direction: column; align-items: flex-start; }
-  .card-content h3 { font-family: 'Dela Gothic One', sans-serif; font-weight: 400; font-size: 1.2rem; margin: 0; color: #fff; }
-  .card-content p { font-size: 1rem; margin: 4px 0 6px 0; color: rgba(255, 255, 255, 0.8); }
+  .card-image { width: 64px; height: 64px; object-fit: cover; flex-shrink: 0; }
+  .card-content { flex: 1; display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
+  .card-content h3 {
+    font-family: 'Dela Gothic One', sans-serif;
+    font-weight: 400;
+    font-size: 0.95rem;
+    margin: 0;
+    color: #fff;
+    text-transform: none;
+    line-height: 1.2;
+  }
+  .card-content p {
+    font-size: 0.8rem;
+    margin: 3px 0 6px 0;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.3;
+  }
 
-  .button-outline { display: inline-flex; align-items: center; justify-content: center; padding: 2px 16px; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 0.8rem; background-color: transparent; color: #fff; border: 1px solid #fff; transition: all 0.2s; }
+  .button-outline { display: inline-flex; align-items: center; justify-content: center; padding: 2px 14px; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 0.75rem; background-color: transparent; color: #fff; border: 1px solid #fff; transition: all 0.2s; white-space: nowrap; }
   .button-outline:hover { background-color: #fff; color: #A374F5; }
 
   .content-section { padding: 1.5rem 0; }
-  .content-section h2 { font-size: 2rem; text-align: left; margin-bottom: 1rem; opacity: 0.4; color: #fff; text-transform: none; }
+  .content-section h2 { font-size: 2rem; text-align: left; margin-bottom: 1rem; opacity: 0.4; color: #fff; text-transform: none; font-family: 'Dela Gothic One', sans-serif; font-weight: 400; }
 
   .epk-card { background-color: #A374F5; padding: 4%; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-  .epk-text h3 { font-family: 'Dela Gothic One', sans-serif; font-weight: 400; font-size: 1.1rem; margin: 0; color: #fff; }
-  .epk-text p { font-size: 0.85rem; margin: 4px 0 0 0; color: rgba(255, 255, 255, 0.8); }
+  .epk-text h3 { font-family: 'Dela Gothic One', sans-serif; font-weight: 400; font-size: 0.95rem; margin: 0; color: #fff; text-transform: none; }
+  .epk-text p { font-size: 0.8rem; margin: 4px 0 0 0; color: rgba(255, 255, 255, 0.8); line-height: 1.3; }
 
+  /* Carousel */
   .carousel-wrapper { position: relative; display: flex; align-items: center; gap: 8px; }
-  .carousel-nav-btn {
-    flex-shrink: 0;
-    width: 24px;
-    height: 36px;
-    background: none;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: opacity 0.2s;
-    z-index: 20;
-  }
+  .carousel-nav-btn { flex-shrink: 0; width: 24px; height: 36px; background: none; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: opacity 0.2s; z-index: 20; }
   .carousel-nav-btn:hover { opacity: 0.6; }
   .carousel-nav-btn:active { opacity: 0.4; }
   .carousel-nav-btn svg { width: 18px; height: 18px; color: #fff; }
-
   .embla { overflow: hidden; flex: 1; }
   .embla__container { display: flex; cursor: grab; user-select: none; }
   .embla__container:active { cursor: grabbing; }
@@ -304,6 +325,7 @@
   .video-wrapper { position: relative; padding-top: 56.25%; height: 0; border-radius: 8px; overflow: hidden; }
   .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
 
+  /* Newsletter */
   .newsletter-box { background-color: #fff; padding: 20px; text-align: left; }
   .newsletter-box p { margin: 0 0 16px 0; line-height: 1.5; font-size: 0.9rem; color: #333; }
   .newsletter-form { display: flex; flex-direction: column; gap: 10px; }
