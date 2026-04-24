@@ -226,37 +226,50 @@
 
 <style>
   :global(*, *::before, *::after) { box-sizing: border-box; }
+  /* Remove default body margin so no blue gap appears above the hero on iPhone */
+  :global(html, body) { margin: 0; padding: 0; background-color: #2B2FC6; }
 
-  /* Fix 1: min-height uses dvh so it accounts for mobile browser chrome */
-  .mobile-container { max-width: 500px; margin: 0 auto; background-color: #2B2FC6; position: relative; display: flex; flex-direction: column; min-height: 100dvh; }
+  .mobile-container {
+    max-width: 500px;
+    margin: 0 auto;
+    background-color: #2B2FC6;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+  }
   .content-wrapper { padding: 0 5%; flex-grow: 1; position: relative; z-index: 2; }
 
-  .deco-planet, .deco-chrome { position: absolute; pointer-events: none; }
+  .deco-planet, .deco-chrome, .deco-rose { position: absolute; pointer-events: none; }
   .deco-planet { top: 0; left: 0; width: 40%; z-index: 3; }
   .deco-chrome { top: 0; right: 0; width: 30%; z-index: 3; }
+  /* Rose sits at the true bottom of the page content — scrolls with the page */
+  .deco-rose { bottom: 0; right: 0; width: 40%; z-index: 3; }
 
-  /* Fix 2: Rose is fixed to viewport bottom so content scrolls freely past it */
-  .deco-rose { position: fixed; bottom: 0; right: 0; width: min(40%, 200px); z-index: 3; pointer-events: none; }
-
-  /* Fix 3: Hero image extends into notch area via safe-area-inset */
+  /* Hero image extends behind the notch using safe-area-inset */
   .hero { position: relative; width: 100%; z-index: 1; }
-  .hero-image { display: block; width: 100%; height: auto; margin-top: calc(-1 * env(safe-area-inset-top, 0px)); padding-top: env(safe-area-inset-top, 0px); }
-  .hero-content { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(180deg, rgba(43, 47, 198, 0) 0%, #2B2FC6 100%); padding-top: 60px; z-index: 2; }
+  .hero-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-top: calc(-1 * env(safe-area-inset-top, 0px));
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  .hero-content {
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%;
+    background: linear-gradient(180deg, rgba(43, 47, 198, 0) 0%, #2B2FC6 100%);
+    padding-top: 60px;
+    z-index: 2;
+  }
   .logo { display: block; width: 75%; max-width: 280px; margin: 0 auto 12px auto; }
 
-  /* Fix 4: All social icons forced to same size */
+  /* Social icons — icons kept as-is, sizes left for when correct icon files are uploaded */
   .social-links { display: flex; justify-content: center; align-items: center; gap: 18px; margin-bottom: 18px; }
   .social-links a { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; flex-shrink: 0; }
   .social-links img { width: 28px; height: 28px; object-fit: contain; transition: transform 0.2s; }
   .social-links a:hover img { transform: scale(1.1); }
-  /* Extra enforcement for SVGs with non-square viewBoxes (SoundCloud, Bandcamp) */
-  .social-links a:nth-child(4) img,
-  .social-links a:nth-child(5) img {
-    width: 28px;
-    height: 28px;
-    min-width: 28px;
-    min-height: 28px;
-  }
 
   /* Anchor nav */
   .anchor-nav-wrapper { position: relative; overflow: hidden; padding-bottom: 12px; }
@@ -275,7 +288,6 @@
   .button-outline { display: inline-flex; align-items: center; justify-content: center; padding: 2px 14px; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 0.75rem; background-color: transparent; color: #fff; border: 1px solid #fff; transition: all 0.2s; white-space: nowrap; }
   .button-outline:hover { background-color: #fff; color: #A374F5; }
 
-  /* Fix 5: Section spacing halved from 1.5rem to 0.75rem */
   .content-section { padding: 0.75rem 0; }
   .content-section h2 { font-size: 2rem; text-align: left; margin-bottom: 1rem; opacity: 0.4; color: #fff; text-transform: none; font-family: 'Dela Gothic One', sans-serif; font-weight: 400; }
 
