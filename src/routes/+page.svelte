@@ -265,15 +265,15 @@
 
   /* Social icons */
   .social-links { display: flex; justify-content: center; align-items: center; gap: 18px; margin-bottom: 18px; }
-  .social-links a { display: flex; align-items: center; justify-content: center; width: 31px; height: 31px; flex-shrink: 0; }
-  /* TikTok (2nd) & Instagram (3rd): 22px */
-  .social-links img { width: 22px; height: 22px; object-fit: contain; transition: transform 0.2s; }
-  /* YouTube (1st): 25px */
-  .social-links a:nth-child(1) img { width: 25px; height: 25px; }
-  /* SoundCloud (4th): 27 x 1.10 = 30px */
-  .social-links a:nth-child(4) img { width: 30px; height: 30px; }
-  /* Bandcamp (5th): 28 x 1.10 = 31px */
-  .social-links a:nth-child(5) img { width: 31px; height: 31px; }
+  .social-links a { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; flex-shrink: 0; }
+  /* TikTok (2nd) & Instagram (3rd): 22 x0.9 x0.9 = 18px */
+  .social-links img { width: 18px; height: 18px; object-fit: contain; transition: transform 0.2s; }
+  /* YouTube (1st): 25 x0.9 = 23px */
+  .social-links a:nth-child(1) img { width: 23px; height: 23px; }
+  /* SoundCloud (4th): 30 x0.9 = 27px */
+  .social-links a:nth-child(4) img { width: 27px; height: 27px; }
+  /* Bandcamp (5th): 31 x0.9 = 28px */
+  .social-links a:nth-child(5) img { width: 28px; height: 28px; }
   .social-links a:hover img { transform: scale(1.1); }
 
   /* Anchor nav */
