@@ -78,7 +78,7 @@
         <a href="https://www.youtube.com/@Enoltra" target="_blank" rel="noopener noreferrer"><img src="/icon-youtube.svg" alt="YouTube"></a>
         <a href="https://www.tiktok.com/@enoltra.live" target="_blank" rel="noopener noreferrer"><img src="/icon-tiktok.svg" alt="TikTok"></a>
         <a href="https://www.instagram.com/enoltralive/" target="_blank" rel="noopener noreferrer"><img src="/icon-instagram.svg" alt="Instagram"></a>
-        <a href="https://soundcloud.com/enoltra" target="_blank" rel="noopener noreferrer"><img src="/sc-icon.svg" alt="SoundCloud"></a>
+        <a href="https://soundcloud.com/enoltralive" target="_blank" rel="noopener noreferrer"><img src="/sc-icon.svg" alt="SoundCloud"></a>
         <a href="https://enoltralive.bandcamp.com/music" target="_blank" rel="noopener noreferrer"><img src="/icon-bandcamp.svg" alt="Bandcamp"></a>
       </div>
 
@@ -265,11 +265,15 @@
 
   /* Social icons */
   .social-links { display: flex; justify-content: center; align-items: center; gap: 18px; margin-bottom: 18px; }
-  .social-links a { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; flex-shrink: 0; }
+  .social-links a { display: flex; align-items: center; justify-content: center; width: 31px; height: 31px; flex-shrink: 0; }
+  /* TikTok (2nd) & Instagram (3rd): 22px */
   .social-links img { width: 22px; height: 22px; object-fit: contain; transition: transform 0.2s; }
+  /* YouTube (1st): 25px */
   .social-links a:nth-child(1) img { width: 25px; height: 25px; }
-  .social-links a:nth-child(4) img { width: 27px; height: 27px; }
-  .social-links a:nth-child(5) img { width: 28px; height: 28px; }
+  /* SoundCloud (4th): 27 x 1.10 = 30px */
+  .social-links a:nth-child(4) img { width: 30px; height: 30px; }
+  /* Bandcamp (5th): 28 x 1.10 = 31px */
+  .social-links a:nth-child(5) img { width: 31px; height: 31px; }
   .social-links a:hover img { transform: scale(1.1); }
 
   /* Anchor nav */
@@ -277,7 +281,6 @@
   .anchor-nav { display: flex; gap: 20px; padding-left: 5%; padding-right: 100px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; white-space: nowrap; flex-wrap: nowrap; }
   .anchor-nav::-webkit-scrollbar { display: none; }
   .anchor-nav a { color: #C1FF72; text-decoration: none; font-family: 'Dela Gothic One', sans-serif; font-size: 0.8rem; font-weight: 400; flex-shrink: 0; }
-  /* Left fade — mirrors the right fade */
   .anchor-nav-fade { position: absolute; top: 0; height: 100%; pointer-events: none; }
   .anchor-nav-fade--left { left: 0; width: 40px; background: linear-gradient(to left, rgba(43, 47, 198, 0) 0%, #2B2FC6 70%); }
   .anchor-nav-fade--right { right: 0; width: 100px; background: linear-gradient(to right, rgba(43, 47, 198, 0) 0%, #2B2FC6 70%); }
