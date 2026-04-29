@@ -226,7 +226,6 @@
 
 <style>
   :global(*, *::before, *::after) { box-sizing: border-box; }
-  /* Remove default body margin so no blue gap appears above the hero on iPhone */
   :global(html, body) { margin: 0; padding: 0; background-color: #2B2FC6; }
 
   .mobile-container {
@@ -243,10 +242,8 @@
   .deco-planet, .deco-chrome, .deco-rose { position: absolute; pointer-events: none; }
   .deco-planet { top: 0; left: 0; width: 40%; z-index: 3; }
   .deco-chrome { top: 0; right: 0; width: 30%; z-index: 3; }
-  /* Rose sits at the true bottom of the page content — scrolls with the page */
   .deco-rose { bottom: 0; right: 0; width: 40%; z-index: 3; }
 
-  /* Hero image extends behind the notch using safe-area-inset */
   .hero { position: relative; width: 100%; z-index: 1; }
   .hero-image {
     display: block;
@@ -265,10 +262,24 @@
   }
   .logo { display: block; width: 75%; max-width: 280px; margin: 0 auto 12px auto; }
 
-  /* Social icons — icons kept as-is, sizes left for when correct icon files are uploaded */
+  /* Social icons — base 28px, individual overrides per icon */
   .social-links { display: flex; justify-content: center; align-items: center; gap: 18px; margin-bottom: 18px; }
-  .social-links a { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; flex-shrink: 0; }
+  .social-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    flex-shrink: 0;
+  }
+  /* Base size for TikTok (2nd) and Instagram (3rd) */
   .social-links img { width: 28px; height: 28px; object-fit: contain; transition: transform 0.2s; }
+  /* YouTube (1st): +10% = 31px */
+  .social-links a:nth-child(1) img { width: 31px; height: 31px; }
+  /* SoundCloud (4th): +20% = 34px */
+  .social-links a:nth-child(4) img { width: 34px; height: 34px; }
+  /* Bandcamp (5th): +25% = 35px */
+  .social-links a:nth-child(5) img { width: 35px; height: 35px; }
   .social-links a:hover img { transform: scale(1.1); }
 
   /* Anchor nav */
