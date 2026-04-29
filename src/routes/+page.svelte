@@ -264,30 +264,20 @@
 
   /* Social icons — base 28px, individual overrides per icon */
   .social-links { display: flex; justify-content: center; align-items: center; gap: 18px; margin-bottom: 18px; }
-  .social-links a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 35px;
-    height: 35px;
-    flex-shrink: 0;
-  }
-  /* Base size for TikTok (2nd) and Instagram (3rd) */
+  .social-links a { display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; flex-shrink: 0; }
   .social-links img { width: 28px; height: 28px; object-fit: contain; transition: transform 0.2s; }
-  /* YouTube (1st): +10% = 31px */
   .social-links a:nth-child(1) img { width: 31px; height: 31px; }
-  /* SoundCloud (4th): +20% = 34px */
   .social-links a:nth-child(4) img { width: 34px; height: 34px; }
-  /* Bandcamp (5th): +25% = 35px */
   .social-links a:nth-child(5) img { width: 35px; height: 35px; }
   .social-links a:hover img { transform: scale(1.1); }
 
   /* Anchor nav */
   .anchor-nav-wrapper { position: relative; overflow: hidden; padding-bottom: 12px; }
-  .anchor-nav { display: flex; gap: 20px; padding-left: 5%; padding-right: 60px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; white-space: nowrap; flex-wrap: nowrap; }
+  .anchor-nav { display: flex; gap: 20px; padding-left: 5%; padding-right: 100px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; white-space: nowrap; flex-wrap: nowrap; }
   .anchor-nav::-webkit-scrollbar { display: none; }
   .anchor-nav a { color: #C1FF72; text-decoration: none; font-family: 'Dela Gothic One', sans-serif; font-size: 0.8rem; font-weight: 400; flex-shrink: 0; }
-  .anchor-nav-fade { position: absolute; top: 0; right: 0; width: 60px; height: 100%; background: linear-gradient(to right, rgba(43, 47, 198, 0) 0%, #2B2FC6 100%); pointer-events: none; }
+  /* Wider fade: 100px so the last anchor item is properly masked */
+  .anchor-nav-fade { position: absolute; top: 0; right: 0; width: 100px; height: 100%; background: linear-gradient(to right, rgba(43, 47, 198, 0) 0%, #2B2FC6 70%); pointer-events: none; }
 
   /* Cards */
   .link-card { background-color: #A374F5; padding: 3%; display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
