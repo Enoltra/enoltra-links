@@ -91,7 +91,8 @@
           <a href="#newsletter">Newsletter</a>
           <a href="https://www.figma.com/proto/GPUYzijAWnOQiZq1ybTX9U/Enoltra-EPK?node-id=2843-3&t=fuvzTvd5wLEhd2nj-1" target="_blank" rel="noopener noreferrer">EPK</a>
         </nav>
-        <div class="anchor-nav-fade"></div>
+        <div class="anchor-nav-fade anchor-nav-fade--left"></div>
+        <div class="anchor-nav-fade anchor-nav-fade--right"></div>
       </div>
     </div>
   </header>
@@ -262,16 +263,12 @@
   }
   .logo { display: block; width: 75%; max-width: 280px; margin: 0 auto 12px auto; }
 
-  /* Social icons — all scaled down 20% from previous values */
+  /* Social icons */
   .social-links { display: flex; justify-content: center; align-items: center; gap: 18px; margin-bottom: 18px; }
   .social-links a { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; flex-shrink: 0; }
-  /* TikTok (2nd) & Instagram (3rd): 28 × 0.8 = 22px */
   .social-links img { width: 22px; height: 22px; object-fit: contain; transition: transform 0.2s; }
-  /* YouTube (1st): 31 × 0.8 = 25px */
   .social-links a:nth-child(1) img { width: 25px; height: 25px; }
-  /* SoundCloud (4th): 34 × 0.8 = 27px */
   .social-links a:nth-child(4) img { width: 27px; height: 27px; }
-  /* Bandcamp (5th): 35 × 0.8 = 28px */
   .social-links a:nth-child(5) img { width: 28px; height: 28px; }
   .social-links a:hover img { transform: scale(1.1); }
 
@@ -280,7 +277,10 @@
   .anchor-nav { display: flex; gap: 20px; padding-left: 5%; padding-right: 100px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; white-space: nowrap; flex-wrap: nowrap; }
   .anchor-nav::-webkit-scrollbar { display: none; }
   .anchor-nav a { color: #C1FF72; text-decoration: none; font-family: 'Dela Gothic One', sans-serif; font-size: 0.8rem; font-weight: 400; flex-shrink: 0; }
-  .anchor-nav-fade { position: absolute; top: 0; right: 0; width: 100px; height: 100%; background: linear-gradient(to right, rgba(43, 47, 198, 0) 0%, #2B2FC6 70%); pointer-events: none; }
+  /* Left fade — mirrors the right fade */
+  .anchor-nav-fade { position: absolute; top: 0; height: 100%; pointer-events: none; }
+  .anchor-nav-fade--left { left: 0; width: 40px; background: linear-gradient(to left, rgba(43, 47, 198, 0) 0%, #2B2FC6 70%); }
+  .anchor-nav-fade--right { right: 0; width: 100px; background: linear-gradient(to right, rgba(43, 47, 198, 0) 0%, #2B2FC6 70%); }
 
   /* Cards */
   .link-card { background-color: #A374F5; padding: 3%; display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
