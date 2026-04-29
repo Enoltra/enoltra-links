@@ -262,13 +262,17 @@
   }
   .logo { display: block; width: 75%; max-width: 280px; margin: 0 auto 12px auto; }
 
-  /* Social icons — base 28px, individual overrides per icon */
+  /* Social icons — all scaled down 20% from previous values */
   .social-links { display: flex; justify-content: center; align-items: center; gap: 18px; margin-bottom: 18px; }
-  .social-links a { display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; flex-shrink: 0; }
-  .social-links img { width: 28px; height: 28px; object-fit: contain; transition: transform 0.2s; }
-  .social-links a:nth-child(1) img { width: 31px; height: 31px; }
-  .social-links a:nth-child(4) img { width: 34px; height: 34px; }
-  .social-links a:nth-child(5) img { width: 35px; height: 35px; }
+  .social-links a { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; flex-shrink: 0; }
+  /* TikTok (2nd) & Instagram (3rd): 28 × 0.8 = 22px */
+  .social-links img { width: 22px; height: 22px; object-fit: contain; transition: transform 0.2s; }
+  /* YouTube (1st): 31 × 0.8 = 25px */
+  .social-links a:nth-child(1) img { width: 25px; height: 25px; }
+  /* SoundCloud (4th): 34 × 0.8 = 27px */
+  .social-links a:nth-child(4) img { width: 27px; height: 27px; }
+  /* Bandcamp (5th): 35 × 0.8 = 28px */
+  .social-links a:nth-child(5) img { width: 28px; height: 28px; }
   .social-links a:hover img { transform: scale(1.1); }
 
   /* Anchor nav */
@@ -276,7 +280,6 @@
   .anchor-nav { display: flex; gap: 20px; padding-left: 5%; padding-right: 100px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; white-space: nowrap; flex-wrap: nowrap; }
   .anchor-nav::-webkit-scrollbar { display: none; }
   .anchor-nav a { color: #C1FF72; text-decoration: none; font-family: 'Dela Gothic One', sans-serif; font-size: 0.8rem; font-weight: 400; flex-shrink: 0; }
-  /* Wider fade: 100px so the last anchor item is properly masked */
   .anchor-nav-fade { position: absolute; top: 0; right: 0; width: 100px; height: 100%; background: linear-gradient(to right, rgba(43, 47, 198, 0) 0%, #2B2FC6 70%); pointer-events: none; }
 
   /* Cards */
