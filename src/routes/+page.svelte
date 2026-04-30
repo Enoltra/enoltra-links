@@ -115,7 +115,7 @@
         <div class="card-content">
           <h3>Played-A-Live (Enoltra Bootleg)</h3>
           <p>Safri Duo</p>
-          <a href="/download-played-a-live" class="button-outline">Free Download</a>
+          <a href="https://soundcloud.com/enoltralive/safri-duo-played-a-live" target="_blank" rel="noopener noreferrer" class="button-outline">Free Download</a>
         </div>
       </div>
     </section>
