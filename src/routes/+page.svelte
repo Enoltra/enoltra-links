@@ -103,19 +103,19 @@
     <section id="downloads" class="content-section" style="padding-top: 0.5rem;">
       <h2>Free Downloads</h2>
       <div class="link-card">
-        <img src="/release2.webp" alt="Bye Bye Bye Bootleg" class="card-image"/>
-        <div class="card-content">
-          <h3>Bye Bye Bye (Enoltra Bootleg)</h3>
-          <p>N'Sync</p>
-          <a href="https://soundcloud.com/enoltralive/nsync-bye-bye-bye-enoltra-bootleg-free-dl" target="_blank" rel="noopener noreferrer" class="button-outline">Free Download</a>
-        </div>
-      </div>
-      <div class="link-card">
         <img src="/Drum-a-Lot Cover art.webp" alt="Played-A-Live Bootleg" class="card-image"/>
         <div class="card-content">
           <h3>Played-A-Live (Enoltra Bootleg)</h3>
           <p>Safri Duo</p>
           <a href="https://soundcloud.com/enoltralive/safri-duo-played-a-live" target="_blank" rel="noopener noreferrer" class="button-outline">Free Download</a>
+        </div>
+      </div>
+      <div class="link-card">
+        <img src="/release2.webp" alt="Bye Bye Bye Bootleg" class="card-image"/>
+        <div class="card-content">
+          <h3>Bye Bye Bye (Enoltra Bootleg)</h3>
+          <p>N'Sync</p>
+          <a href="https://soundcloud.com/enoltralive/nsync-bye-bye-bye-enoltra-bootleg-free-dl" target="_blank" rel="noopener noreferrer" class="button-outline">Free Download</a>
         </div>
       </div>
     </section>
