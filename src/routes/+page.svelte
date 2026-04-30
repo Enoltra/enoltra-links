@@ -107,10 +107,7 @@
         <div class="card-content">
           <h3>Bye Bye Bye (Enoltra Bootleg)</h3>
           <p>N'Sync</p>
-          <div class="card-actions">
-            <a href="https://soundcloud.com/enoltralive/nsync-bye-bye-bye-enoltra-bootleg-free-dl" target="_blank" rel="noopener noreferrer" class="button-outline">Listen</a>
-            <a href="/download-bye-bye-bye" class="button-outline">Free Download</a>
-          </div>
+          <a href="https://soundcloud.com/enoltralive/nsync-bye-bye-bye-enoltra-bootleg-free-dl" target="_blank" rel="noopener noreferrer" class="button-outline">Free Download</a>
         </div>
       </div>
       <div class="link-card">
@@ -269,13 +266,9 @@
   /* Social icons */
   .social-links { display: flex; justify-content: center; align-items: center; gap: 18px; margin-bottom: 18px; }
   .social-links a { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; flex-shrink: 0; }
-  /* TikTok (2nd) & Instagram (3rd): 22 x0.9 x0.9 = 18px */
   .social-links img { width: 18px; height: 18px; object-fit: contain; transition: transform 0.2s; }
-  /* YouTube (1st): 25 x0.9 = 23px */
   .social-links a:nth-child(1) img { width: 23px; height: 23px; }
-  /* SoundCloud (4th): 30 x0.9 = 27px */
   .social-links a:nth-child(4) img { width: 27px; height: 27px; }
-  /* Bandcamp (5th): 31 x0.9 = 28px */
   .social-links a:nth-child(5) img { width: 28px; height: 28px; }
   .social-links a:hover img { transform: scale(1.1); }
 
@@ -294,8 +287,6 @@
   .card-content { flex: 1; display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
   .card-content h3 { font-family: 'Dela Gothic One', sans-serif; font-weight: 400; font-size: 0.95rem; margin: 0; color: #fff; text-transform: none; line-height: 1.2; }
   .card-content p { font-size: 0.8rem; margin: 3px 0 6px 0; color: rgba(255, 255, 255, 0.8); line-height: 1.3; }
-
-  .card-actions { display: flex; gap: 6px; flex-wrap: wrap; }
 
   .button-outline { display: inline-flex; align-items: center; justify-content: center; padding: 2px 14px; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 0.75rem; background-color: transparent; color: #fff; border: 1px solid #fff; transition: all 0.2s; white-space: nowrap; }
   .button-outline:hover { background-color: #fff; color: #A374F5; }
