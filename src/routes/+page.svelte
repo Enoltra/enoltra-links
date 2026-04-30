@@ -107,7 +107,10 @@
         <div class="card-content">
           <h3>Bye Bye Bye (Enoltra Bootleg)</h3>
           <p>N'Sync</p>
-          <a href="/download-bye-bye-bye" class="button-outline">Free Download</a>
+          <div class="card-actions">
+            <a href="https://soundcloud.com/enoltralive/nsync-bye-bye-bye-enoltra-bootleg-free-dl" target="_blank" rel="noopener noreferrer" class="button-outline">Listen</a>
+            <a href="/download-bye-bye-bye" class="button-outline">Free Download</a>
+          </div>
         </div>
       </div>
       <div class="link-card">
@@ -291,6 +294,8 @@
   .card-content { flex: 1; display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
   .card-content h3 { font-family: 'Dela Gothic One', sans-serif; font-weight: 400; font-size: 0.95rem; margin: 0; color: #fff; text-transform: none; line-height: 1.2; }
   .card-content p { font-size: 0.8rem; margin: 3px 0 6px 0; color: rgba(255, 255, 255, 0.8); line-height: 1.3; }
+
+  .card-actions { display: flex; gap: 6px; flex-wrap: wrap; }
 
   .button-outline { display: inline-flex; align-items: center; justify-content: center; padding: 2px 14px; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 0.75rem; background-color: transparent; color: #fff; border: 1px solid #fff; transition: all 0.2s; white-space: nowrap; }
   .button-outline:hover { background-color: #fff; color: #A374F5; }
