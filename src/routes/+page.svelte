@@ -34,6 +34,14 @@
     }
   }
 
+  function trackSocial(platform) {
+    try {
+      if (typeof fbq === 'function' && window._fbConsentGranted) {
+        fbq('track', 'Lead', { content_name: platform });
+      }
+    } catch(e) {}
+  }
+
   async function handleNewsletterSubmit(event) {
     event.preventDefault();
     if (isLoading) return;
@@ -75,11 +83,11 @@
       <img src="/logo.png" alt="Enoltra Logo" class="logo" />
       
       <div class="social-links">
-        <a href="https://www.youtube.com/@Enoltra" target="_blank" rel="noopener noreferrer"><img src="/icon-youtube.svg" alt="YouTube"></a>
-        <a href="https://www.tiktok.com/@enoltra.live" target="_blank" rel="noopener noreferrer"><img src="/icon-tiktok.svg" alt="TikTok"></a>
-        <a href="https://www.instagram.com/enoltralive/" target="_blank" rel="noopener noreferrer"><img src="/icon-instagram.svg" alt="Instagram"></a>
-        <a href="https://soundcloud.com/enoltralive" target="_blank" rel="noopener noreferrer"><img src="/sc-icon.svg" alt="SoundCloud"></a>
-        <a href="https://enoltralive.bandcamp.com/music" target="_blank" rel="noopener noreferrer"><img src="/icon-bandcamp.svg" alt="Bandcamp"></a>
+        <a href="https://www.youtube.com/@Enoltra" target="_blank" rel="noopener noreferrer" on:click={() => trackSocial('YouTube')}><img src="/icon-youtube.svg" alt="YouTube"></a>
+        <a href="https://www.tiktok.com/@enoltra.live" target="_blank" rel="noopener noreferrer" on:click={() => trackSocial('TikTok')}><img src="/icon-tiktok.svg" alt="TikTok"></a>
+        <a href="https://www.instagram.com/enoltralive/" target="_blank" rel="noopener noreferrer" on:click={() => trackSocial('Instagram')}><img src="/icon-instagram.svg" alt="Instagram"></a>
+        <a href="https://soundcloud.com/enoltralive" target="_blank" rel="noopener noreferrer" on:click={() => trackSocial('SoundCloud')}><img src="/sc-icon.svg" alt="SoundCloud"></a>
+        <a href="https://enoltralive.bandcamp.com/music" target="_blank" rel="noopener noreferrer" on:click={() => trackSocial('Bandcamp')}><img src="/icon-bandcamp.svg" alt="Bandcamp"></a>
       </div>
 
       <div class="anchor-nav-wrapper">
