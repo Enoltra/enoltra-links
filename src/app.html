@@ -143,7 +143,8 @@
 			}
 
 			#stcm-wrapper .stcm-preferences-link,
-			#stcm-wrapper .stcm-credit-link {
+			#stcm-wrapper .stcm-credit-link,
+			#stcm-wrapper .stcm-icon {
 				display: none !important;
 			}
 		</style>
@@ -170,9 +171,7 @@
 				consentTypes: [
 					{ id: 'essential', label: 'Essential', description: '<p>Necessary for the site to function.</p>', required: true },
 					{ id: 'analytics', label: 'Analytics', description: '<p>Helps us understand site traffic.</p>', defaultValue: false, gtag: 'analytics_storage' },
-					{ id: 'marketing', label: 'Marketing', description: '<p>Used for personalized ads and the Meta Pixel.</p>', defaultValue: false, gtag: ['ad_storage','ad_user_data','ad_personalization'],
-						onAccept: function() { loadMetaPixel(); }
-					}
+					{ id: 'advertising', label: 'Marketing', description: '<p>Used for personalized ads and the Meta Pixel.</p>', defaultValue: false, gtag: ['ad_storage','ad_user_data','ad_personalization'] }
 				]
 			});
 
