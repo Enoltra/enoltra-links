@@ -89,30 +89,91 @@
 		<script src="https://cdn.jsdelivr.net/gh/silktide/consent-manager@v2.0.1/silktide-consent-manager.js"
 			integrity="sha384-5Pt34uiIbCsvfiiZXoLi4HRf/YBXjr9c8e+gYeVo9smUaInNHYVtc8NZ8wUnXJIq"
 			crossorigin="anonymous"></script>
+
+		<!-- Brand-matched overrides for Silktide cookie banner (v2 CSS var API) -->
+		<style>
+			#stcm-wrapper {
+				--fontFamily: 'Darker Grotesque', sans-serif;
+				--primaryColor: #C1FF72;
+				--backgroundColor: #A374F5;
+				--textColor: #FFFFFF;
+				--boxShadow: -5px 5px 10px 0px #00000022, 0px 0px 50px 0px #0000002a;
+				--backdropBackgroundColor: #2B2FC677;
+				--backdropBackgroundBlur: 6px;
+				--iconColor: #A374F5;
+				--iconBackgroundColor: #C1FF72;
+			}
+
+			#stcm-wrapper h1,
+			#stcm-wrapper h2,
+			#stcm-wrapper h3 {
+				font-family: 'Dela Gothic One', sans-serif;
+				font-weight: 400;
+				text-transform: none;
+			}
+
+			#stcm-wrapper .stcm-button {
+				font-family: 'Dela Gothic One', sans-serif;
+				font-weight: 400;
+				font-size: 0.75rem;
+				padding: 10px 22px;
+				border-radius: 999px;
+				border: 1px solid #FFFFFF;
+				background-color: transparent;
+				color: #FFFFFF;
+				transition: all 0.2s;
+				white-space: nowrap;
+			}
+
+			#stcm-wrapper .stcm-button:hover {
+				background-color: #FFFFFF;
+				color: #A374F5;
+			}
+
+			#stcm-wrapper .stcm-button--accept-all {
+				background-color: #C1FF72;
+				border-color: #C1FF72;
+				color: #2B2FC6;
+			}
+
+			#stcm-wrapper .stcm-button--accept-all:hover {
+				background-color: transparent;
+				color: #C1FF72;
+				border-color: #C1FF72;
+			}
+
+			#stcm-wrapper .stcm-preferences-link,
+			#stcm-wrapper .stcm-credit-link {
+				display: none !important;
+			}
+		</style>
+
 		<script>
 			window.silktideConsentManager.init({
-				consentTypes: [
-					{
-						id: 'essential',
-						label: 'Essential',
-						description: 'These cookies are necessary for the website to function and cannot be switched off.',
-						required: true
+				prompt: { position: 'bottomCenter' },
+				icon: { position: 'bottomLeft' },
+				backdrop: { show: false },
+				text: {
+					prompt: {
+						description: '<p>We use cookies to enhance your experience, personalize content, and analyze traffic on Enoltra.</p>',
+						acceptAllButtonText: 'Accept all',
+						rejectNonEssentialButtonText: 'Reject non-essential',
+						preferencesButtonText: 'Preferences'
 					},
-					{
-						id: 'analytics',
-						label: 'Analytics',
-						description: 'These cookies help us understand how visitors interact with our website, so we can improve the experience.'
-					},
-					{
-						id: 'advertising',
-						label: 'Advertising',
-						description: 'These cookies are used to deliver personalised content and track the effectiveness of our campaigns (e.g. Meta Pixel).'
+					preferences: {
+						title: 'Customize your preferences',
+						description: '<p>Choose which cookies you want to accept.</p>',
+						saveButtonText: 'Save and close',
+						creditLinkText: '',
 					}
-				],
-				promptText: 'We use cookies to personalise content and analyse our traffic — including Meta Pixel for campaign tracking. You can choose which cookies to allow.',
-				acceptButtonText: 'Accept all',
-				rejectButtonText: 'Essential only',
-				preferencesButtonText: 'Manage preferences'
+				},
+				consentTypes: [
+					{ id: 'essential', label: 'Essential', description: '<p>Necessary for the site to function.</p>', required: true },
+					{ id: 'analytics', label: 'Analytics', description: '<p>Helps us understand site traffic.</p>', defaultValue: false, gtag: 'analytics_storage' },
+					{ id: 'marketing', label: 'Marketing', description: '<p>Used for personalized ads and the Meta Pixel.</p>', defaultValue: false, gtag: ['ad_storage','ad_user_data','ad_personalization'],
+						onAccept: function() { loadMetaPixel(); }
+					}
+				]
 			});
 
 			// On load: if consent was previously saved, fire PageView immediately
@@ -125,79 +186,6 @@
 				}
 			});
 		</script>
-
-		<!-- Brand-matched overrides for Silktide cookie banner -->
-		<style>
-			/* ── Enoltra brand overrides for Silktide Consent Manager ── */
-			:root {
-				--stcm-primary-color: #A374F5;
-				--stcm-primary-color-hover: #b98ef7;
-				--stcm-background-color: #1e2296;
-				--stcm-text-color: #ffffff;
-				--stcm-border-color: rgba(255, 255, 255, 0.15);
-				--stcm-border-radius: 0px;
-			}
-			/* Banner background & text */
-			.stcm-banner,
-			.stcm-panel {
-				background-color: #1e2296 !important;
-				color: #ffffff !important;
-				border-top: 2px solid #A374F5 !important;
-				border-radius: 0 !important;
-				font-family: 'Darker Grotesque', sans-serif !important;
-				font-weight: 600 !important;
-			}
-			/* Headings in panel */
-			.stcm-panel h2,
-			.stcm-panel h3 {
-				font-family: 'Dela Gothic One', sans-serif !important;
-				color: #d8d0ff !important;
-				text-transform: uppercase;
-				font-weight: 400 !important;
-			}
-			/* Accept / primary button → lime green accent */
-			.stcm-btn-accept,
-			.stcm-btn-save {
-				background-color: #C1FF72 !important;
-				color: #1e2296 !important;
-				border: none !important;
-				border-radius: 999px !important;
-				font-family: 'Darker Grotesque', sans-serif !important;
-				font-weight: 700 !important;
-			}
-			.stcm-btn-accept:hover,
-			.stcm-btn-save:hover {
-				background-color: #a8e855 !important;
-			}
-			/* Reject / secondary button → outline white */
-			.stcm-btn-reject,
-			.stcm-btn-preferences {
-				background-color: transparent !important;
-				color: #ffffff !important;
-				border: 1px solid #ffffff !important;
-				border-radius: 999px !important;
-				font-family: 'Darker Grotesque', sans-serif !important;
-				font-weight: 600 !important;
-			}
-			.stcm-btn-reject:hover,
-			.stcm-btn-preferences:hover {
-				background-color: rgba(255,255,255,0.1) !important;
-			}
-			/* Toggle switches → purple */
-			.stcm-toggle input:checked + .stcm-toggle-slider {
-				background-color: #A374F5 !important;
-			}
-			/* Cookie icon (re-open button) */
-			.stcm-cookie-icon {
-				background-color: #A374F5 !important;
-				border-radius: 50% !important;
-			}
-			/* Links */
-			.stcm-banner a,
-			.stcm-panel a {
-				color: #C1FF72 !important;
-			}
-		</style>
 
 		%sveltekit.head%
 	</head>
