@@ -16,15 +16,17 @@
     } catch(e) {}
   }
 
-  function handleFollowClick(url) {
+  function handleFollowClick(url, platform) {
     window.open(url, '_blank');
     hasFollowed = true;
+    firePixelEvent('Lead', {
+      content_name: 'Played-A-Live Bootleg Download',
+      content_category: 'Social Follow — ' + platform
+    });
   }
 
   function goToDownloadStep() {
     step = 3;
-    // Step 3 = Success: "Thank you, download in your inbox"
-    // This is the bottom-of-funnel conversion
     firePixelEvent('CompleteRegistration', {
       content_name: 'Played-A-Live Bootleg Download',
       status: 'completed'
@@ -33,7 +35,6 @@
 
   // Fires when step changes reactively
   $: if (step === 2) {
-    // Step 2 = email submitted successfully → Lead
     firePixelEvent('Lead', {
       content_name: 'Played-A-Live Bootleg Download',
       content_category: 'Free Download Funnel'
@@ -78,9 +79,9 @@
           <p class="card-text">To download this track, please select one channel to follow Enoltra on:</p>
         </div>
         <div class="gate-form">
-          <button on:click={() => handleFollowClick('https://instagram.com/enoltralive')}>Instagram</button>
-          <button on:click={() => handleFollowClick('https://youtube.com/@enoltra')}>YouTube</button>
-          <button on:click={() => handleFollowClick('https://www.tiktok.com/@enoltralive')}>TikTok</button>
+          <button on:click={() => handleFollowClick('https://instagram.com/enoltralive', 'Instagram')}>Instagram</button>
+          <button on:click={() => handleFollowClick('https://youtube.com/@enoltra', 'YouTube')}>YouTube</button>
+          <button on:click={() => handleFollowClick('https://www.tiktok.com/@enoltralive', 'TikTok')}>TikTok</button>
         </div>
         {#if hasFollowed}
           <div class="footer-prompt-wrapper">
