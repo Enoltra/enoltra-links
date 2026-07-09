@@ -160,7 +160,44 @@
 			.stcm-icon {
 				display: none !important;
 			}
+
+			/* ── Nuclear option: hide any anchor linking to silktide.com ── */
+			a[href*="silktide"] {
+				display: none !important;
+				visibility: hidden !important;
+				opacity: 0 !important;
+				pointer-events: none !important;
+				width: 0 !important;
+				height: 0 !important;
+				overflow: hidden !important;
+			}
 		</style>
+
+		<script>
+			(function () {
+				function removeSilktideBranding() {
+					document.querySelectorAll('a[href*="silktide"]').forEach(function (el) {
+						var root = el.closest('[id*="stcm"], [class*="stcm"], [id*="silktide"], [class*="silktide"]');
+						(root || el).remove();
+					});
+
+					document.querySelectorAll('#stcm-icon, [class*="stcm-icon"], [id*="stcm-icon"]').forEach(function (el) {
+						el.remove();
+					});
+				}
+
+				document.addEventListener('DOMContentLoaded', removeSilktideBranding);
+
+				document.addEventListener('DOMContentLoaded', function () {
+					var observer = new MutationObserver(function () {
+						removeSilktideBranding();
+					});
+
+					observer.observe(document.body, { childList: true, subtree: true });
+					setTimeout(function () { observer.disconnect(); }, 10000);
+				});
+			})();
+		</script>
 
 		<script>
 			window.silktideConsentManager.init({
