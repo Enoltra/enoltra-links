@@ -3,6 +3,202 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+		<!-- =====================================================
+		     CONSENT MODE V2 — must run BEFORE any tracking tags
+		     Sets all signals to 'denied' by default until user
+		     accepts via the Silktide cookie banner below.
+		===================================================== -->
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag() { dataLayer.push(arguments); }
+			// Default deny all — Silktide will fire granted signals after consent
+			gtag('consent', 'default', {
+				ad_storage: 'denied',
+				ad_user_data: 'denied',
+				ad_personalization: 'denied',
+				analytics_storage: 'denied',
+				wait_for_update: 500
+			});
+			// Also default-deny Meta's consent signals
+			window._fbConsentGranted = false;
+		</script>
+
+		<!-- =====================================================
+		     META PIXEL — ID: 908360642829623
+		     Fires PageView on every page load.
+		     Lead, CompleteRegistration events fired per-page.
+		     Pixel only activates once consent is granted.
+		===================================================== -->
+		<script>
+			!function(f,b,e,v,n,t,s)
+			{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+				n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+				if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+				n.queue=[];t=b.createElement(e);t.async=!0;
+				t.src=v;s=b.getElementsByTagName(e)[0];
+				s.parentNode.insertBefore(t,s)}(window, document,'script',
+				'https://connect.facebook.net/en_US/fbevents.js');
+
+			// Grant consent for Meta when user accepts advertising cookies
+			window.addEventListener('stcm_consent_update', function(e) {
+				var consent = e.detail || {};
+				if (consent.advertising) {
+					fbq('consent', 'grant');
+					window._fbConsentGranted = true;
+					// Fire PageView after consent granted if not already fired
+					if (!window._fbPageViewFired) {
+						fbq('track', 'PageView');
+						window._fbPageViewFired = true;
+					}
+					// Also update Google Consent Mode signals
+					gtag('consent', 'update', {
+						ad_storage: 'granted',
+						ad_user_data: 'granted',
+						ad_personalization: 'granted'
+					});
+				} else {
+					fbq('consent', 'revoke');
+					window._fbConsentGranted = false;
+				}
+				if (consent.analytics) {
+					gtag('consent', 'update', { analytics_storage: 'granted' });
+				}
+			});
+
+			fbq('init', '908360642829623');
+			// PageView fires immediately — Meta handles consent internally via fbq('consent')
+			// If user already consented previously (cookie exists), fire right away
+			window._fbPageViewFired = false;
+		</script>
+		<noscript>
+			<img height="1" width="1" style="display:none"
+				src="https://www.facebook.com/tr?id=908360642829623&ev=PageView&noscript=1"/>
+		</noscript>
+
+		<!-- =====================================================
+		     SILKTIDE CONSENT MANAGER — Open Source, Consent Mode v2
+		     Styled to match Enoltra brand: #2B2FC6 bg, #A374F5 purple,
+		     #C1FF72 accent, Darker Grotesque / Dela Gothic One fonts.
+		===================================================== -->
+		<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+		<link rel="stylesheet" id="silktide-consent-manager-css"
+			href="https://cdn.jsdelivr.net/gh/silktide/consent-manager@v2.0.1/silktide-consent-manager.css"
+			integrity="sha384-EdMq+R+YOnsbelo08wPenoTlnxbAyxI11NMIxzugx/qAsbh64KcOkqxYqq6pfvO/"
+			crossorigin="anonymous">
+		<script src="https://cdn.jsdelivr.net/gh/silktide/consent-manager@v2.0.1/silktide-consent-manager.js"
+			integrity="sha384-5Pt34uiIbCsvfiiZXoLi4HRf/YBXjr9c8e+gYeVo9smUaInNHYVtc8NZ8wUnXJIq"
+			crossorigin="anonymous"></script>
+		<script>
+			window.silktideConsentManager.init({
+				consentTypes: [
+					{
+						id: 'essential',
+						label: 'Essential',
+						description: 'These cookies are necessary for the website to function and cannot be switched off.',
+						required: true
+					},
+					{
+						id: 'analytics',
+						label: 'Analytics',
+						description: 'These cookies help us understand how visitors interact with our website, so we can improve the experience.'
+					},
+					{
+						id: 'advertising',
+						label: 'Advertising',
+						description: 'These cookies are used to deliver personalised content and track the effectiveness of our campaigns (e.g. Meta Pixel).'
+					}
+				],
+				promptText: 'We use cookies to personalise content and analyse our traffic — including Meta Pixel for campaign tracking. You can choose which cookies to allow.',
+				acceptButtonText: 'Accept all',
+				rejectButtonText: 'Essential only',
+				preferencesButtonText: 'Manage preferences'
+			});
+
+			// On load: if consent was previously saved, fire PageView immediately
+			document.addEventListener('DOMContentLoaded', function() {
+				var saved = window.silktideConsentManager && window.silktideConsentManager.getConsent
+					? window.silktideConsentManager.getConsent()
+					: null;
+				if (saved && saved.advertising && !window._fbPageViewFired) {
+					try { fbq('track', 'PageView'); window._fbPageViewFired = true; } catch(e) {}
+				}
+			});
+		</script>
+
+		<!-- Brand-matched overrides for Silktide cookie banner -->
+		<style>
+			/* ── Enoltra brand overrides for Silktide Consent Manager ── */
+			:root {
+				--stcm-primary-color: #A374F5;
+				--stcm-primary-color-hover: #b98ef7;
+				--stcm-background-color: #1e2296;
+				--stcm-text-color: #ffffff;
+				--stcm-border-color: rgba(255, 255, 255, 0.15);
+				--stcm-border-radius: 0px;
+			}
+			/* Banner background & text */
+			.stcm-banner,
+			.stcm-panel {
+				background-color: #1e2296 !important;
+				color: #ffffff !important;
+				border-top: 2px solid #A374F5 !important;
+				border-radius: 0 !important;
+				font-family: 'Darker Grotesque', sans-serif !important;
+				font-weight: 600 !important;
+			}
+			/* Headings in panel */
+			.stcm-panel h2,
+			.stcm-panel h3 {
+				font-family: 'Dela Gothic One', sans-serif !important;
+				color: #d8d0ff !important;
+				text-transform: uppercase;
+				font-weight: 400 !important;
+			}
+			/* Accept / primary button → lime green accent */
+			.stcm-btn-accept,
+			.stcm-btn-save {
+				background-color: #C1FF72 !important;
+				color: #1e2296 !important;
+				border: none !important;
+				border-radius: 999px !important;
+				font-family: 'Darker Grotesque', sans-serif !important;
+				font-weight: 700 !important;
+			}
+			.stcm-btn-accept:hover,
+			.stcm-btn-save:hover {
+				background-color: #a8e855 !important;
+			}
+			/* Reject / secondary button → outline white */
+			.stcm-btn-reject,
+			.stcm-btn-preferences {
+				background-color: transparent !important;
+				color: #ffffff !important;
+				border: 1px solid #ffffff !important;
+				border-radius: 999px !important;
+				font-family: 'Darker Grotesque', sans-serif !important;
+				font-weight: 600 !important;
+			}
+			.stcm-btn-reject:hover,
+			.stcm-btn-preferences:hover {
+				background-color: rgba(255,255,255,0.1) !important;
+			}
+			/* Toggle switches → purple */
+			.stcm-toggle input:checked + .stcm-toggle-slider {
+				background-color: #A374F5 !important;
+			}
+			/* Cookie icon (re-open button) */
+			.stcm-cookie-icon {
+				background-color: #A374F5 !important;
+				border-radius: 50% !important;
+			}
+			/* Links */
+			.stcm-banner a,
+			.stcm-panel a {
+				color: #C1FF72 !important;
+			}
+		</style>
+
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">

@@ -1,4 +1,3 @@
-
 <script>
   import { slide, fade } from 'svelte/transition';
   import { enhance } from '$app/forms';
@@ -7,6 +6,16 @@
   $: step = form?.success ? 2 : 1;
   let hasFollowed = false;
 
+  // ── Meta Pixel helper ──────────────────────────────────────────
+  function firePixelEvent(eventName, params) {
+    try {
+      if (typeof fbq === 'function') {
+        if (params) fbq('track', eventName, params);
+        else fbq('track', eventName);
+      }
+    } catch(e) {}
+  }
+
   function handleFollowClick(url) {
     window.open(url, '_blank');
     hasFollowed = true;
@@ -14,6 +23,21 @@
 
   function goToDownloadStep() {
     step = 3;
+    // Step 3 = Success: "Thank you, download in your inbox"
+    // This is the bottom-of-funnel conversion
+    firePixelEvent('CompleteRegistration', {
+      content_name: 'Played-A-Live Bootleg Download',
+      status: 'completed'
+    });
+  }
+
+  // Fires when step changes reactively
+  $: if (step === 2) {
+    // Step 2 = email submitted successfully → Lead
+    firePixelEvent('Lead', {
+      content_name: 'Played-A-Live Bootleg Download',
+      content_category: 'Free Download Funnel'
+    });
   }
 </script>
 

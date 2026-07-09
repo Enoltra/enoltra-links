@@ -4,16 +4,39 @@
   export let form;
 
   $: step = form?.success ? 2 : 1;
-  // let step = 2; // Hard-code preview step 2
   let hasFollowed = false;
+
+  // ── Meta Pixel helper ──────────────────────────────────────────
+  function firePixelEvent(eventName, params) {
+    try {
+      if (typeof fbq === 'function') {
+        if (params) fbq('track', eventName, params);
+        else fbq('track', eventName);
+      }
+    } catch(e) {}
+  }
 
   function handleFollowClick(url) {
     window.open(url, '_blank');
     hasFollowed = true;
   }
-  
+
   function goToDownloadStep() {
-      step = 3;
+    step = 3;
+    // Step 3 = Success: "Thank you, download in your inbox"
+    firePixelEvent('CompleteRegistration', {
+      content_name: 'Bye Bye Bye Bootleg Download',
+      status: 'completed'
+    });
+  }
+
+  // Fires when step changes reactively
+  $: if (step === 2) {
+    // Step 2 = email submitted successfully → Lead
+    firePixelEvent('Lead', {
+      content_name: 'Bye Bye Bye Bootleg Download',
+      content_category: 'Free Download Funnel'
+    });
   }
 </script>
 
@@ -50,7 +73,6 @@
       {/if}
 
       {#if step === 2}
-       <!-- UPDATED: Removed the step2-wrapper -->
         <div class="gate-box">
           <p class="card-text">To download this track, please select one channel to follow Enoltra on:</p>
         </div>
@@ -116,13 +138,13 @@
   .deco-shape-1 {
     bottom: 0;
     left: 0;
-    max-width: 45%; 
+    max-width: 45%;
     height: auto;
   }
   .deco-shape-2 {
     top: 0;
     right: 0;
-    max-width: 35%; 
+    max-width: 35%;
     height: auto;
   }
   .gate-header {
@@ -139,7 +161,7 @@
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
   }
   .interactive-area {
-      width: 100%;
+    width: 100%;
   }
   .gate-box {
     background-color: rgba(163, 116, 245, 0.8);
@@ -187,8 +209,7 @@
     color: #A374F5;
   }
   .gate-form button:disabled { opacity: 0.6; cursor: wait; }
-  
-  /* UPDATED: Styles for the conditional button */
+
   .footer-prompt-wrapper {
     width: 100%;
     text-align: center;
@@ -199,7 +220,7 @@
     border: none;
     padding: 0;
     color: #fff;
-    font-family: 'Dela Gothic One', sans-serif; /* Correct font */
+    font-family: 'Dela Gothic One', sans-serif;
     font-size: 1rem;
     cursor: pointer;
   }
