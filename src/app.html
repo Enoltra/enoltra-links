@@ -112,39 +112,52 @@
 				text-transform: none;
 			}
 
+			/* ── Force ALL buttons to be identical pill shape ── */
+			#stcm-wrapper button,
 			#stcm-wrapper .stcm-button {
-				font-family: 'Dela Gothic One', sans-serif;
-				font-weight: 400;
-				font-size: 0.75rem;
-				padding: 10px 22px;
-				border-radius: 999px;
-				border: 1px solid #FFFFFF;
-				background-color: transparent;
-				color: #FFFFFF;
-				transition: all 0.2s;
-				white-space: nowrap;
+				font-family: 'Dela Gothic One', sans-serif !important;
+				font-weight: 400 !important;
+				font-size: 0.75rem !important;
+				padding: 10px 22px !important;
+				border-radius: 999px !important;
+				border: 1px solid #FFFFFF !important;
+				background-color: transparent !important;
+				color: #FFFFFF !important;
+				transition: all 0.2s !important;
+				white-space: nowrap !important;
+				box-shadow: none !important;
 			}
 
+			#stcm-wrapper button:hover,
 			#stcm-wrapper .stcm-button:hover {
-				background-color: #FFFFFF;
-				color: #A374F5;
+				background-color: #FFFFFF !important;
+				color: #A374F5 !important;
 			}
 
-			#stcm-wrapper .stcm-button--accept-all {
-				background-color: #C1FF72;
-				border-color: #C1FF72;
-				color: #2B2FC6;
+			/* ── Accept all: green pill ── */
+			#stcm-wrapper .stcm-button--accept-all,
+			#stcm-wrapper button.stcm-button--accept-all {
+				background-color: #C1FF72 !important;
+				border-color: #C1FF72 !important;
+				color: #2B2FC6 !important;
+				border-radius: 999px !important;
 			}
 
-			#stcm-wrapper .stcm-button--accept-all:hover {
-				background-color: transparent;
-				color: #C1FF72;
-				border-color: #C1FF72;
+			#stcm-wrapper .stcm-button--accept-all:hover,
+			#stcm-wrapper button.stcm-button--accept-all:hover {
+				background-color: transparent !important;
+				color: #C1FF72 !important;
+				border-color: #C1FF72 !important;
 			}
 
+			/* ── Hide Silktide branding: credit link, preferences link, S icon (all known selectors) ── */
 			#stcm-wrapper .stcm-preferences-link,
 			#stcm-wrapper .stcm-credit-link,
-			#stcm-wrapper .stcm-icon {
+			#stcm-wrapper .stcm-icon,
+			#stcm-wrapper [class*="stcm-icon"],
+			#stcm-wrapper [class*="silktide"],
+			#stcm-icon,
+			.stcm-icon {
 				display: none !important;
 			}
 		</style>
@@ -152,7 +165,7 @@
 		<script>
 			window.silktideConsentManager.init({
 				prompt: { position: 'bottomCenter' },
-				icon: { position: 'bottomLeft' },
+				icon: { position: 'bottomLeft', show: false },
 				backdrop: { show: false },
 				text: {
 					prompt: {
