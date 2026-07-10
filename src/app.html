@@ -12,7 +12,6 @@
 		<script>
 			window.dataLayer = window.dataLayer || [];
 			function gtag() { dataLayer.push(arguments); }
-			// Default deny all — Silktide will fire granted signals after consent
 			gtag('consent', 'default', {
 				ad_storage: 'denied',
 				ad_user_data: 'denied',
@@ -20,15 +19,11 @@
 				analytics_storage: 'denied',
 				wait_for_update: 500
 			});
-			// Also default-deny Meta's consent signals
 			window._fbConsentGranted = false;
 		</script>
 
 		<!-- =====================================================
 		     META PIXEL — ID: 908360642829623
-		     Fires PageView on every page load.
-		     Lead, CompleteRegistration events fired per-page.
-		     Pixel only activates once consent is granted.
 		===================================================== -->
 		<script>
 			!function(f,b,e,v,n,t,s)
@@ -40,18 +35,15 @@
 				s.parentNode.insertBefore(t,s)}(window, document,'script',
 				'https://connect.facebook.net/en_US/fbevents.js');
 
-			// Grant consent for Meta when user accepts advertising cookies
 			window.addEventListener('stcm_consent_update', function(e) {
 				var consent = e.detail || {};
 				if (consent.advertising) {
 					fbq('consent', 'grant');
 					window._fbConsentGranted = true;
-					// Fire PageView after consent granted if not already fired
 					if (!window._fbPageViewFired) {
 						fbq('track', 'PageView');
 						window._fbPageViewFired = true;
 					}
-					// Also update Google Consent Mode signals
 					gtag('consent', 'update', {
 						ad_storage: 'granted',
 						ad_user_data: 'granted',
@@ -67,8 +59,6 @@
 			});
 
 			fbq('init', '908360642829623');
-			// PageView fires immediately — Meta handles consent internally via fbq('consent')
-			// If user already consented previously (cookie exists), fire right away
 			window._fbPageViewFired = false;
 		</script>
 		<noscript>
@@ -77,9 +67,7 @@
 		</noscript>
 
 		<!-- =====================================================
-		     SILKTIDE CONSENT MANAGER — Open Source, Consent Mode v2
-		     Styled to match Enoltra brand: #2B2FC6 bg, #A374F5 purple,
-		     #C1FF72 accent, Darker Grotesque / Dela Gothic One fonts.
+		     SILKTIDE CONSENT MANAGER
 		===================================================== -->
 		<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 		<link rel="stylesheet" id="silktide-consent-manager-css"
@@ -90,7 +78,6 @@
 			integrity="sha384-5Pt34uiIbCsvfiiZXoLi4HRf/YBXjr9c8e+gYeVo9smUaInNHYVtc8NZ8wUnXJIq"
 			crossorigin="anonymous"></script>
 
-		<!-- Brand-matched overrides for Silktide cookie banner (v2 CSS var API) -->
 		<style>
 			#stcm-wrapper {
 				--fontFamily: 'Darker Grotesque', sans-serif;
@@ -112,7 +99,7 @@
 				text-transform: none;
 			}
 
-			/* ── Pill shape for action buttons only — close button is excluded ── */
+			/* ── Pill shape for action buttons only — close button excluded ── */
 			#stcm-wrapper button:not([class*="close"]):not([aria-label="Close"]):not([aria-label="close"]),
 			#stcm-wrapper .stcm-button {
 				font-family: 'Dela Gothic One', sans-serif !important;
@@ -150,7 +137,7 @@
 				border-color: #C1FF72 !important;
 			}
 
-			/* ── Close (X) button — fully standalone, no pill inheritance ── */
+			/* ── Close (X) button — fully standalone, no pill ── */
 			#stcm-wrapper .stcm-close,
 			#stcm-wrapper .stcm-button--close,
 			#stcm-wrapper button.stcm-close,
@@ -184,7 +171,7 @@
 				background: transparent !important;
 			}
 
-			/* ── Make the Preferences control look like a text link, not a pill button ── */
+			/* ── Preferences: text link style ── */
 			#stcm-wrapper .stcm-linklike-preferences {
 				background: transparent !important;
 				border: 0 !important;
@@ -211,7 +198,7 @@
 				border: 0 !important;
 			}
 
-			/* ── Hide Silktide branding: credit link, preferences link, S icon (all known selectors) ── */
+			/* ── Hide Silktide branding ── */
 			#stcm-wrapper .stcm-preferences-link,
 			#stcm-wrapper .stcm-credit-link,
 			#stcm-wrapper .stcm-icon,
@@ -227,7 +214,6 @@
 				display: none !important;
 			}
 
-			/* ── Nuclear option: hide any anchor linking to silktide.com ── */
 			a[href*="silktide"] {
 				display: none !important;
 				visibility: hidden !important;
@@ -246,24 +232,16 @@
 						var root = el.closest('[id*="stcm"], [class*="stcm"], [id*="silktide"], [class*="silktide"]');
 						(root || el).remove();
 					});
-
 					document.querySelectorAll(
 						'#stcm-icon, [class*="stcm-icon"], [id*="stcm-icon"], ' +
 						'[class*="stcm-prompt__icon"], [class*="stcm-banner__icon"], ' +
 						'[class*="__icon"][id*="stcm"], ' +
 						'img[src*="silktide"], svg[class*="icon"]'
-					).forEach(function (el) {
-						el.remove();
-					});
+					).forEach(function (el) { el.remove(); });
 				}
-
 				document.addEventListener('DOMContentLoaded', removeSilktideBranding);
-
 				document.addEventListener('DOMContentLoaded', function () {
-					var observer = new MutationObserver(function () {
-						removeSilktideBranding();
-					});
-
+					var observer = new MutationObserver(removeSilktideBranding);
 					observer.observe(document.body, { childList: true, subtree: true });
 					setTimeout(function () { observer.disconnect(); }, 10000);
 				});
@@ -276,22 +254,16 @@
 				function softenPreferencesButton() {
 					var wrapper = document.querySelector('#stcm-wrapper');
 					if (!wrapper) return;
-
 					wrapper.querySelectorAll('button, a').forEach(function (el) {
 						var label = (el.textContent || '').trim().toLowerCase();
-						if (label === 'preferences' || label === 'cookie settings') {
+						if (label === 'preferences') {
 							el.classList.add('stcm-linklike-preferences');
 						}
 					});
 				}
-
 				document.addEventListener('DOMContentLoaded', softenPreferencesButton);
-
 				document.addEventListener('DOMContentLoaded', function () {
-					var observer = new MutationObserver(function () {
-						softenPreferencesButton();
-					});
-
+					var observer = new MutationObserver(softenPreferencesButton);
 					observer.observe(document.body, { childList: true, subtree: true });
 					setTimeout(function () { observer.disconnect(); }, 10000);
 				});
@@ -308,7 +280,7 @@
 						description: '<p>I use a few cookies to keep this site running smoothly, understand what content people actually enjoy, and support occasional marketing. You can accept everything, reject anything non-essential, or adjust your settings.</p>',
 						acceptAllButtonText: 'Accept all',
 						rejectNonEssentialButtonText: 'Reject non-essential',
-						preferencesButtonText: 'Cookie settings'
+						preferencesButtonText: 'Preferences'
 					},
 					preferences: {
 						title: 'Choose what works for you',
@@ -341,7 +313,6 @@
 				]
 			});
 
-			// On load: if consent was previously saved, fire PageView immediately
 			document.addEventListener('DOMContentLoaded', function() {
 				var saved = window.silktideConsentManager && window.silktideConsentManager.getConsent
 					? window.silktideConsentManager.getConsent()
