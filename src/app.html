@@ -219,39 +219,36 @@
 			})();
 		</script>
 
-		<!-- ── Force Preferences to plain underlined text via inline style (beats all CSS specificity) ── -->
+		<!-- ── Force Preferences to plain underlined text via JS style object (no all:unset) ── -->
 		<script>
 			(function () {
-				var PREF_STYLE = [
-					'all: unset',
-					'display: inline',
-					'cursor: pointer',
-					'font-family: "Space Grotesk", "Darker Grotesque", sans-serif',
-					'font-size: 0.95rem',
-					'font-weight: 700',
-					'color: rgba(255,255,255,0.75)',
-					'text-decoration: underline',
-					'text-underline-offset: 3px',
-					'text-decoration-thickness: 1px',
-					'background: none',
-					'border: none',
-					'border-radius: 0',
-					'padding: 0',
-					'margin: 4px 0 0 0',
-					'box-shadow: none',
-					'width: auto',
-					'height: auto',
-					'white-space: nowrap'
-				].join('; ');
-
 				function forcePreferencesStyle() {
 					var wrapper = document.querySelector('#stcm-wrapper');
 					if (!wrapper) return;
 					wrapper.querySelectorAll('button, a').forEach(function (el) {
 						var label = (el.textContent || '').trim().toLowerCase();
 						if (label === 'preferences') {
-							el.setAttribute('style', PREF_STYLE);
-							el.setAttribute('data-pref-styled', '1');
+							var s = el.style;
+							s.setProperty('display', 'inline', 'important');
+							s.setProperty('cursor', 'pointer', 'important');
+							s.setProperty('font-family', '"Darker Grotesque", sans-serif', 'important');
+							s.setProperty('font-size', '0.95rem', 'important');
+							s.setProperty('font-weight', '800', 'important');
+							s.setProperty('color', 'rgba(255,255,255,0.75)', 'important');
+							s.setProperty('text-decoration', 'underline', 'important');
+							s.setProperty('text-underline-offset', '3px', 'important');
+							s.setProperty('text-decoration-thickness', '1px', 'important');
+							s.setProperty('background', 'none', 'important');
+							s.setProperty('background-color', 'transparent', 'important');
+							s.setProperty('border', 'none', 'important');
+							s.setProperty('border-radius', '0', 'important');
+							s.setProperty('padding', '0', 'important');
+							s.setProperty('margin', '4px 0 0 0', 'important');
+							s.setProperty('box-shadow', 'none', 'important');
+							s.setProperty('width', 'auto', 'important');
+							s.setProperty('height', 'auto', 'important');
+							s.setProperty('min-width', '0', 'important');
+							s.setProperty('white-space', 'nowrap', 'important');
 						}
 					});
 				}
@@ -259,7 +256,7 @@
 				document.addEventListener('DOMContentLoaded', function () {
 					forcePreferencesStyle();
 					var observer = new MutationObserver(forcePreferencesStyle);
-					observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+					observer.observe(document.body, { childList: true, subtree: true });
 					setTimeout(function () { observer.disconnect(); }, 15000);
 				});
 			})();
