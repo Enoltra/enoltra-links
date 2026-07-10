@@ -6,8 +6,6 @@
 
 		<!-- =====================================================
 		     CONSENT MODE V2 — must run BEFORE any tracking tags
-		     Sets all signals to 'denied' by default until user
-		     accepts via the Silktide cookie banner below.
 		===================================================== -->
 		<script>
 			window.dataLayer = window.dataLayer || [];
@@ -99,9 +97,9 @@
 				text-transform: none;
 			}
 
-			/* ── Pill shape for action buttons only — close button excluded ── */
-			#stcm-wrapper button:not([class*="close"]):not([aria-label="Close"]):not([aria-label="close"]),
-			#stcm-wrapper .stcm-button {
+			/* ── Pill shape for action buttons — close + preferences excluded ── */
+			#stcm-wrapper button:not([class*="close"]):not([aria-label="Close"]):not([aria-label="close"]):not(.stcm-button--preferences):not(.stcm-linklike-preferences),
+			#stcm-wrapper .stcm-button:not(.stcm-button--preferences) {
 				font-family: 'Dela Gothic One', sans-serif !important;
 				font-weight: 400 !important;
 				font-size: 0.75rem !important;
@@ -115,8 +113,8 @@
 				box-shadow: none !important;
 			}
 
-			#stcm-wrapper button:not([class*="close"]):not([aria-label="Close"]):not([aria-label="close"]):hover,
-			#stcm-wrapper .stcm-button:hover {
+			#stcm-wrapper button:not([class*="close"]):not([aria-label="Close"]):not([aria-label="close"]):not(.stcm-button--preferences):not(.stcm-linklike-preferences):hover,
+			#stcm-wrapper .stcm-button:not(.stcm-button--preferences):hover {
 				background-color: #FFFFFF !important;
 				color: #A374F5 !important;
 			}
@@ -171,31 +169,37 @@
 				background: transparent !important;
 			}
 
-			/* ── Preferences: text link style ── */
+			/* ── Preferences button — plain underlined text link, NO pill ── */
+			#stcm-wrapper .stcm-button--preferences,
+			#stcm-wrapper button.stcm-button--preferences,
 			#stcm-wrapper .stcm-linklike-preferences {
-				background: transparent !important;
-				border: 0 !important;
-				padding: 0 !important;
-				margin-left: 6px !important;
-				min-width: 0 !important;
-				width: auto !important;
-				height: auto !important;
-				box-shadow: none !important;
+				all: unset !important;
+				display: inline !important;
+				cursor: pointer !important;
 				font-family: 'Darker Grotesque', sans-serif !important;
-				font-size: 1rem !important;
+				font-size: 0.95rem !important;
 				font-weight: 600 !important;
-				color: rgba(255,255,255,0.82) !important;
+				color: rgba(255,255,255,0.75) !important;
 				text-decoration: underline !important;
 				text-underline-offset: 3px !important;
 				text-decoration-thickness: 1px !important;
-				letter-spacing: 0.01em !important;
+				background: none !important;
+				border: none !important;
+				padding: 0 !important;
+				margin: 0 !important;
+				border-radius: 0 !important;
+				box-shadow: none !important;
+				width: auto !important;
+				height: auto !important;
 				white-space: nowrap !important;
 			}
 
+			#stcm-wrapper .stcm-button--preferences:hover,
+			#stcm-wrapper button.stcm-button--preferences:hover,
 			#stcm-wrapper .stcm-linklike-preferences:hover {
 				color: #FFFFFF !important;
-				background: transparent !important;
-				border: 0 !important;
+				background: none !important;
+				border: none !important;
 			}
 
 			/* ── Hide Silktide branding ── */
@@ -242,28 +246,6 @@
 				document.addEventListener('DOMContentLoaded', removeSilktideBranding);
 				document.addEventListener('DOMContentLoaded', function () {
 					var observer = new MutationObserver(removeSilktideBranding);
-					observer.observe(document.body, { childList: true, subtree: true });
-					setTimeout(function () { observer.disconnect(); }, 10000);
-				});
-			})();
-		</script>
-
-		<!-- ── Downgrade Preferences button to subtle text link after render ── -->
-		<script>
-			(function () {
-				function softenPreferencesButton() {
-					var wrapper = document.querySelector('#stcm-wrapper');
-					if (!wrapper) return;
-					wrapper.querySelectorAll('button, a').forEach(function (el) {
-						var label = (el.textContent || '').trim().toLowerCase();
-						if (label === 'preferences') {
-							el.classList.add('stcm-linklike-preferences');
-						}
-					});
-				}
-				document.addEventListener('DOMContentLoaded', softenPreferencesButton);
-				document.addEventListener('DOMContentLoaded', function () {
-					var observer = new MutationObserver(softenPreferencesButton);
 					observer.observe(document.body, { childList: true, subtree: true });
 					setTimeout(function () { observer.disconnect(); }, 10000);
 				});
