@@ -150,6 +150,38 @@
 				border-color: #C1FF72 !important;
 			}
 
+			/* ── Close (X) button — plain icon, no pill ── */
+			#stcm-wrapper .stcm-close,
+			#stcm-wrapper .stcm-button--close,
+			#stcm-wrapper button.stcm-close,
+			#stcm-wrapper button[class*="close"],
+			#stcm-wrapper button[aria-label="Close"],
+			#stcm-wrapper button[aria-label="close"] {
+				background: transparent !important;
+				border: 0 !important;
+				border-radius: 0 !important;
+				padding: 4px !important;
+				min-width: 0 !important;
+				width: auto !important;
+				height: auto !important;
+				box-shadow: none !important;
+				color: #FFFFFF !important;
+				opacity: 0.7 !important;
+				transition: opacity 0.2s !important;
+			}
+
+			#stcm-wrapper .stcm-close:hover,
+			#stcm-wrapper .stcm-button--close:hover,
+			#stcm-wrapper button.stcm-close:hover,
+			#stcm-wrapper button[class*="close"]:hover,
+			#stcm-wrapper button[aria-label="Close"]:hover,
+			#stcm-wrapper button[aria-label="close"]:hover {
+				background: transparent !important;
+				border: 0 !important;
+				color: #FFFFFF !important;
+				opacity: 1 !important;
+			}
+
 			/* ── Make the Preferences control look like a text link, not a pill button ── */
 			#stcm-wrapper .stcm-linklike-preferences {
 				background: transparent !important;
