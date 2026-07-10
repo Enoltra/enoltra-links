@@ -150,12 +150,44 @@
 				border-color: #C1FF72 !important;
 			}
 
+			/* ── Make the Preferences control look like a text link, not a pill button ── */
+			#stcm-wrapper .stcm-linklike-preferences {
+				background: transparent !important;
+				border: 0 !important;
+				padding: 0 !important;
+				margin-left: 6px !important;
+				min-width: 0 !important;
+				width: auto !important;
+				height: auto !important;
+				box-shadow: none !important;
+				font-family: 'Darker Grotesque', sans-serif !important;
+				font-size: 1rem !important;
+				font-weight: 600 !important;
+				color: rgba(255,255,255,0.82) !important;
+				text-decoration: underline !important;
+				text-underline-offset: 3px !important;
+				text-decoration-thickness: 1px !important;
+				letter-spacing: 0.01em !important;
+				white-space: nowrap !important;
+			}
+
+			#stcm-wrapper .stcm-linklike-preferences:hover {
+				color: #FFFFFF !important;
+				background: transparent !important;
+				border: 0 !important;
+			}
+
 			/* ── Hide Silktide branding: credit link, preferences link, S icon (all known selectors) ── */
 			#stcm-wrapper .stcm-preferences-link,
 			#stcm-wrapper .stcm-credit-link,
 			#stcm-wrapper .stcm-icon,
 			#stcm-wrapper [class*="stcm-icon"],
 			#stcm-wrapper [class*="silktide"],
+			#stcm-wrapper .stcm-prompt__icon,
+			#stcm-wrapper .stcm-banner__icon,
+			#stcm-wrapper [class*="__icon"],
+			#stcm-wrapper img[src*="silktide"],
+			#stcm-wrapper svg[class*="icon"],
 			#stcm-icon,
 			.stcm-icon {
 				display: none !important;
@@ -181,7 +213,12 @@
 						(root || el).remove();
 					});
 
-					document.querySelectorAll('#stcm-icon, [class*="stcm-icon"], [id*="stcm-icon"]').forEach(function (el) {
+					document.querySelectorAll(
+						'#stcm-icon, [class*="stcm-icon"], [id*="stcm-icon"], ' +
+						'[class*="stcm-prompt__icon"], [class*="stcm-banner__icon"], ' +
+						'[class*="__icon"][id*="stcm"], ' +
+						'img[src*="silktide"], svg[class*="icon"]'
+					).forEach(function (el) {
 						el.remove();
 					});
 				}
@@ -199,6 +236,34 @@
 			})();
 		</script>
 
+		<!-- ── Downgrade Preferences button to subtle text link after render ── -->
+		<script>
+			(function () {
+				function softenPreferencesButton() {
+					var wrapper = document.querySelector('#stcm-wrapper');
+					if (!wrapper) return;
+
+					wrapper.querySelectorAll('button, a').forEach(function (el) {
+						var label = (el.textContent || '').trim().toLowerCase();
+						if (label === 'preferences' || label === 'cookie settings') {
+							el.classList.add('stcm-linklike-preferences');
+						}
+					});
+				}
+
+				document.addEventListener('DOMContentLoaded', softenPreferencesButton);
+
+				document.addEventListener('DOMContentLoaded', function () {
+					var observer = new MutationObserver(function () {
+						softenPreferencesButton();
+					});
+
+					observer.observe(document.body, { childList: true, subtree: true });
+					setTimeout(function () { observer.disconnect(); }, 10000);
+				});
+			})();
+		</script>
+
 		<script>
 			window.silktideConsentManager.init({
 				prompt: { position: 'bottomCenter' },
@@ -206,22 +271,39 @@
 				backdrop: { show: false },
 				text: {
 					prompt: {
-						description: '<p>We use cookies to enhance your experience, personalize content, and analyze traffic on Enoltra.</p>',
+						description: '<p>I use a few cookies to keep this site running smoothly, understand what content people actually enjoy, and support occasional marketing. You can accept everything, reject anything non-essential, or adjust your settings.</p>',
 						acceptAllButtonText: 'Accept all',
 						rejectNonEssentialButtonText: 'Reject non-essential',
-						preferencesButtonText: 'Preferences'
+						preferencesButtonText: 'Cookie settings'
 					},
 					preferences: {
-						title: 'Customize your preferences',
-						description: '<p>Choose which cookies you want to accept.</p>',
-						saveButtonText: 'Save and close',
+						title: 'Choose what works for you',
+						description: '<p>I like to keep this simple. Essential cookies keep the site working properly, analytics help me understand what people are into, and marketing cookies support advertising and audience insights. Pick whatever feels right for you.</p>',
+						saveButtonText: 'Save settings',
 						creditLinkText: '',
 					}
 				},
 				consentTypes: [
-					{ id: 'essential', label: 'Essential', description: '<p>Necessary for the site to function.</p>', required: true },
-					{ id: 'analytics', label: 'Analytics', description: '<p>Helps us understand site traffic.</p>', defaultValue: false, gtag: 'analytics_storage' },
-					{ id: 'advertising', label: 'Marketing', description: '<p>Used for personalized ads and the Meta Pixel.</p>', defaultValue: false, gtag: ['ad_storage','ad_user_data','ad_personalization'] }
+					{
+						id: 'essential',
+						label: 'Essential',
+						description: '<p>Needed for the site to work properly and securely.</p>',
+						required: true
+					},
+					{
+						id: 'analytics',
+						label: 'Analytics',
+						description: '<p>Helps me understand visits, pages, and what content gets the most interest.</p>',
+						defaultValue: false,
+						gtag: 'analytics_storage'
+					},
+					{
+						id: 'advertising',
+						label: 'Marketing',
+						description: '<p>Used for marketing and advertising purposes, including measuring campaigns and reaching people who may be interested in my work.</p>',
+						defaultValue: false,
+						gtag: ['ad_storage', 'ad_user_data', 'ad_personalization']
+					}
 				]
 			});
 
