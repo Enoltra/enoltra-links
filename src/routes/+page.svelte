@@ -5,7 +5,7 @@
   let isLoading = false;
 
   const emblaOptions = {
-    loop: false,
+    loop: true,
     draggable: true,
     dragFree: false
   };
@@ -15,23 +15,11 @@
   }
 
   function scrollPrev() {
-    if (emblaApi) {
-      if (!emblaApi.canScrollPrev()) {
-        emblaApi.scrollTo(emblaApi.scrollSnapList().length - 1);
-      } else {
-        emblaApi.scrollPrev();
-      }
-    }
+    if (emblaApi) emblaApi.scrollPrev();
   }
 
   function scrollNext() {
-    if (emblaApi) {
-      if (!emblaApi.canScrollNext()) {
-        emblaApi.scrollTo(0);
-      } else {
-        emblaApi.scrollNext();
-      }
-    }
+    if (emblaApi) emblaApi.scrollNext();
   }
 
   function trackSocial(platform) {
@@ -160,6 +148,11 @@
         </button>
         <div class="embla" use:emblaCarouselSvelte={emblaOptions} on:emblaInit={onEmblaInit}>
           <div class="embla__container">
+            <div class="embla__slide">
+              <div class="video-wrapper">
+                <iframe src="https://www.youtube.com/embed/JQJ-wIDUZGI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen={true}></iframe>
+              </div>
+            </div>
             <div class="embla__slide">
               <div class="video-wrapper">
                 <iframe src="https://www.youtube.com/embed/NM4TvK4unjE?si=tvONa5w_HSH1baPV" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen={true}></iframe>
