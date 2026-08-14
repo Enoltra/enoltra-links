@@ -45,17 +45,23 @@ export async function POST({ request }) {
   }
 
   // Step 1: Validate email via AbstractAPI
-  try {
-    const validationResponse = await fetch(
-      `https://emailvalidation.abstractapi.com/v1/?api_key=${PRIVATE_EMAIL_VALIDATION_API_KEY}&email=${email}`
-    );
-    const validationData = await validationResponse.json();
-    if (validationData.deliverability !== 'DELIVERABLE') {
-      return json({ error: 'Invalid e-mail. Please enter a valid e-mail.' }, { status: 400, headers: corsHeaders() });
-    }
-  } catch {
-    return json({ error: 'Could not verify email at this time.' }, { status: 500, headers: corsHeaders() });
+try {
+  const validationResponse = await fetch(
+    `https://emailvalidation.abstractapi.com/v1/?api_key=${PRIVATE_EMAIL_VALIDATION_API_KEY}&email=${encodeURIComponent(email)}`
+  );
+  const validationData = await validationResponse.json();
+
+  if (!validationResponse.ok || validationData.error) {
+    console.error('Abstract API error:', validationData.error || validationResponse.status);
+    return json({ error: 'Could not verify email at this time. Please try again shortly.' }, { status: 502, headers: corsHeaders() });
   }
+
+  if (validationData.deliverability !== 'DELIVERABLE') {
+    return json({ error: 'Invalid e-mail. Please enter a valid e-mail.' }, { status: 400, headers: corsHeaders() });
+  }
+} catch {
+  return json({ error: 'Could not verify email at this time.' }, { status: 500, headers: corsHeaders() });
+}
 
   const { downloadUrl, songName } = trackData;
 
