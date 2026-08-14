@@ -33,28 +33,43 @@
 				s.parentNode.insertBefore(t,s)}(window, document,'script',
 				'https://connect.facebook.net/en_US/fbevents.js');
 
-			window.addEventListener('stcm_consent_update', function(e) {
-				var consent = e.detail || {};
-				if (consent.advertising) {
+			// ---------------------------------------------------------------
+			// Consent hooks.
+			// NOTE: the Silktide consent manager does NOT dispatch a DOM event.
+			// It only pushes to window.dataLayer (for GTM). The supported hook is
+			// the per-consent-type onAccept / onReject callbacks passed to init(),
+			// which also re-run automatically for returning visitors.
+			// These globals are called from those callbacks further down.
+			// ---------------------------------------------------------------
+			window._grantMarketingConsent = function () {
+				try {
 					fbq('consent', 'grant');
 					window._fbConsentGranted = true;
-					if (!window._fbPageViewFired) {
-						fbq('track', 'PageView');
-						window._fbPageViewFired = true;
-					}
 					gtag('consent', 'update', {
 						ad_storage: 'granted',
 						ad_user_data: 'granted',
 						ad_personalization: 'granted'
 					});
-				} else {
+					if (!window._fbPageViewFired) {
+						fbq('track', 'PageView');
+						window._fbPageViewFired = true;
+					}
+					// Flush any clicks that happened before consent was granted
+					if (window._fbQueue && window._fbQueue.length) {
+						window._fbQueue.forEach(function (item) {
+							try { fbq('trackCustom', item.name, item.params); } catch (e) {}
+						});
+						window._fbQueue = [];
+					}
+				} catch (e) {}
+			};
+
+			window._revokeMarketingConsent = function () {
+				try {
 					fbq('consent', 'revoke');
 					window._fbConsentGranted = false;
-				}
-				if (consent.analytics) {
-					gtag('consent', 'update', { analytics_storage: 'granted' });
-				}
-			});
+				} catch (e) {}
+			};
 
 			// Default-deny until the consent manager grants marketing consent
 			fbq('consent', 'revoke');
@@ -295,43 +310,42 @@
 						label: 'Analytics',
 						description: '<p>Helps me understand visits, pages, and what content gets the most interest.</p>',
 						defaultValue: false,
-						gtag: 'analytics_storage'
+						gtag: 'analytics_storage',
+						onAccept: function () {
+							try { gtag('consent', 'update', { analytics_storage: 'granted' }); } catch (e) {}
+						},
+						onReject: function () {
+							try { gtag('consent', 'update', { analytics_storage: 'denied' }); } catch (e) {}
+						}
 					},
 					{
 						id: 'advertising',
 						label: 'Marketing',
 						description: '<p>Used for marketing and advertising purposes, including measuring campaigns and reaching people who may be interested in my work.</p>',
 						defaultValue: false,
-						gtag: ['ad_storage', 'ad_user_data', 'ad_personalization']
+						gtag: ['ad_storage', 'ad_user_data', 'ad_personalization'],
+						onAccept: function () { window._grantMarketingConsent(); },
+						onReject: function () { window._revokeMarketingConsent(); }
 					}
 				]
 			});
 
-			document.addEventListener('DOMContentLoaded', function() {
-				var saved = window.silktideConsentManager && window.silktideConsentManager.getConsent
-					? window.silktideConsentManager.getConsent()
-					: null;
-				if (saved && saved.advertising) {
-					// Returning visitor with saved marketing consent:
-					// re-grant fbq consent and set the flag so ALL click events fire,
-					// not just PageView (this was previously missing).
-					try {
-						fbq('consent', 'grant');
-						window._fbConsentGranted = true;
-						gtag('consent', 'update', {
-							ad_storage: 'granted',
-							ad_user_data: 'granted',
-							ad_personalization: 'granted'
-						});
-						if (!window._fbPageViewFired) {
-							fbq('track', 'PageView');
-							window._fbPageViewFired = true;
-						}
-					} catch(e) {}
-				}
-				if (saved && saved.analytics) {
-					try { gtag('consent', 'update', { analytics_storage: 'granted' }); } catch(e) {}
-				}
+			// Safety net: if the marketing consent choice is already stored from a
+			// previous visit but the onAccept callback did not run for any reason,
+			// grant consent directly from the stored localStorage value.
+			document.addEventListener('DOMContentLoaded', function () {
+				if (window._fbConsentGranted) return;
+				try {
+					// 'stcm.consent.advertising' is the current key;
+					// 'silktideCookieChoice_advertising' is the legacy key.
+					var stored = localStorage.getItem('stcm.consent.advertising');
+					if (stored === null) {
+						stored = localStorage.getItem('silktideCookieChoice_advertising');
+					}
+					if (stored === 'true') {
+						window._grantMarketingConsent();
+					}
+				} catch (e) {}
 			});
 		</script>
 

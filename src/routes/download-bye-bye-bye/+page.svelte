@@ -6,7 +6,10 @@
   $: step = form?.success ? 2 : 1;
   let hasFollowed = false;
 
-  // ── Meta Pixel helper ──────────────────────────────────────────
+  // ── Meta Pixel helpers ─────────────────────────────────
+  // Standard events (fbq 'track'). Consent is enforced by fbq itself:
+  // consent is revoked by default in app.html and granted only once the
+  // visitor accepts marketing cookies, so nothing leaks pre-consent.
   function firePixelEvent(eventName, params) {
     try {
       if (typeof fbq === 'function') {
@@ -16,6 +19,19 @@
     } catch(e) {}
   }
 
+  // Custom events. Fires immediately when consent is granted, otherwise
+  // queues so the event is sent as soon as the visitor accepts cookies.
+  function track(eventName, params = {}) {
+    try {
+      if (typeof fbq === 'function' && window._fbConsentGranted) {
+        fbq('trackCustom', eventName, params);
+      } else {
+        window._fbQueue = window._fbQueue || [];
+        window._fbQueue.push({ name: eventName, params });
+      }
+    } catch (e) {}
+  }
+
   function handleFollowClick(url, platform) {
     window.open(url, '_blank');
     hasFollowed = true;
@@ -23,6 +39,7 @@
       content_name: 'Bye Bye Bye Bootleg Download',
       content_category: 'Social Follow — ' + platform
     });
+    track('FreeDownloadFollow', { song: 'Bye Bye Bye (Enoltra Bootleg)', platform });
   }
 
   function goToDownloadStep() {
@@ -31,6 +48,7 @@
       content_name: 'Bye Bye Bye Bootleg Download',
       status: 'completed'
     });
+    track('FreeDownloadComplete', { song: 'Bye Bye Bye (Enoltra Bootleg)' });
   }
 
   // Fires when step changes reactively
@@ -39,6 +57,7 @@
       content_name: 'Bye Bye Bye Bootleg Download',
       content_category: 'Free Download Funnel'
     });
+    track('FreeDownloadEmailSubmit', { song: 'Bye Bye Bye (Enoltra Bootleg)' });
   }
 </script>
 

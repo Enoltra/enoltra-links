@@ -36,11 +36,16 @@
     }
   }
 
-  // Generic custom-event tracker — only fires after marketing consent
+  // Generic custom-event tracker.
+  // Fires immediately if marketing consent is granted, otherwise queues the
+  // event so it is sent as soon as the visitor accepts cookies.
   function track(eventName, params = {}) {
     try {
       if (typeof fbq === 'function' && window._fbConsentGranted) {
         fbq('trackCustom', eventName, params);
+      } else {
+        window._fbQueue = window._fbQueue || [];
+        window._fbQueue.push({ name: eventName, params });
       }
     } catch (e) {}
   }
@@ -49,9 +54,9 @@
     try {
       if (typeof fbq === 'function' && window._fbConsentGranted) {
         fbq('track', 'Lead', { content_name: platform });
-        fbq('trackCustom', 'SocialClick', { platform });
       }
     } catch(e) {}
+    track('SocialClick', { platform });
   }
 
   async function handleNewsletterSubmit(event) {
@@ -63,9 +68,9 @@
     try {
       if (typeof fbq === 'function' && window._fbConsentGranted) {
         fbq('track', 'CompleteRegistration', { content_name: 'Newsletter' });
-        fbq('trackCustom', 'NewsletterSignup');
       }
     } catch (e) {}
+    track('NewsletterSignup');
     try {
       fetch('/api/subscribe-newsletter', {
         method: 'POST',
