@@ -56,6 +56,8 @@
 				}
 			});
 
+			// Default-deny until the consent manager grants marketing consent
+			fbq('consent', 'revoke');
 			fbq('init', '908360642829623');
 			window._fbPageViewFired = false;
 		</script>
@@ -309,8 +311,26 @@
 				var saved = window.silktideConsentManager && window.silktideConsentManager.getConsent
 					? window.silktideConsentManager.getConsent()
 					: null;
-				if (saved && saved.advertising && !window._fbPageViewFired) {
-					try { fbq('track', 'PageView'); window._fbPageViewFired = true; } catch(e) {}
+				if (saved && saved.advertising) {
+					// Returning visitor with saved marketing consent:
+					// re-grant fbq consent and set the flag so ALL click events fire,
+					// not just PageView (this was previously missing).
+					try {
+						fbq('consent', 'grant');
+						window._fbConsentGranted = true;
+						gtag('consent', 'update', {
+							ad_storage: 'granted',
+							ad_user_data: 'granted',
+							ad_personalization: 'granted'
+						});
+						if (!window._fbPageViewFired) {
+							fbq('track', 'PageView');
+							window._fbPageViewFired = true;
+						}
+					} catch(e) {}
+				}
+				if (saved && saved.analytics) {
+					try { gtag('consent', 'update', { analytics_storage: 'granted' }); } catch(e) {}
 				}
 			});
 		</script>

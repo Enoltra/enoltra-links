@@ -15,6 +15,7 @@
   }
 
   function scrollPrev() {
+    track('YouTubeCarouselNav', { action: 'prev' });
     if (emblaApi) {
       if (!emblaApi.canScrollPrev()) {
         emblaApi.scrollTo(emblaApi.scrollSnapList().length - 1);
@@ -25,6 +26,7 @@
   }
 
   function scrollNext() {
+    track('YouTubeCarouselNav', { action: 'next' });
     if (emblaApi) {
       if (!emblaApi.canScrollNext()) {
         emblaApi.scrollTo(0);
@@ -34,10 +36,20 @@
     }
   }
 
+  // Generic custom-event tracker — only fires after marketing consent
+  function track(eventName, params = {}) {
+    try {
+      if (typeof fbq === 'function' && window._fbConsentGranted) {
+        fbq('trackCustom', eventName, params);
+      }
+    } catch (e) {}
+  }
+
   function trackSocial(platform) {
     try {
       if (typeof fbq === 'function' && window._fbConsentGranted) {
         fbq('track', 'Lead', { content_name: platform });
+        fbq('trackCustom', 'SocialClick', { platform });
       }
     } catch(e) {}
   }
@@ -48,6 +60,12 @@
     isLoading = true;
     const form = event.target;
     const email = new FormData(form).get('email');
+    try {
+      if (typeof fbq === 'function' && window._fbConsentGranted) {
+        fbq('track', 'CompleteRegistration', { content_name: 'Newsletter' });
+        fbq('trackCustom', 'NewsletterSignup');
+      }
+    } catch (e) {}
     try {
       fetch('/api/subscribe-newsletter', {
         method: 'POST',
@@ -97,7 +115,7 @@
           <a href="#youtube">YouTube</a>
           <a href="#collectives">Collectives</a>
           <a href="#newsletter">Newsletter</a>
-          <a href="https://www.figma.com/proto/GPUYzijAWnOQiZq1ybTX9U/Enoltra-EPK?node-id=2843-3&t=fuvzTvd5wLEhd2nj-1" target="_blank" rel="noopener noreferrer">EPK</a>
+          <a href="https://www.figma.com/proto/GPUYzijAWnOQiZq1ybTX9U/Enoltra-EPK?node-id=2843-3&t=fuvzTvd5wLEhd2nj-1" target="_blank" rel="noopener noreferrer" on:click={() => track('EPKView', { location: 'nav' })}>EPK</a>
         </nav>
         <div class="anchor-nav-fade anchor-nav-fade--left"></div>
         <div class="anchor-nav-fade anchor-nav-fade--right"></div>
@@ -115,7 +133,7 @@
         <div class="card-content">
           <h3>Played-A-Live (Enoltra Bootleg)</h3>
           <p>Safri Duo</p>
-          <a href="https://soundcloud.com/enoltralive/safri-duo-played-a-live" target="_blank" rel="noopener noreferrer" class="button-outline">Free Download</a>
+          <a href="https://soundcloud.com/enoltralive/safri-duo-played-a-live" target="_blank" rel="noopener noreferrer" class="button-outline" on:click={() => track('SongClick', { song: 'Played-A-Live (Enoltra Bootleg)', action: 'free_download' })}>Free Download</a>
         </div>
       </div>
       <div class="link-card">
@@ -123,7 +141,7 @@
         <div class="card-content">
           <h3>Bye Bye Bye (Enoltra Bootleg)</h3>
           <p>N'Sync</p>
-          <a href="https://soundcloud.com/enoltralive/nsync-bye-bye-bye-enoltra-bootleg-free-dl" target="_blank" rel="noopener noreferrer" class="button-outline">Free Download</a>
+          <a href="https://soundcloud.com/enoltralive/nsync-bye-bye-bye-enoltra-bootleg-free-dl" target="_blank" rel="noopener noreferrer" class="button-outline" on:click={() => track('SongClick', { song: 'Bye Bye Bye (Enoltra Bootleg)', action: 'free_download' })}>Free Download</a>
         </div>
       </div>
     </section>
@@ -132,11 +150,11 @@
     <section id="releases" class="content-section">
       <h2>Releases</h2>
       <div class="link-card">
-        <img src="/release-new-chapter.webp" alt="New Chapter" class="card-image"/>
+        <img src="/balkan-ljubav-cover.webp" alt="Balkan Ljubav" class="card-image"/>
         <div class="card-content">
-          <h3>New Chapter (Coming soon!)</h3>
-          <p>Enoltra</p>
-          <a href="#newsletter" class="button-outline">Get Notified</a>
+          <h3>Balkan Ljubav</h3>
+          <p>Enoltra ft. Jiku</p>
+          <a href="https://hypeddit.com/enoltraftjiku/balkanljubav" target="_blank" rel="noopener noreferrer" class="button-outline" on:click={() => { track('PreSaveClick', { song: 'Balkan Ljubav' }); track('SongClick', { song: 'Balkan Ljubav', action: 'presave_buy' }); }}>Pre-Save / Buy</a>
         </div>
       </div>
       <div class="link-card">
@@ -144,7 +162,7 @@
         <div class="card-content">
           <h3>M.I.A. (Enoltra Remix)</h3>
           <p>Enoltra</p>
-          <a href="https://enoltralive.bandcamp.com/track/box-of-beats-mia-enoltra-remix" target="_blank" rel="noopener noreferrer" class="button-outline">Get on Bandcamp</a>
+          <a href="https://enoltralive.bandcamp.com/track/box-of-beats-mia-enoltra-remix" target="_blank" rel="noopener noreferrer" class="button-outline" on:click={() => track('SongClick', { song: 'M.I.A. (Enoltra Remix)', action: 'bandcamp' })}>Get on Bandcamp</a>
         </div>
       </div>
     </section>
@@ -193,7 +211,7 @@
         <div class="card-content">
           <h3>Fader Friends</h3>
           <p>Fostering a wide range of electronic genres</p>
-          <a href="https://www.instagram.com/fader_friends/" target="_blank" rel="noopener noreferrer" class="button-outline">Follow</a>
+          <a href="https://www.instagram.com/fader_friends/" target="_blank" rel="noopener noreferrer" class="button-outline" on:click={() => track('CollectiveClick', { collective: 'Fader Friends' })}>Follow</a>
         </div>
       </div>
       <div class="link-card">
@@ -201,7 +219,7 @@
         <div class="card-content">
           <h3>BirdHouse</h3>
           <p>Quickly-growing Viennese house, progressive & trance collective</p>
-          <a href="https://www.instagram.com/kollektiv_birdhouse/" target="_blank" rel="noopener noreferrer" class="button-outline">Follow</a>
+          <a href="https://www.instagram.com/kollektiv_birdhouse/" target="_blank" rel="noopener noreferrer" class="button-outline" on:click={() => track('CollectiveClick', { collective: 'BirdHouse' })}>Follow</a>
         </div>
       </div>
     </section>
@@ -213,7 +231,7 @@
           <h3>Electronic Press Kit</h3>
           <p>Artist bio, sets, music catalogue & everything a booker needs</p>
         </div>
-        <a href="https://www.figma.com/proto/GPUYzijAWnOQiZq1ybTX9U/Enoltra-EPK?node-id=2843-3&t=fuvzTvd5wLEhd2nj-1" target="_blank" rel="noopener noreferrer" class="button-outline">View EPK</a>
+        <a href="https://www.figma.com/proto/GPUYzijAWnOQiZq1ybTX9U/Enoltra-EPK?node-id=2843-3&t=fuvzTvd5wLEhd2nj-1" target="_blank" rel="noopener noreferrer" class="button-outline" on:click={() => track('EPKView', { location: 'epk_card' })}>View EPK</a>
       </div>
     </section>
 
