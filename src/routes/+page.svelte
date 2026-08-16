@@ -115,8 +115,8 @@
 
       <div class="anchor-nav-wrapper">
         <nav class="anchor-nav">
-          <a href="#downloads">Free Downloads</a>
           <a href="#releases">Releases</a>
+          <a href="#downloads">Free Downloads</a>
           <a href="#youtube">YouTube</a>
           <a href="#collectives">Collectives</a>
           <a href="#newsletter">Newsletter</a>
@@ -130,29 +130,8 @@
 
   <main class="content-wrapper">
 
-    <!-- ========= FREE DOWNLOADS ========= -->
-    <section id="downloads" class="content-section" style="padding-top: 0.5rem;">
-      <h2>Free Downloads</h2>
-      <div class="link-card">
-        <img src="/Drum-a-Lot Cover art.webp" alt="Played-A-Live Bootleg" class="card-image"/>
-        <div class="card-content">
-          <h3>Played-A-Live (Enoltra Bootleg)</h3>
-          <p>Safri Duo</p>
-          <a href="https://soundcloud.com/enoltralive/safri-duo-played-a-live" target="_blank" rel="noopener noreferrer" class="button-outline" on:click={() => track('SongClick', { song: 'Played-A-Live (Enoltra Bootleg)', action: 'free_download' })}>Free Download</a>
-        </div>
-      </div>
-      <div class="link-card">
-        <img src="/release2.webp" alt="Bye Bye Bye Bootleg" class="card-image"/>
-        <div class="card-content">
-          <h3>Bye Bye Bye (Enoltra Bootleg)</h3>
-          <p>N'Sync</p>
-          <a href="https://soundcloud.com/enoltralive/nsync-bye-bye-bye-enoltra-bootleg-free-dl" target="_blank" rel="noopener noreferrer" class="button-outline" on:click={() => track('SongClick', { song: 'Bye Bye Bye (Enoltra Bootleg)', action: 'free_download' })}>Free Download</a>
-        </div>
-      </div>
-    </section>
-
     <!-- ========= RELEASES ========= -->
-    <section id="releases" class="content-section">
+    <section id="releases" class="content-section" style="padding-top: 0.5rem;">
       <h2>Releases</h2>
       <div class="link-card">
         <img src="/balkan-ljubav-cover.webp" alt="Balkan Ljubav" class="card-image"/>
@@ -168,6 +147,27 @@
           <h3>M.I.A. (Enoltra Remix)</h3>
           <p>Enoltra</p>
           <a href="https://enoltralive.bandcamp.com/track/box-of-beats-mia-enoltra-remix" target="_blank" rel="noopener noreferrer" class="button-outline" on:click={() => track('SongClick', { song: 'M.I.A. (Enoltra Remix)', action: 'bandcamp' })}>Get on Bandcamp</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========= FREE DOWNLOADS ========= -->
+    <section id="downloads" class="content-section">
+      <h2>Free Downloads</h2>
+      <div class="link-card">
+        <img src="/Drum-a-Lot Cover art.webp" alt="Played-A-Live Bootleg" class="card-image"/>
+        <div class="card-content">
+          <h3>Played-A-Live (Enoltra Bootleg)</h3>
+          <p>Safri Duo</p>
+          <a href="https://soundcloud.com/enoltralive/safri-duo-played-a-live" target="_blank" rel="noopener noreferrer" class="button-outline" on:click={() => track('SongClick', { song: 'Played-A-Live (Enoltra Bootleg)', action: 'free_download' })}>Free Download</a>
+        </div>
+      </div>
+      <div class="link-card">
+        <img src="/release2.webp" alt="Bye Bye Bye Bootleg" class="card-image"/>
+        <div class="card-content">
+          <h3>Bye Bye Bye (Enoltra Bootleg)</h3>
+          <p>N'Sync</p>
+          <a href="https://soundcloud.com/enoltralive/nsync-bye-bye-bye-enoltra-bootleg-free-dl" target="_blank" rel="noopener noreferrer" class="button-outline" on:click={() => track('SongClick', { song: 'Bye Bye Bye (Enoltra Bootleg)', action: 'free_download' })}>Free Download</a>
         </div>
       </div>
     </section>
