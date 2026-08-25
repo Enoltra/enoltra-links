@@ -76,8 +76,20 @@
     flex-direction: column;
   }
 
-  .hero { width: 100%; }
-  .cover { display: block; width: 100%; aspect-ratio: 1 / 1; object-fit: cover; }
+  .hero {
+    width: 100%;
+    padding: 24px 6% 0 6%;
+    display: flex;
+    justify-content: center;
+  }
+  .cover {
+    display: block;
+    width: 85%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+  }
 
   .content { padding: 24px 6%; flex-grow: 1; text-align: center; }
 
