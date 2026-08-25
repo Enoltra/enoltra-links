@@ -1,7 +1,7 @@
 <script>
   import { onMount } from 'svelte';
 
-  const TRACK_DEEP_LINK = 'https://open.spotify.com/track/3iCUZ7QWfNVyNCnAuYj0BH?context=spotify:playlist:0tE4yEqcF5tNUXKoqJHcC1';
+  const PLAYLIST_URL = 'https://open.spotify.com/playlist/0tE4yEqcF5tNUXKoqJHcC1';
   const EMBED_URL = 'https://open.spotify.com/embed/playlist/0tE4yEqcF5tNUXKoqJHcC1?utm_source=generator&theme=0';
 
   function trackClick() {
@@ -36,12 +36,12 @@
 
     <a
       class="cta"
-      href={TRACK_DEEP_LINK}
+      href={PLAYLIST_URL}
       target="_blank"
       rel="noopener noreferrer"
       on:click={trackClick}
     >
-      Listen on Spotify
+      Listen to the playlist
     </a>
 
     <div class="embed-wrapper">
