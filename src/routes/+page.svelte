@@ -15,7 +15,6 @@
   }
 
   function scrollPrev() {
-    track('YouTubeCarouselNav', { action: 'prev' });
     if (emblaApi) {
       if (!emblaApi.canScrollPrev()) {
         emblaApi.scrollTo(emblaApi.scrollSnapList().length - 1);
@@ -26,7 +25,6 @@
   }
 
   function scrollNext() {
-    track('YouTubeCarouselNav', { action: 'next' });
     if (emblaApi) {
       if (!emblaApi.canScrollNext()) {
         emblaApi.scrollTo(0);
@@ -36,41 +34,12 @@
     }
   }
 
-  // Generic custom-event tracker.
-  // Fires immediately if marketing consent is granted, otherwise queues the
-  // event so it is sent as soon as the visitor accepts cookies.
-  function track(eventName, params = {}) {
-    try {
-      if (typeof fbq === 'function' && window._fbConsentGranted) {
-        fbq('trackCustom', eventName, params);
-      } else {
-        window._fbQueue = window._fbQueue || [];
-        window._fbQueue.push({ name: eventName, params });
-      }
-    } catch (e) {}
-  }
-
-  function trackSocial(platform) {
-    try {
-      if (typeof fbq === 'function' && window._fbConsentGranted) {
-        fbq('track', 'Lead', { content_name: platform });
-      }
-    } catch(e) {}
-    track('SocialClick', { platform });
-  }
-
   async function handleNewsletterSubmit(event) {
     event.preventDefault();
     if (isLoading) return;
     isLoading = true;
     const form = event.target;
     const email = new FormData(form).get('email');
-    try {
-      if (typeof fbq === 'function' && window._fbConsentGranted) {
-        fbq('track', 'CompleteRegistration', { content_name: 'Newsletter' });
-      }
-    } catch (e) {}
-    track('NewsletterSignup');
     try {
       fetch('/api/subscribe-newsletter', {
         method: 'POST',
@@ -98,29 +67,29 @@
 <div class="mobile-container">
   <img src="/linktree-planet.webp" alt="" class="deco-planet" />
   <img src="/linktree-chrome.webp" alt="" class="deco-chrome" />
-  <img src="/linktree-rose.webp" alt="" class="deco-rose" />
+  <img src="/linktree-rose.webp" alt="" class="deco-rose" loading="lazy" />
 
   <header class="hero">
-    <img src="/linktree-hero.webp" alt="Enoltra" class="hero-image" />
+    <img src="/linktree-hero.webp" alt="Enoltra" class="hero-image" fetchpriority="high" />
     <div class="hero-content">
       <img src="/logo.png" alt="Enoltra Logo" class="logo" />
       
       <div class="social-links">
-        <a href="https://www.youtube.com/@Enoltra" target="_blank" rel="noopener noreferrer" on:click={() => trackSocial('YouTube')}><img src="/icon-youtube.svg" alt="YouTube"></a>
-        <a href="https://www.tiktok.com/@enoltra.live" target="_blank" rel="noopener noreferrer" on:click={() => trackSocial('TikTok')}><img src="/icon-tiktok.svg" alt="TikTok"></a>
-        <a href="https://www.instagram.com/enoltralive/" target="_blank" rel="noopener noreferrer" on:click={() => trackSocial('Instagram')}><img src="/icon-instagram.svg" alt="Instagram"></a>
-        <a href="https://soundcloud.com/enoltralive" target="_blank" rel="noopener noreferrer" on:click={() => trackSocial('SoundCloud')}><img src="/sc-icon.svg" alt="SoundCloud"></a>
-        <a href="https://enoltralive.bandcamp.com/music" target="_blank" rel="noopener noreferrer" on:click={() => trackSocial('Bandcamp')}><img src="/icon-bandcamp.svg" alt="Bandcamp"></a>
+        <a href="https://www.youtube.com/@Enoltra" target="_blank" rel="noopener noreferrer"><img src="/icon-youtube.svg" alt="YouTube"></a>
+        <a href="https://www.tiktok.com/@enoltra.live" target="_blank" rel="noopener noreferrer"><img src="/icon-tiktok.svg" alt="TikTok"></a>
+        <a href="https://www.instagram.com/enoltralive/" target="_blank" rel="noopener noreferrer"><img src="/icon-instagram.svg" alt="Instagram"></a>
+        <a href="https://soundcloud.com/enoltralive" target="_blank" rel="noopener noreferrer"><img src="/sc-icon.svg" alt="SoundCloud"></a>
+        <a href="https://enoltralive.bandcamp.com/music" target="_blank" rel="noopener noreferrer"><img src="/icon-bandcamp.svg" alt="Bandcamp"></a>
       </div>
 
       <div class="anchor-nav-wrapper">
         <nav class="anchor-nav">
-          <a href="#releases">Releases</a>
           <a href="#downloads">Free Downloads</a>
+          <a href="#releases">Releases</a>
           <a href="#youtube">YouTube</a>
           <a href="#collectives">Collectives</a>
           <a href="#newsletter">Newsletter</a>
-          <a href="https://www.figma.com/proto/GPUYzijAWnOQiZq1ybTX9U/Enoltra-EPK?node-id=2843-3&t=fuvzTvd5wLEhd2nj-1" target="_blank" rel="noopener noreferrer" on:click={() => track('EPKView', { location: 'nav' })}>EPK</a>
+          <a href="https://www.figma.com/proto/GPUYzijAWnOQiZq1ybTX9U/Enoltra-EPK?node-id=2843-3&t=fuvzTvd5wLEhd2nj-1" target="_blank" rel="noopener noreferrer">EPK</a>
         </nav>
         <div class="anchor-nav-fade anchor-nav-fade--left"></div>
         <div class="anchor-nav-fade anchor-nav-fade--right"></div>
@@ -130,44 +99,44 @@
 
   <main class="content-wrapper">
 
-    <!-- ========= RELEASES ========= -->
-    <section id="releases" class="content-section" style="padding-top: 0.5rem;">
-      <h2>Releases</h2>
+    <!-- ========= FREE DOWNLOADS ========= -->
+    <section id="downloads" class="content-section" style="padding-top: 0.5rem;">
+      <h2>Free Downloads</h2>
       <div class="link-card">
-        <img src="/balkan-ljubav-cover.webp" alt="Balkan Ljubav" class="card-image"/>
+        <img src="/release2.webp" alt="Bye Bye Bye Bootleg" class="card-image" width="64" height="64" loading="lazy"/>
         <div class="card-content">
-          <h3>Balkan Ljubav</h3>
-          <p>Enoltra ft. Jiku</p>
-          <a href="https://hypeddit.com/enoltraftjiku/balkanljubav" target="_blank" rel="noopener noreferrer" class="button-outline" on:click={() => { track('PreSaveClick', { song: 'Balkan Ljubav' }); track('SongClick', { song: 'Balkan Ljubav', action: 'presave_buy' }); }}>Pre-Save / Buy</a>
+          <h3>Bye Bye Bye (Enoltra Bootleg)</h3>
+          <p>N'Sync</p>
+          <a href="/download-bye-bye-bye" class="button-outline">Free Download</a>
         </div>
       </div>
       <div class="link-card">
-        <img src="/release3.webp" alt="M.I.A. Remix" class="card-image"/>
+        <img src="/Drum-a-Lot Cover art.webp" alt="Played-A-Live Bootleg" class="card-image" width="64" height="64" loading="lazy"/>
         <div class="card-content">
-          <h3>M.I.A. (Enoltra Remix)</h3>
-          <p>Enoltra</p>
-          <a href="https://enoltralive.bandcamp.com/track/box-of-beats-mia-enoltra-remix" target="_blank" rel="noopener noreferrer" class="button-outline" on:click={() => track('SongClick', { song: 'M.I.A. (Enoltra Remix)', action: 'bandcamp' })}>Get on Bandcamp</a>
+          <h3>Played-A-Live (Enoltra Bootleg)</h3>
+          <p>Safri Duo</p>
+          <a href="/download-played-a-live" class="button-outline">Free Download</a>
         </div>
       </div>
     </section>
 
-    <!-- ========= FREE DOWNLOADS ========= -->
-    <section id="downloads" class="content-section">
-      <h2>Free Downloads</h2>
+    <!-- ========= RELEASES ========= -->
+    <section id="releases" class="content-section">
+      <h2>Releases</h2>
       <div class="link-card">
-        <img src="/Drum-a-Lot Cover art.webp" alt="Played-A-Live Bootleg" class="card-image"/>
+        <img src="/release-new-chapter.webp" alt="New Chapter" class="card-image" width="64" height="64" loading="lazy"/>
         <div class="card-content">
-          <h3>Played-A-Live (Enoltra Bootleg)</h3>
-          <p>Safri Duo</p>
-          <a href="https://soundcloud.com/enoltralive/safri-duo-played-a-live" target="_blank" rel="noopener noreferrer" class="button-outline" on:click={() => track('SongClick', { song: 'Played-A-Live (Enoltra Bootleg)', action: 'free_download' })}>Free Download</a>
+          <h3>New Chapter (Coming soon!)</h3>
+          <p>Enoltra</p>
+          <a href="#newsletter" class="button-outline">Get Notified</a>
         </div>
       </div>
       <div class="link-card">
-        <img src="/release2.webp" alt="Bye Bye Bye Bootleg" class="card-image"/>
+        <img src="/release3.webp" alt="M.I.A. Remix" class="card-image" width="64" height="64" loading="lazy"/>
         <div class="card-content">
-          <h3>Bye Bye Bye (Enoltra Bootleg)</h3>
-          <p>N'Sync</p>
-          <a href="https://soundcloud.com/enoltralive/nsync-bye-bye-bye-enoltra-bootleg-free-dl" target="_blank" rel="noopener noreferrer" class="button-outline" on:click={() => track('SongClick', { song: 'Bye Bye Bye (Enoltra Bootleg)', action: 'free_download' })}>Free Download</a>
+          <h3>M.I.A. (Enoltra Remix)</h3>
+          <p>Enoltra</p>
+          <a href="https://enoltralive.bandcamp.com/track/box-of-beats-mia-enoltra-remix" target="_blank" rel="noopener noreferrer" class="button-outline">Get on Bandcamp</a>
         </div>
       </div>
     </section>
@@ -185,17 +154,12 @@
           <div class="embla__container">
             <div class="embla__slide">
               <div class="video-wrapper">
-                <iframe src="https://www.youtube.com/embed/JQJ-wIDUZGI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen={true}></iframe>
+                <iframe src="https://www.youtube.com/embed/NM4TvK4unjE?si=tvONa5w_HSH1baPV" title="YouTube video player" frameborder="0" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen={true}></iframe>
               </div>
             </div>
             <div class="embla__slide">
               <div class="video-wrapper">
-                <iframe src="https://www.youtube.com/embed/NM4TvK4unjE?si=tvONa5w_HSH1baPV" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen={true}></iframe>
-              </div>
-            </div>
-            <div class="embla__slide">
-              <div class="video-wrapper">
-                <iframe src="https://www.youtube.com/embed/LJC_k9ZuE9o?si=MPxjVMNtisC3-PFW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen={true}></iframe>
+                <iframe src="https://www.youtube.com/embed/LJC_k9ZuE9o?si=MPxjVMNtisC3-PFW" title="YouTube video player" frameborder="0" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen={true}></iframe>
               </div>
             </div>
           </div>
@@ -212,19 +176,19 @@
     <section id="collectives" class="content-section">
       <h2>Collectives</h2>
       <div class="link-card">
-        <img src="/fader_f_icon.webp" alt="Fader Friends" class="card-image"/>
+        <img src="/fader_f_icon.webp" alt="Fader Friends" class="card-image" width="64" height="64" loading="lazy"/>
         <div class="card-content">
           <h3>Fader Friends</h3>
           <p>Fostering a wide range of electronic genres</p>
-          <a href="https://www.instagram.com/fader_friends/" target="_blank" rel="noopener noreferrer" class="button-outline" on:click={() => track('CollectiveClick', { collective: 'Fader Friends' })}>Follow</a>
+          <a href="https://www.instagram.com/fader_friends/" target="_blank" rel="noopener noreferrer" class="button-outline">Follow</a>
         </div>
       </div>
       <div class="link-card">
-        <img src="/birdhouse_icon.webp" alt="BirdHouse" class="card-image"/>
+        <img src="/birdhouse_icon.webp" alt="BirdHouse" class="card-image" width="64" height="64" loading="lazy"/>
         <div class="card-content">
           <h3>BirdHouse</h3>
           <p>Quickly-growing Viennese house, progressive & trance collective</p>
-          <a href="https://www.instagram.com/kollektiv_birdhouse/" target="_blank" rel="noopener noreferrer" class="button-outline" on:click={() => track('CollectiveClick', { collective: 'BirdHouse' })}>Follow</a>
+          <a href="https://www.instagram.com/kollektiv_birdhouse/" target="_blank" rel="noopener noreferrer" class="button-outline">Follow</a>
         </div>
       </div>
     </section>
@@ -236,7 +200,7 @@
           <h3>Electronic Press Kit</h3>
           <p>Artist bio, sets, music catalogue & everything a booker needs</p>
         </div>
-        <a href="https://www.figma.com/proto/GPUYzijAWnOQiZq1ybTX9U/Enoltra-EPK?node-id=2843-3&t=fuvzTvd5wLEhd2nj-1" target="_blank" rel="noopener noreferrer" class="button-outline" on:click={() => track('EPKView', { location: 'epk_card' })}>View EPK</a>
+        <a href="https://www.figma.com/proto/GPUYzijAWnOQiZq1ybTX9U/Enoltra-EPK?node-id=2843-3&t=fuvzTvd5wLEhd2nj-1" target="_blank" rel="noopener noreferrer" class="button-outline">View EPK</a>
       </div>
     </section>
 
@@ -299,6 +263,7 @@
   }
   .logo { display: block; width: 75%; max-width: 280px; margin: 0 auto 12px auto; }
 
+  /* Social icons */
   .social-links { display: flex; justify-content: center; align-items: center; gap: 18px; margin-bottom: 18px; }
   .social-links a { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; flex-shrink: 0; }
   .social-links img { width: 18px; height: 18px; object-fit: contain; transition: transform 0.2s; }
@@ -307,6 +272,7 @@
   .social-links a:nth-child(5) img { width: 28px; height: 28px; }
   .social-links a:hover img { transform: scale(1.1); }
 
+  /* Anchor nav */
   .anchor-nav-wrapper { position: relative; overflow: hidden; padding-bottom: 12px; }
   .anchor-nav { display: flex; gap: 20px; padding-left: 5%; padding-right: 100px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; white-space: nowrap; flex-wrap: nowrap; }
   .anchor-nav::-webkit-scrollbar { display: none; }
@@ -315,6 +281,7 @@
   .anchor-nav-fade--left { left: 0; width: 40px; background: linear-gradient(to left, rgba(43, 47, 198, 0) 0%, #2B2FC6 70%); }
   .anchor-nav-fade--right { right: 0; width: 100px; background: linear-gradient(to right, rgba(43, 47, 198, 0) 0%, #2B2FC6 70%); }
 
+  /* Cards */
   .link-card { background-color: #A374F5; padding: 3%; display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
   .card-image { width: 64px; height: 64px; object-fit: cover; flex-shrink: 0; }
   .card-content { flex: 1; display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
@@ -331,6 +298,7 @@
   .epk-text h3 { font-family: 'Dela Gothic One', sans-serif; font-weight: 400; font-size: 0.95rem; margin: 0; color: #fff; text-transform: none; }
   .epk-text p { font-size: 0.8rem; margin: 4px 0 0 0; color: rgba(255, 255, 255, 0.8); line-height: 1.3; }
 
+  /* Carousel */
   .carousel-wrapper { position: relative; display: flex; align-items: center; gap: 8px; }
   .carousel-nav-btn { flex-shrink: 0; width: 24px; height: 36px; background: none; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: opacity 0.2s; z-index: 20; }
   .carousel-nav-btn:hover { opacity: 0.6; }
@@ -343,6 +311,7 @@
   .video-wrapper { position: relative; padding-top: 56.25%; height: 0; border-radius: 8px; overflow: hidden; }
   .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
 
+  /* Newsletter */
   .newsletter-box { background-color: #fff; padding: 20px; text-align: left; }
   .newsletter-box p { margin: 0 0 16px 0; line-height: 1.5; font-size: 0.9rem; color: #333; }
   .newsletter-form { display: flex; flex-direction: column; gap: 10px; }
