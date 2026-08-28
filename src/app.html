@@ -97,84 +97,82 @@ crossorigin="anonymous"></script>
 --primaryColor: #C1FF72;
 --backgroundColor: #A374F5;
 --textColor: #FFFFFF;
---boxShadow: none;
---backdropBackgroundColor: transparent;
---backdropBackgroundBlur: 0;
+--boxShadow: -5px 5px 10px 0px #00000022, 0px 0px 50px 0px #0000002a;
+--backdropBackgroundColor: #2B2FC677;
+--backdropBackgroundBlur: 6px;
 --iconColor: #A374F5;
 --iconBackgroundColor: #C1FF72;
 }
 
-/* ── Slim, full-width bottom notification strip ── */
-#stcm-wrapper,
-#stcm-wrapper .stcm-banner,
-#stcm-wrapper [class*="banner"] {
-width: 100% !important;
-max-width: 100% !important;
-box-sizing: border-box !important;
+#stcm-wrapper h1,
+#stcm-wrapper h2,
+#stcm-wrapper h3 {
+font-family: 'Dela Gothic One', sans-serif;
+font-weight: 400;
+text-transform: none;
 }
 
+/* ── Small cookie prompt ── */
 #stcm-wrapper .stcm-prompt,
 #stcm-wrapper [class*="prompt"] {
-width: 100% !important;
-max-width: 100% !important;
-box-sizing: border-box !important;
-padding: 10px 48px 10px 16px !important;
-margin: 0 !important;
-min-height: 0 !important;
+padding: 10px 14px !important;
+max-width: 320px !important;
 }
 
-/* ── Small, centred banner copy ── */
 #stcm-wrapper .stcm-prompt p,
 #stcm-wrapper [class*="prompt"] p {
-font-family: 'Darker Grotesque', sans-serif !important;
-font-size: 0.9rem !important;
-font-weight: 600 !important;
+font-size: 0.8rem !important;
 line-height: 1.25 !important;
-text-align: center !important;
-margin: 0 !important;
+margin: 0 0 8px 0 !important;
 }
 
-/* ── Keep actions compact and inline ── */
 #stcm-wrapper .stcm-prompt__actions,
 #stcm-wrapper [class*="prompt"] [class*="actions"] {
-display: inline !important;
-margin: 0 !important;
-padding: 0 !important;
+gap: 8px !important;
+display: flex !important;
+align-items: center !important;
+flex-wrap: wrap !important;
 }
 
-/* ── All prompt actions appear as small underlined text ── */
+/* ── Compact action pill ── */
 #stcm-wrapper button:not([class*="close"]):not([aria-label="Close"]):not([aria-label="close"]),
 #stcm-wrapper .stcm-button {
-display: inline !important;
-font-family: 'Darker Grotesque', sans-serif !important;
-font-size: 0.9rem !important;
-font-weight: 800 !important;
-line-height: 1.25 !important;
-color: #FFFFFF !important;
-background: transparent !important;
+font-family: 'Dela Gothic One', sans-serif !important;
+font-weight: 400 !important;
+font-size: 0.68rem !important;
+padding: 6px 16px !important;
+border-radius: 999px !important;
+border: 1px solid #FFFFFF !important;
 background-color: transparent !important;
-border: 0 !important;
-border-radius: 0 !important;
-padding: 0 !important;
-margin: 0 0 0 4px !important;
-box-shadow: none !important;
-text-decoration: underline !important;
-text-decoration-thickness: 1px !important;
-text-underline-offset: 3px !important;
-cursor: pointer !important;
+color: #FFFFFF !important;
+transition: all 0.2s !important;
 white-space: nowrap !important;
+box-shadow: none !important;
 }
 
-/* Prevent green/outlined Accept All pill styles. */
+#stcm-wrapper button:not([class*="close"]):not([aria-label="Close"]):not([aria-label="close"]):hover,
+#stcm-wrapper .stcm-button:hover {
+background-color: #FFFFFF !important;
+color: #A374F5 !important;
+}
+
+/* ── Accept all: green compact pill ── */
 #stcm-wrapper .stcm-button--accept-all,
 #stcm-wrapper button.stcm-button--accept-all {
-color: #FFFFFF !important;
-background: transparent !important;
-background-color: transparent !important;
-border: 0 !important;
+background-color: #C1FF72 !important;
+border-color: #C1FF72 !important;
+color: #2B2FC6 !important;
+border-radius: 999px !important;
 }
 
-/* ── Small standalone close button ── */
+#stcm-wrapper .stcm-button--accept-all:hover,
+#stcm-wrapper button.stcm-button--accept-all:hover {
+background-color: transparent !important;
+color: #C1FF72 !important;
+border-color: #C1FF72 !important;
+}
+
+/* ── Close button ── */
 #stcm-wrapper .stcm-close,
 #stcm-wrapper .stcm-button--close,
 #stcm-wrapper button.stcm-close,
@@ -182,20 +180,17 @@ border: 0 !important;
 #stcm-wrapper button[aria-label="Close"],
 #stcm-wrapper button[aria-label="close"] {
 all: unset !important;
-position: absolute !important;
-top: 50% !important;
-right: 14px !important;
-transform: translateY(-50%) !important;
 display: inline-flex !important;
 align-items: center !important;
 justify-content: center !important;
-width: 26px !important;
-height: 26px !important;
+width: 32px !important;
+height: 32px !important;
 cursor: pointer !important;
 color: #FFFFFF !important;
-opacity: 0.8 !important;
+opacity: 0.75 !important;
 background: transparent !important;
 border: none !important;
+border-radius: 0 !important;
 padding: 0 !important;
 box-shadow: none !important;
 transition: opacity 0.2s !important;
@@ -236,15 +231,6 @@ width: 0 !important;
 height: 0 !important;
 overflow: hidden !important;
 }
-
-/* ── Keep the preferences modal readable ── */
-#stcm-wrapper h1,
-#stcm-wrapper h2,
-#stcm-wrapper h3 {
-font-family: 'Dela Gothic One', sans-serif;
-font-weight: 400;
-text-transform: none;
-}
 </style>
 
 <script>
@@ -261,8 +247,43 @@ document.querySelectorAll(
 'img[src*="silktide"], svg[class*="icon"]'
 ).forEach(function (el) { el.remove(); });
 }
+document.addEventListener('DOMContentLoaded', removeSilktideBranding);
+document.addEventListener('DOMContentLoaded', function () {
+var observer = new MutationObserver(removeSilktideBranding);
+observer.observe(document.body, { childList: true, subtree: true });
+setTimeout(function () { observer.disconnect(); }, 10000);
+});
+})();
+</script>
 
-function stylePromptActions() {
+<!-- ── Force Preferences + No thanks to small underlined text links ── -->
+<script>
+(function () {
+function forceLinkStyle(el) {
+var s = el.style;
+s.setProperty('display', 'inline', 'important');
+s.setProperty('cursor', 'pointer', 'important');
+s.setProperty('font-family', '"Darker Grotesque", sans-serif', 'important');
+s.setProperty('font-size', '0.8rem', 'important');
+s.setProperty('font-weight', '800', 'important');
+s.setProperty('color', 'rgba(255,255,255,0.75)', 'important');
+s.setProperty('text-decoration', 'underline', 'important');
+s.setProperty('text-underline-offset', '3px', 'important');
+s.setProperty('text-decoration-thickness', '1px', 'important');
+s.setProperty('background', 'none', 'important');
+s.setProperty('background-color', 'transparent', 'important');
+s.setProperty('border', 'none', 'important');
+s.setProperty('border-radius', '0', 'important');
+s.setProperty('padding', '0', 'important');
+s.setProperty('margin', '4px 0 0 0', 'important');
+s.setProperty('box-shadow', 'none', 'important');
+s.setProperty('width', 'auto', 'important');
+s.setProperty('height', 'auto', 'important');
+s.setProperty('min-width', '0', 'important');
+s.setProperty('white-space', 'nowrap', 'important');
+}
+
+function forcePreferencesStyle() {
 var wrapper = document.querySelector('#stcm-wrapper');
 if (!wrapper) return;
 
@@ -270,42 +291,21 @@ wrapper.querySelectorAll('button, a').forEach(function (el) {
 var label = (el.textContent || '').trim().toLowerCase();
 
 if (
-label === 'accept all' ||
+label === 'preferences' ||
 label === 'no thanks' ||
-label === 'reject non-essential' ||
-label === 'preferences'
+label === 'reject non-essential'
 ) {
-var s = el.style;
-s.setProperty('display', 'inline', 'important');
-s.setProperty('font-family', '"Darker Grotesque", sans-serif', 'important');
-s.setProperty('font-size', '0.9rem', 'important');
-s.setProperty('font-weight', '800', 'important');
-s.setProperty('color', '#FFFFFF', 'important');
-s.setProperty('text-decoration', 'underline', 'important');
-s.setProperty('text-underline-offset', '3px', 'important');
-s.setProperty('text-decoration-thickness', '1px', 'important');
-s.setProperty('background', 'transparent', 'important');
-s.setProperty('border', '0', 'important');
-s.setProperty('border-radius', '0', 'important');
-s.setProperty('padding', '0', 'important');
-s.setProperty('margin', '0 0 0 4px', 'important');
-s.setProperty('box-shadow', 'none', 'important');
-s.setProperty('width', 'auto', 'important');
-s.setProperty('height', 'auto', 'important');
+forceLinkStyle(el);
 }
 });
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-removeSilktideBranding();
-stylePromptActions();
+forcePreferencesStyle();
 
-var observer = new MutationObserver(function () {
-removeSilktideBranding();
-stylePromptActions();
-});
-
+var observer = new MutationObserver(forcePreferencesStyle);
 observer.observe(document.body, { childList: true, subtree: true });
+
 setTimeout(function () { observer.disconnect(); }, 15000);
 });
 })();
@@ -367,9 +367,11 @@ if (window._fbConsentGranted) return;
 
 try {
 var stored = localStorage.getItem('stcm.consent.advertising');
+
 if (stored === null) {
 stored = localStorage.getItem('silktideCookieChoice_advertising');
 }
+
 if (stored === 'true') {
 window._grantMarketingConsent();
 }
