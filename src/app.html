@@ -54,7 +54,6 @@ if (!window._fbPageViewFired) {
 fbq('track', 'PageView');
 window._fbPageViewFired = true;
 }
-// Flush any clicks that happened before consent was granted
 if (window._fbQueue && window._fbQueue.length) {
 window._fbQueue.forEach(function (item) {
 try { fbq('trackCustom', item.name, item.params); } catch (e) {}
@@ -71,7 +70,6 @@ window._fbConsentGranted = false;
 } catch (e) {}
 };
 
-// Default-deny until the consent manager grants marketing consent
 fbq('consent', 'revoke');
 fbq('init', '908360642829623');
 window._fbPageViewFired = false;
@@ -99,73 +97,84 @@ crossorigin="anonymous"></script>
 --primaryColor: #C1FF72;
 --backgroundColor: #A374F5;
 --textColor: #FFFFFF;
---boxShadow: -5px 5px 10px 0px #00000022, 0px 0px 50px 0px #0000002a;
---backdropBackgroundColor: #2B2FC677;
---backdropBackgroundBlur: 6px;
+--boxShadow: none;
+--backdropBackgroundColor: transparent;
+--backdropBackgroundBlur: 0;
 --iconColor: #A374F5;
 --iconBackgroundColor: #C1FF72;
 }
 
-#stcm-wrapper h1,
-#stcm-wrapper h2,
-#stcm-wrapper h3 {
-font-family: 'Dela Gothic One', sans-serif;
-font-weight: 400;
-text-transform: none;
+/* ── Slim, full-width bottom notification strip ── */
+#stcm-wrapper,
+#stcm-wrapper .stcm-banner,
+#stcm-wrapper [class*="banner"] {
+width: 100% !important;
+max-width: 100% !important;
+box-sizing: border-box !important;
 }
 
-/* ── Compact prompt sizing for mobile ── */
 #stcm-wrapper .stcm-prompt,
 #stcm-wrapper [class*="prompt"] {
-padding: 14px 18px !important;
+width: 100% !important;
+max-width: 100% !important;
+box-sizing: border-box !important;
+padding: 10px 48px 10px 16px !important;
+margin: 0 !important;
+min-height: 0 !important;
 }
 
+/* ── Small, centred banner copy ── */
 #stcm-wrapper .stcm-prompt p,
 #stcm-wrapper [class*="prompt"] p {
-font-size: 0.85rem !important;
-line-height: 1.3 !important;
-margin: 0 0 10px 0 !important;
+font-family: 'Darker Grotesque', sans-serif !important;
+font-size: 0.9rem !important;
+font-weight: 600 !important;
+line-height: 1.25 !important;
+text-align: center !important;
+margin: 0 !important;
 }
 
-/* ── Pill shape for action buttons — close button excluded ── */
+/* ── Keep actions compact and inline ── */
+#stcm-wrapper .stcm-prompt__actions,
+#stcm-wrapper [class*="prompt"] [class*="actions"] {
+display: inline !important;
+margin: 0 !important;
+padding: 0 !important;
+}
+
+/* ── All prompt actions appear as small underlined text ── */
 #stcm-wrapper button:not([class*="close"]):not([aria-label="Close"]):not([aria-label="close"]),
 #stcm-wrapper .stcm-button {
-font-family: 'Dela Gothic One', sans-serif !important;
-font-weight: 400 !important;
-font-size: 0.75rem !important;
-padding: 8px 20px !important;
-border-radius: 999px !important;
-border: 1px solid #FFFFFF !important;
-background-color: transparent !important;
+display: inline !important;
+font-family: 'Darker Grotesque', sans-serif !important;
+font-size: 0.9rem !important;
+font-weight: 800 !important;
+line-height: 1.25 !important;
 color: #FFFFFF !important;
-transition: all 0.2s !important;
-white-space: nowrap !important;
+background: transparent !important;
+background-color: transparent !important;
+border: 0 !important;
+border-radius: 0 !important;
+padding: 0 !important;
+margin: 0 0 0 4px !important;
 box-shadow: none !important;
+text-decoration: underline !important;
+text-decoration-thickness: 1px !important;
+text-underline-offset: 3px !important;
+cursor: pointer !important;
+white-space: nowrap !important;
 }
 
-#stcm-wrapper button:not([class*="close"]):not([aria-label="Close"]):not([aria-label="close"]):hover,
-#stcm-wrapper .stcm-button:hover {
-background-color: #FFFFFF !important;
-color: #A374F5 !important;
-}
-
-/* ── Accept all: green pill ── */
+/* Prevent green/outlined Accept All pill styles. */
 #stcm-wrapper .stcm-button--accept-all,
 #stcm-wrapper button.stcm-button--accept-all {
-background-color: #C1FF72 !important;
-border-color: #C1FF72 !important;
-color: #2B2FC6 !important;
-border-radius: 999px !important;
-}
-
-#stcm-wrapper .stcm-button--accept-all:hover,
-#stcm-wrapper button.stcm-button--accept-all:hover {
+color: #FFFFFF !important;
+background: transparent !important;
 background-color: transparent !important;
-color: #C1FF72 !important;
-border-color: #C1FF72 !important;
+border: 0 !important;
 }
 
-/* ── Close (X) button — fully standalone, no pill ── */
+/* ── Small standalone close button ── */
 #stcm-wrapper .stcm-close,
 #stcm-wrapper .stcm-button--close,
 #stcm-wrapper button.stcm-close,
@@ -173,17 +182,20 @@ border-color: #C1FF72 !important;
 #stcm-wrapper button[aria-label="Close"],
 #stcm-wrapper button[aria-label="close"] {
 all: unset !important;
+position: absolute !important;
+top: 50% !important;
+right: 14px !important;
+transform: translateY(-50%) !important;
 display: inline-flex !important;
 align-items: center !important;
 justify-content: center !important;
-width: 32px !important;
-height: 32px !important;
+width: 26px !important;
+height: 26px !important;
 cursor: pointer !important;
 color: #FFFFFF !important;
-opacity: 0.75 !important;
+opacity: 0.8 !important;
 background: transparent !important;
 border: none !important;
-border-radius: 0 !important;
 padding: 0 !important;
 box-shadow: none !important;
 transition: opacity 0.2s !important;
@@ -224,6 +236,15 @@ width: 0 !important;
 height: 0 !important;
 overflow: hidden !important;
 }
+
+/* ── Keep the preferences modal readable ── */
+#stcm-wrapper h1,
+#stcm-wrapper h2,
+#stcm-wrapper h3 {
+font-family: 'Dela Gothic One', sans-serif;
+font-weight: 400;
+text-transform: none;
+}
 </style>
 
 <script>
@@ -240,52 +261,50 @@ document.querySelectorAll(
 'img[src*="silktide"], svg[class*="icon"]'
 ).forEach(function (el) { el.remove(); });
 }
-document.addEventListener('DOMContentLoaded', removeSilktideBranding);
-document.addEventListener('DOMContentLoaded', function () {
-var observer = new MutationObserver(removeSilktideBranding);
-observer.observe(document.body, { childList: true, subtree: true });
-setTimeout(function () { observer.disconnect(); }, 10000);
-});
-})();
-</script>
 
-<!-- ── Force Preferences to plain underlined text via JS style object (no all:unset) ── -->
-<script>
-(function () {
-function forcePreferencesStyle() {
+function stylePromptActions() {
 var wrapper = document.querySelector('#stcm-wrapper');
 if (!wrapper) return;
+
 wrapper.querySelectorAll('button, a').forEach(function (el) {
 var label = (el.textContent || '').trim().toLowerCase();
-if (label === 'preferences') {
+
+if (
+label === 'accept all' ||
+label === 'no thanks' ||
+label === 'reject non-essential' ||
+label === 'preferences'
+) {
 var s = el.style;
 s.setProperty('display', 'inline', 'important');
-s.setProperty('cursor', 'pointer', 'important');
 s.setProperty('font-family', '"Darker Grotesque", sans-serif', 'important');
-s.setProperty('font-size', '0.95rem', 'important');
+s.setProperty('font-size', '0.9rem', 'important');
 s.setProperty('font-weight', '800', 'important');
-s.setProperty('color', 'rgba(255,255,255,0.75)', 'important');
+s.setProperty('color', '#FFFFFF', 'important');
 s.setProperty('text-decoration', 'underline', 'important');
 s.setProperty('text-underline-offset', '3px', 'important');
 s.setProperty('text-decoration-thickness', '1px', 'important');
-s.setProperty('background', 'none', 'important');
-s.setProperty('background-color', 'transparent', 'important');
-s.setProperty('border', 'none', 'important');
+s.setProperty('background', 'transparent', 'important');
+s.setProperty('border', '0', 'important');
 s.setProperty('border-radius', '0', 'important');
 s.setProperty('padding', '0', 'important');
-s.setProperty('margin', '4px 0 0 0', 'important');
+s.setProperty('margin', '0 0 0 4px', 'important');
 s.setProperty('box-shadow', 'none', 'important');
 s.setProperty('width', 'auto', 'important');
 s.setProperty('height', 'auto', 'important');
-s.setProperty('min-width', '0', 'important');
-s.setProperty('white-space', 'nowrap', 'important');
 }
 });
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-forcePreferencesStyle();
-var observer = new MutationObserver(forcePreferencesStyle);
+removeSilktideBranding();
+stylePromptActions();
+
+var observer = new MutationObserver(function () {
+removeSilktideBranding();
+stylePromptActions();
+});
+
 observer.observe(document.body, { childList: true, subtree: true });
 setTimeout(function () { observer.disconnect(); }, 15000);
 });
@@ -308,7 +327,7 @@ preferences: {
 title: 'Choose what works for you',
 description: '<p>I like to keep this simple. Essential cookies keep the site working properly, analytics help me understand what people are into, and marketing cookies support advertising and audience insights. Pick whatever feels right for you.</p>',
 saveButtonText: 'Save settings',
-creditLinkText: '',
+creditLinkText: ''
 }
 },
 consentTypes: [
@@ -343,14 +362,10 @@ onReject: function () { window._revokeMarketingConsent(); }
 ]
 });
 
-// Safety net: if the marketing consent choice is already stored from a
-// previous visit but the onAccept callback did not run for any reason,
-// grant consent directly from the stored localStorage value.
 document.addEventListener('DOMContentLoaded', function () {
 if (window._fbConsentGranted) return;
+
 try {
-// 'stcm.consent.advertising' is the current key;
-// 'silktideCookieChoice_advertising' is the legacy key.
 var stored = localStorage.getItem('stcm.consent.advertising');
 if (stored === null) {
 stored = localStorage.getItem('silktideCookieChoice_advertising');
