@@ -137,8 +137,8 @@
         <img src="/fempire-ftp-compilation.webp" alt="FTP Compilation (Fuck The Patriarchy)" class="card-image" width="64" height="64" loading="lazy"/>
         <div class="card-content">
           <h3>FTP Compilation (Fuck The Patriarchy)</h3>
-          <p>Enoltra — "Connect" on FEMpire Records</p>
-          <a href="https://ditto.fm/ftp-compilation" target="_blank" rel="noopener noreferrer" class="button-outline" on:click={() => track('SongClick', { song: 'Connect (FTP Compilation)', action: 'ditto_stream' })}>Stream/Buy</a>
+          <p>Enoltra — "Connect" on FEMpire Records (18th Sept) </p>
+          <a href="https://ditto.fm/ftp-compilation" target="_blank" rel="noopener noreferrer" class="button-outline" on:click={() => track('SongClick', { song: 'Connect (FTP Compilation)', action: 'ditto_stream' })}>Pre-Save</a>
         </div>
       </div>
       <div class="link-card">
