@@ -134,6 +134,14 @@
     <section id="releases" class="content-section" style="padding-top: 0.5rem;">
       <h2>Releases</h2>
       <div class="link-card">
+        <img src="/fempire-ftp-compilation.webp" alt="FTP Compilation (Fuck The Patriarchy)" class="card-image" width="64" height="64" loading="lazy"/>
+        <div class="card-content">
+          <h3>FTP Compilation (Fuck The Patriarchy)</h3>
+          <p>FEMpire Records ft. Enoltra — "Connect"</p>
+          <a href="https://ditto.fm/ftp-compilation" target="_blank" rel="noopener noreferrer" class="button-outline" on:click={() => track('SongClick', { song: 'Connect (FTP Compilation)', action: 'ditto_stream' })}>Stream/Buy</a>
+        </div>
+      </div>
+      <div class="link-card">
         <img src="/balkan-ljubav-cover.webp" alt="Balkan Ljubav" class="card-image" width="64" height="64" loading="lazy"/>
         <div class="card-content">
           <h3>Balkan Ljubav</h3>
