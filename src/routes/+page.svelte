@@ -137,7 +137,7 @@
         <img src="/fempire-ftp-compilation.webp" alt="FTP Compilation (Fuck The Patriarchy)" class="card-image" width="64" height="64" loading="lazy"/>
         <div class="card-content">
           <h3>FTP Compilation (Fuck The Patriarchy)</h3>
-          <p>FEMpire Records ft. Enoltra — "Connect"</p>
+          <p>Enoltra — "Connect" on FEMpire Records</p>
           <a href="https://ditto.fm/ftp-compilation" target="_blank" rel="noopener noreferrer" class="button-outline" on:click={() => track('SongClick', { song: 'Connect (FTP Compilation)', action: 'ditto_stream' })}>Stream/Buy</a>
         </div>
       </div>
@@ -147,14 +147,6 @@
           <h3>Balkan Ljubav</h3>
           <p>Enoltra ft. Jiku</p>
           <a href="https://hypeddit.com/enoltraftjiku/balkanljubav" target="_blank" rel="noopener noreferrer" class="button-outline" on:click={() => { track('PreSaveClick', { song: 'Balkan Ljubav' }); track('SongClick', { song: 'Balkan Ljubav', action: 'presave_buy' }); }}>Stream/Buy</a>
-        </div>
-      </div>
-      <div class="link-card">
-        <img src="/release3.webp" alt="M.I.A. Remix" class="card-image" width="64" height="64" loading="lazy"/>
-        <div class="card-content">
-          <h3>M.I.A. (Enoltra Remix)</h3>
-          <p>Enoltra</p>
-          <a href="https://enoltralive.bandcamp.com/track/box-of-beats-mia-enoltra-remix" target="_blank" rel="noopener noreferrer" class="button-outline" on:click={() => track('SongClick', { song: 'M.I.A. (Enoltra Remix)', action: 'bandcamp' })}>Get on Bandcamp</a>
         </div>
       </div>
     </section>
