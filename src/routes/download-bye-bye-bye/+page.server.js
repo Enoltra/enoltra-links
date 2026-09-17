@@ -13,13 +13,25 @@ export const actions = {
     if (!email) return fail(400, { error: 'Email is required.' });
 
     try {
-      const validationResponse = await fetch(`https://emailvalidation.abstractapi.com/v1/?api_key=${PRIVATE_EMAIL_VALIDATION_API_KEY}&email=${email}`);
-      const validationData = await validationResponse.json();
-      if (validationData.deliverability !== 'DELIVERABLE') {
-        return fail(400, { error: 'Invalid e-mail. Please enter a valid e-mail.' });
+      const validationResponse = await fetch(
+        `https://emailvalidation.abstractapi.com/v1/?api_key=${PRIVATE_EMAIL_VALIDATION_API_KEY}&email=${encodeURIComponent(email)}`
+      );
+
+      if (validationResponse.ok) {
+        const validationData = await validationResponse.json();
+        console.log('Abstract status:', validationResponse.status, 'body:', JSON.stringify(validationData));
+
+        if (
+          validationData.is_valid_format?.value === false ||
+          validationData.deliverability === 'UNDELIVERABLE'
+        ) {
+          return fail(400, { error: 'Invalid e-mail. Please enter a valid e-mail.' });
+        }
+      } else {
+        console.error('AbstractAPI error', validationResponse.status, await validationResponse.text());
       }
     } catch (err) {
-      return fail(500, { error: 'Could not verify email at this time.' });
+      console.error('AbstractAPI request failed', err);
     }
 
     const downloadUrl = 'https://downloads.enoltra.com/NSYNC%20-%20Bye%20Bye%20Bye%20(Enoltra%20Bootleg).wav';
