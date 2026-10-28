@@ -130,14 +130,15 @@
 
   <main class="content-wrapper">
 
-    <!-- ========= ADE COLLAB APPLICATION ========= -->
+    <!-- ========= UPCOMING EVENT ========= -->
     <section class="content-section" style="padding-top: 0.5rem;">
-      <div class="epk-card">
-        <div class="epk-text">
-          <h3>Apply for the Collaborative ADE Project</h3>
-          <p>Open call for artists to join Enoltra's ADE collaboration</p>
+      <div class="link-card">
+        <img src="/cosmic-egg.webp" alt="Cosmic BirthRave" class="card-image" width="64" height="64" loading="lazy"/>
+        <div class="card-content">
+          <h3>Cosmic BirthRave</h3>
+          <p>Upcoming at Rhiz, Vienna</p>
+          <a href="https://ra.co/events/2563381" target="_blank" rel="noopener noreferrer" class="button-outline" on:click={() => track('EventClick', { event: 'Cosmic BirthRave', location: 'top_card' })}>Get tickets</a>
         </div>
-        <a href="https://forms.gle/xnEzFRKjqZKSWNiQ6" target="_blank" rel="noopener noreferrer" class="button-outline" on:click={() => track('ADEApplyClick', { location: 'top_card' })}>Apply now</a>
       </div>
     </section>
 
